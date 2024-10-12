@@ -1,0 +1,1 @@
+VS Garments is an Android application developed as a collaborative project during the second year of our studies. The app provides users with the ability to browse and manage garments collections, offering an intuitive user experience for easy garment selection, purchase, and inventory management.
