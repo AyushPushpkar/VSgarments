@@ -20,3 +20,8 @@ val appbackgroundcolor = Color(0xFFCAF4FF)
 
 val  textcolorblue = Color(0xFF1B95DF)
 val textcolorgrey = Color(0xFF354C61)
+
+val buttonStartColor = Color(0x6ADFFF)
+val buttonEndColor = Color(0x1791D4)
+
+

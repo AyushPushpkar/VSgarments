@@ -16,3 +16,9 @@ val fontBaloo = FontFamily(
     Font(R.font.baloo2_extrabold , FontWeight.ExtraBold),
     Font(R.font.baloo_variable )
 )
+
+val fontInter = FontFamily(
+    Font(R.font.inter_bold,FontWeight.Bold),
+    Font(R.font.inter_semibold,FontWeight.SemiBold),
+    Font(R.font.inter_regular,FontWeight.Normal)
+)

@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.vsgarments.layout.EditProfileScreen
+import com.example.vsgarments.layout.LoginScreen
 import com.example.vsgarments.ui.theme.VSgarmentsTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,17 +20,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            VSgarmentsTheme {
+            /*
+            * VSgarmentsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
+            * */
+
+             LoginScreen()
             }
         }
     }
-}
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

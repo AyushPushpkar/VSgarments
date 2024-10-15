@@ -1,4 +1,4 @@
-package com.example.vsgarments.layout
+ package com.example.vsgarments.layout
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
