@@ -27,7 +27,9 @@ import com.example.vsgarments.ui.theme.splashlightblue
 
 
 @Composable
-fun Splash_Screen(){
+fun Splash_Screen(
+    modifier: Modifier
+){
     Box (
         modifier = Modifier
             .fillMaxSize()
