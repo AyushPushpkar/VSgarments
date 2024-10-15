@@ -12,3 +12,11 @@ val Pink40 = Color(0xFF7D5260)
 
 val splashdarkblue = Color(0xFF0863C4)
 val splashlightblue = Color(0xFF0197E7)
+
+val topbardarkblue = Color(0xFF2496FF)
+val topbarlightblue = Color(0xFF44CAFF)
+
+val appbackgroundcolor = Color(0xFFCAF4FF)
+
+val  textcolorblue = Color(0xFF1B95DF)
+val textcolorgrey = Color(0xFF354C61)
