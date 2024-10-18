@@ -1,6 +1,7 @@
 package com.example.vsgarments.layout
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,16 +35,24 @@ import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.topbardarkblue
+import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.editText
 
 @Composable
-fun Signup_Screen() {
+fun Signup_Screen(
+    modifier: Modifier,
+) {
 
     Column(
         modifier = Modifier
+            .background(Color.White)
             .padding(50.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
+
+        Spacer(modifier = Modifier.height(0.dp))
+
         Image(
             painter = painterResource(id = R.drawable.back_arrow),
             contentDescription = "",
@@ -76,23 +85,12 @@ fun Signup_Screen() {
         )
         {
 
-            Button(
-                onClick = {} ,
-                colors = ButtonDefaults.buttonColors(containerColor = textcolorblue),
-                modifier = Modifier
-                    .fillMaxWidth(.5f)
-            ){
-
-                Text(
-                    text = "Sign Up",
-                    fontSize = 15.sp,
-                    color = Color.White,
-                    fontFamily = fontInter,
-                    fontWeight = FontWeight.Normal,
-                )
-
-
-            }
+            blue_Button(
+                modifier = Modifier,
+                width_fraction = 0.5f,
+                button_text = "Sign Up",
+                font_Family = fontInter
+            )
         }
     }
 }
