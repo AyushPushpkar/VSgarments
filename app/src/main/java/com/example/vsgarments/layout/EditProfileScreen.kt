@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vsgarments.R
 import com.example.vsgarments.fontBaloo
+import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.splashdarkblue
@@ -63,8 +64,11 @@ import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.number_textField
+import com.example.vsgarments.view_functions.text_textField
 
-class EditProfileActivity : ComponentActivity() {
+ class EditProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -76,6 +80,12 @@ class EditProfileActivity : ComponentActivity() {
                             .padding(innerPadding)
                     )
 //                    Splash_Screen(
+//                        modifier = Modifier.padding(innerPadding)
+//                    )
+//                    Signup_Screen(
+//                        modifier = Modifier.padding(innerPadding)
+//                    )
+//                    LoginScreen(
 //                        modifier = Modifier.padding(innerPadding)
 //                    )
                 }
@@ -92,31 +102,6 @@ fun EditProfileScreen(modifier: Modifier) {
             .fillMaxSize()
             .background(appbackgroundcolor)
     ) {
-
-        var namestate by remember {
-            mutableStateOf("")
-        }
-        var numberstate by remember {
-            mutableStateOf("")
-        }
-        var emailstate by remember {
-            mutableStateOf("")
-        }
-        var statestate by remember {
-            mutableStateOf("")
-        }
-        var citystate by remember {
-            mutableStateOf("")
-        }
-        var pincodestate by remember {
-            mutableStateOf("")
-        }
-        var alternatenumberstate by remember {
-            mutableStateOf("")
-        }
-        var alternateemailstate by remember {
-            mutableStateOf("")
-        }
 
         Column(
             modifier = Modifier
@@ -239,34 +224,12 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        value = namestate,
-                        onValueChange = { namestate = it } ,
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
-                        )
+                    text_textField(
+                        modifier = Modifier ,
+                        font_Family = fontInter
+                    )
                     
                     Spacer(modifier = Modifier.height(20.dp))
-
                     Text(
                         text = "Mobile Number *" ,
                         color = textcolorblue ,
@@ -274,38 +237,10 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .heightIn(max = 52.dp),
-                        value = numberstate,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        singleLine = true,
-                        onValueChange = {
-                            numberstate = it.filter {char ->
-                                char.isDigit()
-                            }.take(10)
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                            ),
+                    number_textField(
+                        modifier = Modifier,
+                        char_no = 10,
+                        font_Family = fontBaloo
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -317,30 +252,9 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        value = emailstate,
-                        onValueChange = { emailstate = it } ,
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
+                    text_textField(
+                        modifier = Modifier,
+                        font_Family = fontBaloo ,
                     )
 
                     Spacer(modifier = Modifier.height(25.dp))
@@ -352,26 +266,12 @@ fun EditProfileScreen(modifier: Modifier) {
                             .fillMaxWidth() ,
                         contentAlignment = Alignment.Center
                     ){
-                        Button(
-                            modifier = Modifier.fillMaxWidth(0.35f),
-                            contentPadding = ButtonDefaults.ContentPadding,
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 10.dp,
-                                pressedElevation = 7.dp
-                            ),
-                            colors= ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF03A9F4)
-                            ),
-                            onClick = { /*TODO*/ }
-                        ) {
-                            Text(
-                                text = "Save" ,
-                                color = Color.White ,
-                                fontFamily = fontBaloo ,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 15.sp
-                            )
-                        }
+                        blue_Button(
+                            modifier = Modifier,
+                            width_fraction = 0.35f,
+                            button_text = "Save",
+                            font_Family = fontBaloo
+                        )
                     }
                 }
 
@@ -415,30 +315,9 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        value = statestate,
-                        onValueChange = { statestate = it } ,
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
+                    text_textField(
+                        modifier = modifier,
+                        font_Family = fontBaloo
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -450,32 +329,9 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        value = citystate,
-                        singleLine = true,
-                        onValueChange = {
-                            citystate = it
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
+                    text_textField(
+                        modifier = Modifier,
+                        font_Family = fontBaloo ,
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -487,38 +343,10 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .heightIn(max = 52.dp),
-                        value = pincodestate,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        singleLine = true,
-                        onValueChange = {
-                            pincodestate = it.filter {char ->
-                                char.isDigit()
-                            }.take(6)
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
+                    number_textField(
+                        modifier = Modifier,
+                        char_no = 6,
+                        font_Family = fontBaloo
                     )
 
                     Spacer(modifier = Modifier.height(25.dp))
@@ -590,38 +418,10 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .heightIn(max = 52.dp),
-                        value = alternatenumberstate,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        singleLine = true,
-                        onValueChange = {
-                            alternatenumberstate = it.filter {char ->
-                                char.isDigit()
-                            }.take(10)
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
+                    number_textField(
+                        modifier = Modifier,
+                        char_no = 10,
+                        font_Family = fontBaloo
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -633,30 +433,9 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
-                    TextField(
-                        textStyle = TextStyle(
-                            fontSize = 18.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        value = alternateemailstate,
-                        onValueChange = { alternateemailstate = it } ,
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = appbackgroundcolor,
-                            focusedLabelColor =  textcolorblue,
-                            focusedTextColor = textcolorgrey,
-                            focusedIndicatorColor = textcolorblue,
-                            unfocusedLabelColor = textcolorblue,
-                            unfocusedIndicatorColor = textcolorblue,
-                            unfocusedContainerColor = Color.White,
-                            unfocusedTextColor = textcolorgrey,
-                            disabledContainerColor = Color.White ,
-                            cursorColor = textcolorblue,
-                        ),
+                    text_textField(
+                        modifier = Modifier,
+                        font_Family = fontBaloo
                     )
 
                     Spacer(modifier = Modifier.height(30.dp))
@@ -748,7 +527,10 @@ fun EditProfileScreen(modifier: Modifier) {
                     .fillMaxHeight(0.15f)
                     .shadow(
                         elevation = 10.dp,
-                        shape = RoundedCornerShape(bottomStart = 0.dp, bottomEnd = 0.dp),
+                        shape = RoundedCornerShape(
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        ),
                         clip = false,
                         ambientColor = Color.Black,
                         spotColor = Color.Black
