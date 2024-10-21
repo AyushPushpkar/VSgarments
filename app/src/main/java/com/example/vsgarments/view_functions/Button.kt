@@ -1,15 +1,25 @@
 package com.example.vsgarments.view_functions
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vsgarments.ui.theme.topbardarkblue
+import com.example.vsgarments.ui.theme.topbarlightblue
 
 @Composable
 fun blue_Button(
@@ -19,23 +29,50 @@ fun blue_Button(
     font_Family: FontFamily
 ) {
     Button(
-        modifier = Modifier.fillMaxWidth(width_fraction),
-        contentPadding = ButtonDefaults.ContentPadding,
+        modifier = Modifier
+            .fillMaxWidth(width_fraction)
+            .padding(
+                start = 10.dp ,
+                end = 10.dp
+            ),
+        contentPadding = PaddingValues(),
+        colors= ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent
+        ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 10.dp,
             pressedElevation = 7.dp
         ),
-        colors= ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF03A9F4)
-        ),
         onClick = { /*TODO*/ }
     ) {
-        Text(
-            text = button_text,
-            color = Color.White,
-            fontFamily = font_Family,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 15.sp
-        )
+        Box (
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            topbarlightblue ,
+                            topbardarkblue
+                        )
+                    ),
+                    shape = RoundedCornerShape(0.dp)
+                )
+                .clip(
+                    shape = RoundedCornerShape(0.dp)
+                )
+                .padding(
+                    horizontal = 16.dp ,
+                    vertical = 10.dp
+                ),
+            contentAlignment = Alignment.Center
+        ){
+            Text(
+                text = button_text,
+                color = Color.White,
+                fontFamily = font_Family,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp
+            )
+        }
     }
 }

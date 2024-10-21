@@ -1,4 +1,4 @@
- package com.example.vsgarments.layout
+package com.example.vsgarments.layout
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,7 +30,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +49,6 @@ import com.example.vsgarments.fontBaloo
 import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.appbackgroundcolor
-import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.topbardarkblue
@@ -59,29 +57,19 @@ import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.number_textField
 import com.example.vsgarments.view_functions.text_textField
 
- class EditProfileActivity : ComponentActivity() {
+class EditProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             VSgarmentsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    EditProfileScreen(
-//                        modifier = Modifier
-//                            .padding(innerPadding)
-//                    )
-//                    Splash_Screen(
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                    Signup_Screen(
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                    LoginScreen(
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-                    Profile_Screen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+//                    EditProfileScreen(modifier = Modifier.padding(innerPadding))
+//                    Splash_Screen(modifier = Modifier.padding(innerPadding))
+//                    Signup_Screen(modifier = Modifier.padding(innerPadding))
+                    HomeScreen(modifier = Modifier.padding(innerPadding))
+//                    LoginScreen(modifier = Modifier.padding(innerPadding))
+//                    Profile_Screen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -102,7 +90,7 @@ fun EditProfileScreen(modifier: Modifier) {
                 .fillMaxSize()
                 .background(Color.White)
                 .verticalScroll(rememberScrollState())
-        ){
+        ) {
 
             Card(
                 modifier = Modifier
@@ -114,7 +102,7 @@ fun EditProfileScreen(modifier: Modifier) {
                     bottomEnd = 25.dp
                 ),
                 elevation = CardDefaults.cardElevation(5.dp)
-            ){
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -131,7 +119,7 @@ fun EditProfileScreen(modifier: Modifier) {
                         .padding(bottom = 58.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    Box (
+                    Box(
                         modifier = Modifier
                             .size(116.dp)
                             .clip(
@@ -143,7 +131,7 @@ fun EditProfileScreen(modifier: Modifier) {
                                 color = appbackgroundcolor,
                                 shape = RoundedCornerShape(58.dp)
                             )
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.waddle_dees),
                             contentDescription = "Your image description",
@@ -171,7 +159,10 @@ fun EditProfileScreen(modifier: Modifier) {
                             contentAlignment = Alignment.Center
 
                         ) {
-                            Image(painter = painterResource(id = R.drawable.edit_pen), contentDescription = "edit pen")
+                            Image(
+                                painter = painterResource(id = R.drawable.edit_pen),
+                                contentDescription = "edit pen"
+                            )
                         }
                     }
                 }
@@ -210,23 +201,23 @@ fun EditProfileScreen(modifier: Modifier) {
                         )
                         .background(Color.White)
                         .padding(20.dp)
-                ){
+                ) {
                     Text(
-                        text = "Full Name *" ,
-                        color = textcolorblue ,
+                        text = "Full Name *",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
                     text_textField(
-                        modifier = Modifier ,
+                        modifier = Modifier,
                         font_Family = fontInter
                     )
-                    
+
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "Mobile Number *" ,
-                        color = textcolorblue ,
+                        text = "Mobile Number *",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -240,29 +231,29 @@ fun EditProfileScreen(modifier: Modifier) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "Email Id *" ,
-                        color = textcolorblue ,
+                        text = "Email Id *",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontBaloo ,
+                        font_Family = fontBaloo,
                     )
 
                     Spacer(modifier = Modifier.height(25.dp))
 
 
 
-                    Box (
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth() ,
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.Center
-                    ){
+                    ) {
                         blue_Button(
                             modifier = Modifier,
-                            width_fraction = 0.35f,
+                            width_fraction = 0.4f,
                             button_text = "Save",
                             font_Family = fontBaloo
                         )
@@ -301,10 +292,10 @@ fun EditProfileScreen(modifier: Modifier) {
                         )
                         .background(Color.White)
                         .padding(20.dp)
-                ){
+                ) {
                     Text(
-                        text = "State *" ,
-                        color = textcolorblue ,
+                        text = "State *",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -317,22 +308,22 @@ fun EditProfileScreen(modifier: Modifier) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "City *" ,
-                        color = textcolorblue ,
+                        text = "City *",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontBaloo ,
+                        font_Family = fontBaloo,
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "Pin Code *" ,
-                        color = textcolorblue ,
+                        text = "Pin Code *",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -362,9 +353,9 @@ fun EditProfileScreen(modifier: Modifier) {
                         text = " Update ",
                         softWrap = true,
                         style = TextStyle(
-                            fontSize = 25.sp ,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.Medium ,
+                            fontSize = 25.sp,
+                            fontFamily = fontBaloo,
+                            fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
                             color = topbardarkblue
                         )
@@ -404,10 +395,10 @@ fun EditProfileScreen(modifier: Modifier) {
                         )
                         .background(Color.White)
                         .padding(20.dp)
-                ){
+                ) {
                     Text(
-                        text = "Alternate Mobile Number" ,
-                        color = textcolorblue ,
+                        text = "Alternate Mobile Number",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -421,8 +412,8 @@ fun EditProfileScreen(modifier: Modifier) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "Alternate Email Id" ,
-                        color = textcolorblue ,
+                        text = "Alternate Email Id",
+                        color = textcolorblue,
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -437,7 +428,7 @@ fun EditProfileScreen(modifier: Modifier) {
                     Text(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
-                        text = "This will help in recovery of your account " ,
+                        text = "This will help in recovery of your account ",
                         color = Color(0xFF6188A0),
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
@@ -461,7 +452,7 @@ fun EditProfileScreen(modifier: Modifier) {
                     .padding(20.dp),
                 verticalArrangement = Arrangement.Center
 
-            ){
+            ) {
                 Text(
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(10.dp))
@@ -474,15 +465,15 @@ fun EditProfileScreen(modifier: Modifier) {
                                 MutableInteractionSource()
                             }
                         ) {
-                        } ,
-                    text = " Deactivate Account " ,
+                        },
+                    text = " Deactivate Account ",
                     color = textcolorblue,
                     fontFamily = fontBaloo,
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp
                 )
 
-                Box (
+                Box(
                     modifier
                         .fillMaxWidth(0.9f)
                         .height(2.dp)
@@ -502,77 +493,77 @@ fun EditProfileScreen(modifier: Modifier) {
                             }
                         ) {
                         },
-                    text = " Delete Account " ,
+                    text = " Delete Account ",
                     color = textcolorblue,
                     fontFamily = fontBaloo,
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp
                 )
-                
+
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
         }
 
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.15f)
-                    .shadow(
-                        elevation = 10.dp,
-                        shape = RoundedCornerShape(
-                            bottomStart = 0.dp,
-                            bottomEnd = 0.dp
-                        ),
-                        clip = false,
-                        ambientColor = Color.Black,
-                        spotColor = Color.Black
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.15f)
+                .shadow(
+                    elevation = 10.dp,
+                    shape = RoundedCornerShape(
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
                     ),
-                shape = RoundedCornerShape(
-                    bottomStart = 5.dp,
-                    bottomEnd = 5.dp
+                    clip = false,
+                    ambientColor = Color.Black,
+                    spotColor = Color.Black
                 ),
-                elevation = CardDefaults.cardElevation(10.dp) ,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    topbardarkblue,
-                                    topbarlightblue
-                                )
+            shape = RoundedCornerShape(
+                bottomStart = 5.dp,
+                bottomEnd = 5.dp
+            ),
+            elevation = CardDefaults.cardElevation(10.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                topbardarkblue,
+                                topbarlightblue
                             )
                         )
-                        .padding(
-                            top = 28.dp,
-                            start = 30.dp
-                        ),
-                    contentAlignment = Alignment.CenterStart
+                    )
+                    .padding(
+                        top = 28.dp,
+                        start = 30.dp
+                    ),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.back_arrow),
-                            contentDescription = "" , 
-                            modifier = Modifier.size(30.dp)
-                        )
-                        Spacer(modifier = Modifier.width(50.dp))
-                        Text(
-                            text = "Edit Profile",
-                            fontSize = 23.sp ,
-                            color = Color.Black,
-                            fontFamily = fontBaloo ,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                    
+                    Image(
+                        painter = painterResource(id = R.drawable.back_arrow),
+                        contentDescription = "",
+                        modifier = Modifier.size(30.dp)
+                    )
+                    Spacer(modifier = Modifier.width(50.dp))
+                    Text(
+                        text = "Edit Profile",
+                        fontSize = 23.sp,
+                        color = Color.Black,
+                        fontFamily = fontBaloo,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
+
             }
+        }
 
 
     }

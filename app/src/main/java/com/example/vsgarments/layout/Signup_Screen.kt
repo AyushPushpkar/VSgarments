@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vsgarments.R
+import com.example.vsgarments.fontBaloo
 import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
@@ -89,7 +90,7 @@ fun Signup_Screen(
                 modifier = Modifier,
                 width_fraction = 0.5f,
                 button_text = "Sign Up",
-                font_Family = fontInter
+                font_Family = fontBaloo
             )
         }
     }
