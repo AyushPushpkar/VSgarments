@@ -24,4 +24,6 @@ val textcolorgrey = Color(0xFF354C61)
 val buttonStartColor = Color(0x6ADFFF)
 val buttonEndColor = Color(0x1791D4)
 
+val  tintGreen = Color(0xFFC5FDD6)
+
 

@@ -26,9 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.example.vsgarments.R
 import com.example.vsgarments.fontBaloo
 import com.example.vsgarments.fontInter
-import com.example.vsgarments.ui.theme.buttonEndColor
-import com.example.vsgarments.ui.theme.buttonStartColor
-import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.blue_Button
