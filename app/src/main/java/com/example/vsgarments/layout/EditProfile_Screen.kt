@@ -57,26 +57,6 @@ import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.number_textField
 import com.example.vsgarments.view_functions.text_textField
 
-class EditProfileActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            VSgarmentsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    EditProfileScreen(modifier = Modifier.padding(innerPadding))
-//                    Splash_Screen(modifier = Modifier.padding(innerPadding))
-//                    Signup_Screen(modifier = Modifier.padding(innerPadding))
-                    HomeScreen(modifier = Modifier.padding(innerPadding))
-//                    LoginScreen(modifier = Modifier.padding(innerPadding))
-//                    Profile_Screen(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
-        window.statusBarColor = textcolorgrey.hashCode()
-    }
-}
-
 @Composable
 fun EditProfileScreen(modifier: Modifier) {
     Box(

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.textcolorblue
+import com.example.vsgarments.ui.theme.textcolorgrey
 
 @Composable
 fun editText(
@@ -26,10 +27,14 @@ fun editText(
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = textcolorblue,
+            focusedLabelColor =  textcolorblue,
+            focusedTextColor = textcolorgrey,
             unfocusedBorderColor = textcolorblue,
-            focusedLabelColor = textcolorblue,
+            unfocusedLabelColor = textcolorblue,
+            unfocusedTextColor = textcolorgrey,
             cursorColor = textcolorblue,
         ),
+        singleLine = true,
         label = { Text(
             text = hint,
             fontFamily = fontInter,

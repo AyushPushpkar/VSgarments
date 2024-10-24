@@ -23,7 +23,7 @@ import com.example.vsgarments.ui.theme.topbarlightblue
 
 @Composable
 fun blue_Button(
-    modifier: Modifier ,
+    modifier: Modifier = Modifier,
     width_fraction: Float ,
     button_text : String ,
     font_Family: FontFamily
