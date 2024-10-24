@@ -52,6 +52,7 @@ import com.example.vsgarments.fontBaloo
 import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.splashdarkblue
+import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
@@ -73,7 +74,7 @@ fun Profile_Screen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(235.dp)
+                    .height(210.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             bottomStart = 15.dp,
@@ -129,7 +130,7 @@ fun Profile_Screen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(110.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             topStart = 15.dp,
@@ -147,9 +148,10 @@ fun Profile_Screen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = tintGreen
                     ),
+                    shape = RoundedCornerShape(15.dp),
                     contentPadding = PaddingValues(
-                        start = 20.dp,
-                        end = 30.dp,
+                        start = 22.dp,
+                        end = 32.dp,
                         top = 10.dp,
                         bottom = 10.dp
                     ),
@@ -178,7 +180,7 @@ fun Profile_Screen(
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "Order",
-                            fontSize = 15.sp,
+                            fontSize = 17.sp,
                         )
 
                     }
@@ -194,6 +196,7 @@ fun Profile_Screen(
                         horizontal = 20.dp,
                         vertical = 10.dp
                     ),
+                    shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(
                         width = 2.dp,
                         color = Color(0x66676767)
@@ -217,71 +220,214 @@ fun Profile_Screen(
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "Wishlist",
-                            fontSize = 15.sp,
+                            fontSize = 17.sp,
                         )
                     }
 
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Color.White),
+                    .height(70.dp)
+                    .background(Color.White)
+                    .padding(horizontal = 30.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
+                Row (
+                    modifier = Modifier.fillMaxWidth(0.87f)
+                ){
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .size(19.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.edit_pen),
+                            contentDescription = "help icon"
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(25.dp))
+
+                    Text(
+                        text = "Help",
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = textcolorgrey
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .size(19.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.back_arrow),
+                        contentDescription = "help icon"
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .background(Color.White)
+                    .padding(horizontal = 30.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth(0.87f)
+                ){
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .size(19.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.edit_pen),
+                            contentDescription = "address icon"
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(25.dp))
+
+                    Text(
+                        text = "Address",
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = textcolorgrey
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .size(19.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.back_arrow),
+                        contentDescription = "address icon"
+                    )
+                }
 
             }
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Color.White),
+                    .height(70.dp)
+                    .background(Color.White)
+                    .padding(horizontal = 30.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
+                Row (
+                    modifier = Modifier.fillMaxWidth(0.87f)
+                ){
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .size(19.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.edit_pen),
+                            contentDescription = "settings icon"
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(25.dp))
 
+                    Text(
+                        text = "Settings",
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = textcolorgrey
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .size(19.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.back_arrow),
+                        contentDescription = "settings icon"
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Color.White),
-            ) {
-
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
+                    .height(230.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             bottomEnd = 15.dp,
                             bottomStart = 15.dp
                         )
                     )
-                    .background(Color.White),
+                    .background(Color.White)
+                    .padding(
+                        vertical = 20.dp,
+                        horizontal = 30.dp
+                    ),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-
+                Text(
+                    modifier = Modifier
+                        .clickable {  },
+                    text = "FAQs",
+                    fontSize = 23.sp,
+                    color = Color(0xFF6188A0),
+                    fontFamily = fontBaloo,
+                )
+                Text(
+                    modifier = Modifier
+                        .clickable {  },
+                    text = "About Us",
+                    fontSize = 23.sp,
+                    color = Color(0xFF6188A0),
+                    fontFamily = fontBaloo,
+                )
+                Text(
+                    modifier = Modifier
+                        .clickable {  },
+                    text = "Terms of Use",
+                    fontSize = 23.sp,
+                    color = Color(0xFF6188A0),
+                    fontFamily = fontBaloo,
+                )
+                Text(
+                    modifier = Modifier
+                        .clickable {  },
+                    text = "Privacy Policy",
+                    fontSize = 23.sp,
+                    color = Color(0xFF6188A0),
+                    fontFamily = fontBaloo,
+                )
             }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(50.dp)
+                    .padding(
+                        horizontal = 35.dp,
+                        vertical = 25.dp
+                    )
             ) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
+                        .height(65.dp)
                         .graphicsLayer {
                             clip = false
                             spotShadowColor = Color.Red
                             ambientShadowColor = Color.Red
-                            shape = RoundedCornerShape(19.dp)
+                            shape = RoundedCornerShape(20.dp)
                             shadowElevation = 10f
                         },
                     colors = CardDefaults.cardColors(Color.Transparent),
@@ -313,14 +459,14 @@ fun Profile_Screen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(70.dp))
 
             }
         }
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.15f)
+                .height(105.dp)
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(

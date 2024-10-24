@@ -75,7 +75,7 @@ fun EditProfileScreen(modifier: Modifier) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(350.dp),
+                    .height(330.dp),
                 colors = CardDefaults.cardColors(appbackgroundcolor),
                 shape = RoundedCornerShape(
                     bottomStart = 25.dp,
@@ -489,7 +489,7 @@ fun EditProfileScreen(modifier: Modifier) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.15f)
+                .height(105.dp)
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(
