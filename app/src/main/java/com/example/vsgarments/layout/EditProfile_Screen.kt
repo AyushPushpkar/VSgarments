@@ -64,12 +64,13 @@ fun EditProfileScreen(modifier: Modifier) {
             .fillMaxSize()
             .background(appbackgroundcolor)
     ) {
+        val editprofilescroll = rememberScrollState()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(editprofilescroll)
         ) {
 
             Card(

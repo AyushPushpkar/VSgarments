@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.vsgarments.layout.EditProfileScreen
 import com.example.vsgarments.layout.HomeScreen
 import com.example.vsgarments.layout.Profile_Screen
+import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.textcolorgrey
@@ -30,6 +32,7 @@ class MainActivity : ComponentActivity() {
 //                    HomeScreen(modifier = Modifier.padding(innerPadding))
 //                    LoginScreen(modifier = Modifier.padding(innerPadding))
                     Profile_Screen(modifier = Modifier.padding(innerPadding))
+//                    Settings_Screen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }

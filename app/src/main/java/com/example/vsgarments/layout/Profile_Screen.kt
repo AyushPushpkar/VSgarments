@@ -1,10 +1,18 @@
 package com.example.vsgarments.layout
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +30,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -40,6 +54,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
@@ -66,15 +81,27 @@ fun Profile_Screen(
             .fillMaxSize()
             .background(appbackgroundcolor)
     ) {
+        var initiallyOpened by remember {
+            mutableStateOf(false)
+        }
+        val profilescroll = rememberScrollState()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(profilescroll)
         ) {
+            Box (
+                modifier = Modifier
+                    .height(105.dp)
+                    .fillMaxWidth()
+            )
+            val accountscroll = rememberScrollState()
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(210.dp)
+                    .height(103.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             bottomStart = 15.dp,
@@ -87,30 +114,32 @@ fun Profile_Screen(
                         end = 20.dp,
                         top = 20.dp,
                         bottom = 20.dp
-                    ),
-                verticalAlignment = Alignment.Bottom
+                    )
+                    .horizontalScroll(accountscroll),
+                verticalAlignment = Alignment.CenterVertically ,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-                Box(
+                Row(
                     modifier = Modifier
-                        .width(150.dp)
-                        .height(66.dp)
+                        .height(64.dp)
                         .clip(
-                            shape = RoundedCornerShape(33.dp)
+                            shape = RoundedCornerShape(32.dp)
                         )
                         .background(tintGreen)
                         .border(
-                            shape = RoundedCornerShape(33.dp),
+                            shape = RoundedCornerShape(32.dp),
                             color = topbarlightblue,
                             width = 3.dp
                         )
-                        .padding(5.dp)
+                        .padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically ,
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(56.dp)
+                            .size(54.dp)
                             .clip(
-                                shape = RoundedCornerShape(28.dp)
+                                shape = RoundedCornerShape(27.dp)
                             )
                             .background(Color.Transparent)
                     ) {
@@ -120,8 +149,45 @@ fun Profile_Screen(
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-
                     }
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Text(
+                        text = "Hey ! Pavitr  ",
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.SemiBold,
+                        color = textcolorgrey
+                    )
+                }
+                Box (
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(
+                            shape = RoundedCornerShape(32.dp)
+                        )
+                        .background(tintGreen)
+                        .border(
+                            shape = RoundedCornerShape(32.dp),
+                            color = topbarlightblue,
+                            width = 3.dp
+                        )
+                        .padding(5.dp)
+                        .clickable {
+                            initiallyOpened = true
+                        },
+                    contentAlignment = Alignment.Center
+                ){
+                    Box(
+                        modifier = Modifier
+                            .background(tintGreen)
+                            .size(18.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.edit_pen),
+                            contentDescription = "add account icon"
+                        )
+                    }
+
                 }
             }
 
@@ -227,138 +293,27 @@ fun Profile_Screen(
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .background(Color.White)
-                    .padding(horizontal = 30.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row (
-                    modifier = Modifier.fillMaxWidth(0.87f)
-                ){
-                    Box(
-                        modifier = Modifier
-                            .background(Color.White)
-                            .size(19.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.edit_pen),
-                            contentDescription = "help icon"
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(25.dp))
 
-                    Text(
-                        text = "Help",
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
-                        color = textcolorgrey
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .size(19.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "help icon"
-                    )
-                }
-            }
+            Help_address(
+                icon = painterResource(id = R.drawable.edit_pen),
+                icon_des = "Help icon",
+                text = "Help"
+            )
+
             Spacer(modifier = Modifier.height(2.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .background(Color.White)
-                    .padding(horizontal = 30.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth(0.87f)
-                ){
-                    Box(
-                        modifier = Modifier
-                            .background(Color.White)
-                            .size(19.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.edit_pen),
-                            contentDescription = "address icon"
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(25.dp))
-
-                    Text(
-                        text = "Address",
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
-                        color = textcolorgrey
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .size(19.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "address icon"
-                    )
-                }
-
-            }
+            Help_address(
+                icon = painterResource(id = R.drawable.edit_pen),
+                icon_des = "address icon",
+                text = "Address"
+            )
             Spacer(modifier = Modifier.height(2.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .background(Color.White)
-                    .padding(horizontal = 30.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row (
-                    modifier = Modifier.fillMaxWidth(0.87f)
-                ){
-                    Box(
-                        modifier = Modifier
-                            .background(Color.White)
-                            .size(19.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.edit_pen),
-                            contentDescription = "settings icon"
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(25.dp))
-
-                    Text(
-                        text = "Settings",
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
-                        color = textcolorgrey
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .size(19.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "settings icon"
-                    )
-                }
-            }
+            Help_address(
+                icon = painterResource(id = R.drawable.edit_pen),
+                icon_des = "Settings icon",
+                text = "Settings"
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             Column(
@@ -380,7 +335,7 @@ fun Profile_Screen(
             ) {
                 Text(
                     modifier = Modifier
-                        .clickable {  },
+                        .clickable { },
                     text = "FAQs",
                     fontSize = 23.sp,
                     color = Color(0xFF6188A0),
@@ -388,7 +343,7 @@ fun Profile_Screen(
                 )
                 Text(
                     modifier = Modifier
-                        .clickable {  },
+                        .clickable { },
                     text = "About Us",
                     fontSize = 23.sp,
                     color = Color(0xFF6188A0),
@@ -396,7 +351,7 @@ fun Profile_Screen(
                 )
                 Text(
                     modifier = Modifier
-                        .clickable {  },
+                        .clickable { },
                     text = "Terms of Use",
                     fontSize = 23.sp,
                     color = Color(0xFF6188A0),
@@ -404,7 +359,7 @@ fun Profile_Screen(
                 )
                 Text(
                     modifier = Modifier
-                        .clickable {  },
+                        .clickable { },
                     text = "Privacy Policy",
                     fontSize = 23.sp,
                     color = Color(0xFF6188A0),
@@ -463,6 +418,12 @@ fun Profile_Screen(
 
             }
         }
+
+        Login_dialog(
+            initiallyOpened = initiallyOpened ,
+            onDismissRequest = { initiallyOpened = false}
+        )
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -523,4 +484,98 @@ fun Profile_Screen(
         }
     }
 
+}
+
+@Composable
+fun Help_address(
+    icon : Painter ,
+    icon_des : String ,
+    text : String
+){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .background(Color.White)
+            .padding(horizontal = 30.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(0.87f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(Color.White)
+                    .size(19.dp)
+            ) {
+                Image(
+                    painter = icon,
+                    contentDescription = icon_des
+                )
+            }
+            Spacer(modifier = Modifier.width(25.dp))
+
+            Text(
+                text = text,
+                fontFamily = fontInter,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                color = textcolorgrey
+            )
+        }
+        Box(
+            modifier = Modifier
+                .background(Color.White)
+                .size(19.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.back_arrow),
+                contentDescription = "enter icon"
+            )
+        }
+    }
+}
+
+@Composable
+fun Login_dialog(
+    modifier: Modifier = Modifier ,
+    initiallyOpened : Boolean ,
+    onDismissRequest : () -> Unit
+){
+
+    AnimatedVisibility(
+        visible = initiallyOpened,
+        enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x80B6E9FF))
+                .clickable { onDismissRequest() } // Close dialog when background is clicked
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(213.dp)
+                    .background(Color.Transparent)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(
+                        shape = RoundedCornerShape(
+                            topStart = 30.dp,
+                            topEnd = 30.dp
+                        )
+                    )
+                    .background(Color.White)
+                    .padding(16.dp)
+            ) {
+                Text(text = "Login Dialog", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+
+            }
+        }
+    }
 }
