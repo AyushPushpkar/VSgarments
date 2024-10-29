@@ -12,6 +12,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -55,6 +57,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
@@ -69,8 +72,11 @@ import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
+import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.number_editText
 
 @Composable
 fun Profile_Screen(
@@ -551,14 +557,14 @@ fun Login_dialog(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0x80B6E9FF))
-                .clickable { onDismissRequest() } // Close dialog when background is clicked
+                .background(Color(0x4DB6E9FF))
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(213.dp)
                     .background(Color.Transparent)
+                    .clickable { onDismissRequest() }
             )
             Column(
                 modifier = Modifier
@@ -570,10 +576,85 @@ fun Login_dialog(
                         )
                     )
                     .background(Color.White)
-                    .padding(16.dp)
+                    .padding(35.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures {}  // Consume taps
+                    }
+                    .pointerInput(Unit) {
+                        detectDragGestures { _, _ -> /* Consume drag gestures */ }
+                    },
+                verticalArrangement = Arrangement.spacedBy(25.dp)
             ) {
-                Text(text = "Login Dialog", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(
+                    modifier = Modifier
+                        .height(0.dp)
+                )
+
+                Row {
+                    Text(
+                        modifier = Modifier.weight(9f) ,
+                        text = "Log in for best experience ",
+                        color = textcolorgrey,
+                        fontSize = 17.sp,
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Image(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+                                onDismissRequest()
+                            },
+                        painter = painterResource(id = R.drawable.edit_pen),
+                        contentDescription = "cross icon"
+                    )
+                }
+
+                Text(
+                    text = "Enter your phone number to continue",
+                    color = tintGrey,
+                    fontSize = 13.sp,
+                    fontFamily = fontInter,
+                    fontWeight = FontWeight.Medium
+                )
+                number_editText("Mobile Number" ,10 , fontInter )
+
+                Row {
+                    Text(
+                        text = "By continuing you agree to the",
+                        color = textcolorgrey,
+                        fontSize = 13.sp,
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.Normal,
+                    )
+                    Text(
+                        text = " Terms of Use",
+                        color = topbardarkblue,
+                        fontSize = 13.sp,
+                        fontFamily = fontInter,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier
+                            .clickable {
+                            }
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .height(0.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                )
+                {
+                    blue_Button(
+                        modifier = Modifier,
+                        width_fraction = 0.5f,
+                        button_text = "Login",
+                        font_Family = fontInter
+                    )
+                }
 
             }
         }
