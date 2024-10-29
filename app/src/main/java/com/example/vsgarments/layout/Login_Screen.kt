@@ -29,7 +29,8 @@ import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.blue_Button
-import com.example.vsgarments.view_functions.editText
+import com.example.vsgarments.view_functions.char_editText
+import com.example.vsgarments.view_functions.text_textField
 
 @Composable
 fun LoginScreen(
@@ -66,8 +67,8 @@ fun LoginScreen(
             fontFamily = fontInter,
             fontWeight = FontWeight.SemiBold
         )
-        editText("Email or Mobile Number")
-        editText("Password")
+        char_editText("Email or Mobile Number" , fontInter)
+        char_editText("Password" , fontInter)
 
         Row {
             Text(

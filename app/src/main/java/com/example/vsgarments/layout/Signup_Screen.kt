@@ -37,7 +37,7 @@ import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.blue_Button
-import com.example.vsgarments.view_functions.editText
+import com.example.vsgarments.view_functions.char_editText
 
 @Composable
 fun Signup_Screen(
@@ -72,9 +72,9 @@ fun Signup_Screen(
             fontFamily = fontInter,
             fontWeight = FontWeight.SemiBold
         )
-        editText("Email or Mobile Number")
-        editText("Password")
-        editText("Confirm Password")
+        char_editText("Email or Mobile Number" , fontInter)
+        char_editText("Password" , fontInter)
+        char_editText("Confirm Password" , fontInter)
         Spacer(
             modifier = Modifier
                 .height(0.dp)
