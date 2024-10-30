@@ -34,11 +34,11 @@ fun LoginScreen(
     modifier: Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
-            .padding(50.dp)
+            .padding(horizontal = 50.dp , vertical = 30.dp)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(28.dp)
+        verticalArrangement = Arrangement.spacedBy(26.dp)
     ) {
 
         Spacer(
