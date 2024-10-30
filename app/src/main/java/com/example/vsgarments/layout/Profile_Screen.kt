@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -69,7 +68,6 @@ import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.number_editText
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Profile_Screen(
     modifier: Modifier,
