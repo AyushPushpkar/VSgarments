@@ -1,4 +1,4 @@
-package com.example.vsgarments.view_functions
+package com.example.vsgarments.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

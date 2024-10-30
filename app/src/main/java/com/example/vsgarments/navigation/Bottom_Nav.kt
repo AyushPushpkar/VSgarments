@@ -1,7 +1,6 @@
-package com.example.vsgarments.view_functions
+package com.example.vsgarments.navigation
 
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
