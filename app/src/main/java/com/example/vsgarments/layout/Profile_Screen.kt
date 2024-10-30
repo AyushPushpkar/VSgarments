@@ -55,7 +55,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.appbackgroundcolor
@@ -70,10 +72,11 @@ import com.example.vsgarments.view_functions.number_editText
 
 @Composable
 fun Profile_Screen(
-    modifier: Modifier,
+    navController: NavController ,
+    modifier: Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(appbackgroundcolor)
     ) {
@@ -94,7 +97,7 @@ fun Profile_Screen(
         ) {
             Box(
                 modifier = Modifier
-                    .height(105.dp)
+                    .height(75.dp)
                     .fillMaxWidth()
             )
             val accountscroll = rememberScrollState()
@@ -132,7 +135,11 @@ fun Profile_Screen(
                             color = topbarlightblue,
                             width = 3.dp
                         )
-                        .padding(5.dp),
+                        .padding(5.dp)
+                        .clickable {
+                            navController.navigate(Screen.EditProfile_Screen.route)
+
+                        },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
@@ -424,7 +431,7 @@ fun Profile_Screen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(105.dp)
+                .height(75.dp)
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(
@@ -453,7 +460,6 @@ fun Profile_Screen(
                         )
                     )
                     .padding(
-                        top = 28.dp,
                         start = 30.dp
                     ),
                 contentAlignment = Alignment.CenterStart

@@ -38,7 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.appbackgroundcolor
@@ -50,9 +52,9 @@ import com.example.vsgarments.view_functions.number_textField
 import com.example.vsgarments.view_functions.text_textField
 
 @Composable
-fun EditProfileScreen(modifier: Modifier) {
+fun EditProfile_Screen(navController: NavController , modifier: Modifier){
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(appbackgroundcolor)
     ) {
@@ -68,7 +70,7 @@ fun EditProfileScreen(modifier: Modifier) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(330.dp),
+                    .height(280.dp),
                 colors = CardDefaults.cardColors(appbackgroundcolor),
                 shape = RoundedCornerShape(
                     bottomStart = 25.dp,
@@ -89,7 +91,7 @@ fun EditProfileScreen(modifier: Modifier) {
                         .background(
                             topbarlightblue
                         )
-                        .padding(bottom = 58.dp),
+                        .padding(bottom = 48.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Box(
@@ -274,7 +276,7 @@ fun EditProfileScreen(modifier: Modifier) {
                         fontSize = 16.sp
                     )
                     text_textField(
-                        modifier = modifier,
+                        modifier = Modifier,
                         font_Family = fontBaloo
                     )
 
@@ -420,7 +422,7 @@ fun EditProfileScreen(modifier: Modifier) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(280.dp)
+                    .height(200.dp)
                     .background(Color.White)
                     .padding(20.dp),
                 verticalArrangement = Arrangement.Center
@@ -446,12 +448,15 @@ fun EditProfileScreen(modifier: Modifier) {
                     fontSize = 20.sp
                 )
 
+                Spacer(modifier = Modifier.height(20.dp))
+
                 Box(
-                    modifier
+                    modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .height(2.dp)
                         .background(textcolorblue)
                 )
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
                     modifier = Modifier
@@ -472,8 +477,6 @@ fun EditProfileScreen(modifier: Modifier) {
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
 
         }
@@ -482,7 +485,7 @@ fun EditProfileScreen(modifier: Modifier) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(105.dp)
+                .height(75.dp)
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(
@@ -511,7 +514,6 @@ fun EditProfileScreen(modifier: Modifier) {
                         )
                     )
                     .padding(
-                        top = 28.dp,
                         start = 30.dp
                     ),
                 contentAlignment = Alignment.CenterStart
@@ -524,6 +526,9 @@ fun EditProfileScreen(modifier: Modifier) {
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "",
                         modifier = Modifier.size(30.dp)
+                            .clickable {
+                                navController.navigate(Screen.Profile_Screen.route)
+                            }
                     )
                     Spacer(modifier = Modifier.width(50.dp))
                     Text(
