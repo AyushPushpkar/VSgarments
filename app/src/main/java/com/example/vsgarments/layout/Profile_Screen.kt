@@ -1,13 +1,12 @@
 package com.example.vsgarments.layout
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,7 +21,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,10 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,36 +43,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import com.example.vsgarments.R
-import com.example.vsgarments.fontBaloo
-import com.example.vsgarments.fontInter
+import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.appbackgroundcolor
-import com.example.vsgarments.ui.theme.splashdarkblue
+import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
-import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.number_editText
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Profile_Screen(
     modifier: Modifier,
@@ -95,9 +87,14 @@ fun Profile_Screen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(profilescroll)
+                .then(
+                    if (!initiallyOpened) {
+                        Modifier
+                            .verticalScroll(profilescroll)
+                    } else Modifier
+                )
         ) {
-            Box (
+            Box(
                 modifier = Modifier
                     .height(105.dp)
                     .fillMaxWidth()
@@ -107,7 +104,6 @@ fun Profile_Screen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(103.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             bottomStart = 15.dp,
@@ -122,30 +118,30 @@ fun Profile_Screen(
                         bottom = 20.dp
                     )
                     .horizontalScroll(accountscroll),
-                verticalAlignment = Alignment.CenterVertically ,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
                 Row(
                     modifier = Modifier
-                        .height(64.dp)
+                        .height(56.dp)
                         .clip(
-                            shape = RoundedCornerShape(32.dp)
+                            shape = RoundedCornerShape(28.dp)
                         )
                         .background(tintGreen)
                         .border(
-                            shape = RoundedCornerShape(32.dp),
+                            shape = RoundedCornerShape(28.dp),
                             color = topbarlightblue,
                             width = 3.dp
                         )
                         .padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically ,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(54.dp)
+                            .size(46.dp)
                             .clip(
-                                shape = RoundedCornerShape(27.dp)
+                                shape = RoundedCornerShape(23.dp)
                             )
                             .background(Color.Transparent)
                     ) {
@@ -165,11 +161,11 @@ fun Profile_Screen(
                         color = textcolorgrey
                     )
                 }
-                Box (
+                Box(
                     modifier = Modifier
-                        .size(64.dp)
+                        .size(56.dp)
                         .clip(
-                            shape = RoundedCornerShape(32.dp)
+                            shape = RoundedCornerShape(28.dp)
                         )
                         .background(tintGreen)
                         .border(
@@ -182,7 +178,7 @@ fun Profile_Screen(
                             initiallyOpened = true
                         },
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Box(
                         modifier = Modifier
                             .background(tintGreen)
@@ -202,20 +198,19 @@ fun Profile_Screen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(110.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             topStart = 15.dp,
                             topEnd = 15.dp
                         )
                     )
-                    .background(Color.White),
+                    .background(Color.White)
+                    .padding(vertical = 25.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    modifier = Modifier
-                        .fillMaxHeight(0.45f),
+                    modifier = Modifier,
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = tintGreen
@@ -224,8 +219,8 @@ fun Profile_Screen(
                     contentPadding = PaddingValues(
                         start = 22.dp,
                         end = 32.dp,
-                        top = 10.dp,
-                        bottom = 10.dp
+                        top = 12.dp,
+                        bottom = 12.dp
                     ),
                     border = BorderStroke(
                         width = 2.dp,
@@ -258,15 +253,14 @@ fun Profile_Screen(
                     }
                 }
                 Button(
-                    modifier = Modifier
-                        .fillMaxHeight(0.45f),
+                    modifier = Modifier ,
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = tintGreen
                     ),
                     contentPadding = PaddingValues(
                         horizontal = 20.dp,
-                        vertical = 10.dp
+                        vertical = 12.dp
                     ),
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(
@@ -298,7 +292,7 @@ fun Profile_Screen(
 
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(7.dp))
 
             Help_address(
                 icon = painterResource(id = R.drawable.edit_pen),
@@ -320,12 +314,11 @@ fun Profile_Screen(
                 icon_des = "Settings icon",
                 text = "Settings"
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(7.dp))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(230.dp)
                     .clip(
                         shape = RoundedCornerShape(
                             bottomEnd = 15.dp,
@@ -334,7 +327,7 @@ fun Profile_Screen(
                     )
                     .background(Color.White)
                     .padding(
-                        vertical = 20.dp,
+                        vertical = 25.dp,
                         horizontal = 30.dp
                     ),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -343,7 +336,7 @@ fun Profile_Screen(
                     modifier = Modifier
                         .clickable { },
                     text = "FAQs",
-                    fontSize = 23.sp,
+                    fontSize = 20.sp,
                     color = Color(0xFF6188A0),
                     fontFamily = fontBaloo,
                 )
@@ -351,7 +344,7 @@ fun Profile_Screen(
                     modifier = Modifier
                         .clickable { },
                     text = "About Us",
-                    fontSize = 23.sp,
+                    fontSize = 20.sp,
                     color = Color(0xFF6188A0),
                     fontFamily = fontBaloo,
                 )
@@ -359,7 +352,7 @@ fun Profile_Screen(
                     modifier = Modifier
                         .clickable { },
                     text = "Terms of Use",
-                    fontSize = 23.sp,
+                    fontSize = 20.sp,
                     color = Color(0xFF6188A0),
                     fontFamily = fontBaloo,
                 )
@@ -367,7 +360,7 @@ fun Profile_Screen(
                     modifier = Modifier
                         .clickable { },
                     text = "Privacy Policy",
-                    fontSize = 23.sp,
+                    fontSize = 20.sp,
                     color = Color(0xFF6188A0),
                     fontFamily = fontBaloo,
                 )
@@ -398,9 +391,9 @@ fun Profile_Screen(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color(0xFFFFF7F7))
+                            .background(Color(0xFFFFEEEE))
                             .clickable(
-                                indication = rememberRipple(color = Color(0xFFFFB3B3)), // Add ripple effect
+                                indication = rememberRipple(color = Color(0xFFFF7A7A)), // Add ripple effect
                                 interactionSource = remember { MutableInteractionSource() }
                             ) {}
                             .border(
@@ -413,7 +406,7 @@ fun Profile_Screen(
                         Text(
                             text = "Logout",
                             fontSize = 25.sp,
-                            color = Color(0xFFCE2828),
+                            color = Color(0xFFFF7C7C),
                             fontFamily = fontBaloo,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -426,8 +419,8 @@ fun Profile_Screen(
         }
 
         Login_dialog(
-            initiallyOpened = initiallyOpened ,
-            onDismissRequest = { initiallyOpened = false}
+            initiallyOpened = initiallyOpened,
+            onDismissRequest = { initiallyOpened = false }
         )
 
         Card(
@@ -494,25 +487,27 @@ fun Profile_Screen(
 
 @Composable
 fun Help_address(
-    icon : Painter ,
-    icon_des : String ,
-    text : String
-){
+    icon: Painter,
+    icon_des: String,
+    text: String,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(70.dp)
             .background(Color.White)
-            .padding(horizontal = 30.dp),
+            .padding(
+                horizontal = 30.dp,
+                vertical = 21.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(0.87f)
+            modifier = Modifier.fillMaxWidth(0.9f)
         ) {
             Box(
                 modifier = Modifier
                     .background(Color.White)
-                    .size(19.dp)
+                    .size(15.dp)
             ) {
                 Image(
                     painter = icon,
@@ -524,19 +519,20 @@ fun Help_address(
             Text(
                 text = text,
                 fontFamily = fontInter,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
+                fontWeight = FontWeight.W600,
+                fontSize = 18.sp,
                 color = textcolorgrey
             )
         }
         Box(
             modifier = Modifier
                 .background(Color.White)
-                .size(19.dp)
+                .size(16.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back_arrow),
-                contentDescription = "enter icon"
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = "enter icon" ,
+                colorFilter = ColorFilter.lighting(add = textcolorgrey , multiply = textcolorgrey)
             )
         }
     }
@@ -544,10 +540,10 @@ fun Help_address(
 
 @Composable
 fun Login_dialog(
-    modifier: Modifier = Modifier ,
-    initiallyOpened : Boolean ,
-    onDismissRequest : () -> Unit
-){
+    modifier: Modifier = Modifier,
+    initiallyOpened: Boolean,
+    onDismissRequest: () -> Unit,
+) {
 
     AnimatedVisibility(
         visible = initiallyOpened,
@@ -592,10 +588,10 @@ fun Login_dialog(
 
                 Row {
                     Text(
-                        modifier = Modifier.weight(9f) ,
+                        modifier = Modifier.weight(9f),
                         text = "Log in for best experience ",
                         color = textcolorgrey,
-                        fontSize = 17.sp,
+                        fontSize = 16.sp,
                         fontFamily = fontInter,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -612,32 +608,91 @@ fun Login_dialog(
 
                 Text(
                     text = "Enter your phone number to continue",
-                    color = tintGrey,
-                    fontSize = 13.sp,
+                    color = textcolorgrey,
+                    fontSize = 12.sp,
                     fontFamily = fontInter,
                     fontWeight = FontWeight.Medium
                 )
-                number_editText("Mobile Number" ,10 , fontInter )
 
-                Row {
-                    Text(
-                        text = "By continuing you agree to the",
-                        color = textcolorgrey,
-                        fontSize = 13.sp,
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.Normal,
-                    )
-                    Text(
-                        text = " Terms of Use",
-                        color = topbardarkblue,
-                        fontSize = 13.sp,
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.Normal,
+                var isEmail by remember { mutableStateOf(false) }
+
+                Column{
+                    if (isEmail) {
+                        char_editText(
+                            hint = "Email id",
+                            font_Family = fontInter
+                        )
+                    } else {
+                        number_editText(
+                            hint = "Mobile Number",
+                            char_no = 10,
+                            font_Family = fontInter
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Box(
                         modifier = Modifier
-                            .clickable {
-                            }
-                    )
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .clickable {
+                                    isEmail = !isEmail
+                                },
+                            text = if (isEmail) "Use Mobile number" else "Use Email-id",
+                            color = textcolorblue,
+                            fontSize = 12.sp,
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
+
+                Column {
+                    Row {
+                        Text(
+                            text = "By continuing, you agree to our",
+                            color = textcolorgrey,
+                            fontSize = 12.sp,
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.Normal,
+                        )
+                        Text(
+                            text = " Terms of Use",
+                            color = topbardarkblue,
+                            fontSize = 12.sp,
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier
+                                .clickable {
+                                }
+                        )
+                    }
+                    Row {
+                        Text(
+                            text = "& ",
+                            color = textcolorgrey,
+                            fontSize = 12.sp,
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.Normal,
+                        )
+                        Text(
+                            text = "Privacy Policy",
+                            color = topbardarkblue,
+                            fontSize = 12.sp,
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier
+                                .clickable {
+                                }
+                        )
+                    }
+                }
+
                 Spacer(
                     modifier = Modifier
                         .height(0.dp)
@@ -651,7 +706,7 @@ fun Login_dialog(
                     blue_Button(
                         modifier = Modifier,
                         width_fraction = 0.5f,
-                        button_text = "Login",
+                        button_text = "Continue",
                         font_Family = fontInter
                     )
                 }

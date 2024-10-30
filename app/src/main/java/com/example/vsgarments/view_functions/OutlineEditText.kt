@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 
@@ -52,7 +51,6 @@ fun number_editText(
             color = textcolorblue
         ) },
         modifier = Modifier
-
     )
 }
 
