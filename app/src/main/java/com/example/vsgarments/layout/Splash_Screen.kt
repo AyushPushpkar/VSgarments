@@ -1,4 +1,8 @@
 package com.example.vsgarments.layout
+
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,12 +37,29 @@ fun Splash_Screen(
     modifier: Modifier ,
     navController: NavController
 ){
-    // Trigger navigation after a delay
+
     LaunchedEffect(Unit) {
-        delay(3000) // 3 seconds delay
+        delay(3000)
         navController.navigate(Screen.Profile_Screen.route) {
-            popUpTo(Screen.Splash_Screen.route) { inclusive = true } // Optional: removes Splash from back stack
+            popUpTo(Screen.Splash_Screen.route) { inclusive = true } // removes Splash from back stack
         }
+    }
+
+    var heightstate by remember {
+        mutableFloatStateOf(0f)
+    }
+
+    val height by animateFloatAsState(
+        targetValue = heightstate ,
+        tween(
+            durationMillis = 1950 ,
+            delayMillis = 50 ,
+            easing = FastOutSlowInEasing
+        )
+    )
+
+    LaunchedEffect(Unit) {
+        heightstate = 0.8f
     }
 
     Box (
@@ -52,11 +75,14 @@ fun Splash_Screen(
             ),
     ){
         Box(modifier = Modifier
-            .fillMaxHeight(0.80f)
+            .fillMaxHeight(.8f)
             .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ){
-            Image(painter = painterResource(id = R.drawable.white_logo),
+            Image(
+                modifier = Modifier
+                    .fillMaxHeight(height),
+                painter = painterResource(id = R.drawable.white_logo),
                 contentDescription = "Aryan")
         }
         Box(modifier = Modifier
