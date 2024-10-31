@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -16,18 +17,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontKalnia
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.splashlightblue
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun Splash_Screen(
-    modifier: Modifier
+    modifier: Modifier ,
+    navController: NavController
 ){
+    // Trigger navigation after a delay
+    LaunchedEffect(Unit) {
+        delay(3000) // 3 seconds delay
+        navController.navigate(Screen.Profile_Screen.route) {
+            popUpTo(Screen.Splash_Screen.route) { inclusive = true } // Optional: removes Splash from back stack
+        }
+    }
+
     Box (
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(

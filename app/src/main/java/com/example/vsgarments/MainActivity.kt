@@ -28,13 +28,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             VSgarmentsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    EditProfileScreen(modifier = Modifier.padding(innerPadding))
-//                    Splash_Screen(modifier = Modifier.padding(innerPadding))
 //                    Signup_Screen(modifier = Modifier.padding(innerPadding))
 //                    HomeScreen(modifier = Modifier.padding(innerPadding))
-//                    LoginScreen(modifier = Modifier.padding(innerPadding))
-//                    Profile_Screen(modifier = Modifier.padding(innerPadding))
-//                    Settings_Screen(modifier = Modifier.padding(innerPadding))
                     App_Navigation(modifier = Modifier.padding(innerPadding))
                 }
             }

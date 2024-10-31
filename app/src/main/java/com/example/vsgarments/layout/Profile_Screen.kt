@@ -302,7 +302,8 @@ fun Profile_Screen(
             Help_address(
                 icon = painterResource(id = R.drawable.edit_pen),
                 icon_des = "Help icon",
-                text = "Help"
+                text = "Help" ,
+                onClick = {}
             )
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -310,14 +311,18 @@ fun Profile_Screen(
             Help_address(
                 icon = painterResource(id = R.drawable.edit_pen),
                 icon_des = "address icon",
-                text = "Address"
+                text = "Address"  ,
+                onClick = {}
             )
             Spacer(modifier = Modifier.height(2.dp))
 
             Help_address(
                 icon = painterResource(id = R.drawable.edit_pen),
                 icon_des = "Settings icon",
-                text = "Settings"
+                text = "Settings" ,
+                onClick = {
+                    navController.navigate(Screen.Settings_Screen.route)
+                }
             )
             Spacer(modifier = Modifier.height(7.dp))
 
@@ -495,6 +500,7 @@ fun Help_address(
     icon: Painter,
     icon_des: String,
     text: String,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -535,6 +541,7 @@ fun Help_address(
                 .size(16.dp)
         ) {
             Image(
+                modifier = Modifier.clickable(onClick = onClick) ,
                 imageVector = Icons.Default.PlayArrow,
                 contentDescription = "enter icon" ,
                 colorFilter = ColorFilter.lighting(add = textcolorgrey , multiply = textcolorgrey)
