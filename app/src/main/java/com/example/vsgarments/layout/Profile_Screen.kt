@@ -424,6 +424,7 @@ fun Profile_Screen(
         }
 
         Login_dialog(
+            navController = navController,
             initiallyOpened = initiallyOpened,
             onDismissRequest = { initiallyOpened = false }
         )
@@ -544,6 +545,7 @@ fun Help_address(
 
 @Composable
 fun Login_dialog(
+    navController: NavController,
     modifier: Modifier = Modifier,
     initiallyOpened: Boolean,
     onDismissRequest: () -> Unit,
@@ -618,43 +620,11 @@ fun Login_dialog(
                     fontWeight = FontWeight.Medium
                 )
 
-                var isEmail by remember { mutableStateOf(false) }
-
-                Column{
-                    if (isEmail) {
-                        char_editText(
-                            hint = "Email id",
-                            font_Family = fontInter
-                        )
-                    } else {
-                        number_editText(
-                            hint = "Mobile Number",
-                            char_no = 10,
-                            font_Family = fontInter
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .clickable {
-                                    isEmail = !isEmail
-                                },
-                            text = if (isEmail) "Use Mobile number" else "Use Email-id",
-                            color = textcolorblue,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
-                }
+                number_editText(
+                    hint = "Mobile Number",
+                    char_no = 10,
+                    font_Family = fontInter
+                )
 
                 Column {
                     Row {
@@ -711,7 +681,10 @@ fun Login_dialog(
                         modifier = Modifier,
                         width_fraction = 0.5f,
                         button_text = "Continue",
-                        font_Family = fontInter
+                        font_Family = fontInter ,
+                        onClick = {
+                            navController.navigate(Screen.Login_Screen.route)
+                        }
                     )
                 }
 

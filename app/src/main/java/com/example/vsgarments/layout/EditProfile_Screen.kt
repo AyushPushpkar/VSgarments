@@ -230,7 +230,8 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                             modifier = Modifier,
                             width_fraction = 0.4f,
                             button_text = "Save",
-                            font_Family = fontBaloo
+                            font_Family = fontBaloo ,
+                            onClick = {}
                         )
                     }
                 }

@@ -26,7 +26,8 @@ fun blue_Button(
     modifier: Modifier = Modifier,
     width_fraction: Float ,
     button_text : String ,
-    font_Family: FontFamily
+    font_Family: FontFamily ,
+    onClick: () -> Unit
 ) {
     Button(
         modifier = Modifier
@@ -43,7 +44,7 @@ fun blue_Button(
             defaultElevation = 10.dp,
             pressedElevation = 7.dp
         ),
-        onClick = { /*TODO*/ }
+        onClick = onClick
     ) {
         Box (
             modifier = Modifier

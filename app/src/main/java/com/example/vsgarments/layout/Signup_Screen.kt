@@ -78,7 +78,8 @@ fun Signup_Screen(
                 modifier = Modifier,
                 width_fraction = 0.5f,
                 button_text = "Sign Up",
-                font_Family = fontBaloo
+                font_Family = fontBaloo ,
+                onClick = {}
             )
         }
     }

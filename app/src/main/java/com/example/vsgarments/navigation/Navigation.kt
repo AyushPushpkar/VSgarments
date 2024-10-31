@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.vsgarments.layout.EditProfile_Screen
+import com.example.vsgarments.layout.LoginScreen
 import com.example.vsgarments.layout.Profile_Screen
 
 @Composable
@@ -15,13 +16,16 @@ fun App_Navigation(modifier: Modifier){
     
     NavHost(
         navController = navController,
-        startDestination = Screen.EditProfile_Screen.route
+        startDestination = Screen.Profile_Screen.route
     ) {
         composable(route = Screen.Profile_Screen.route){
             Profile_Screen(navController = navController , modifier = modifier)
         }
         composable(route = Screen.EditProfile_Screen.route) {
             EditProfile_Screen(navController = navController , modifier = modifier)
+        }
+        composable(route = Screen.Login_Screen.route) {
+            LoginScreen(navController= navController , modifier = modifier)
         }
     }
 }
