@@ -19,19 +19,19 @@ fun MainScreen(
 ){
     val bottomNavController = rememberNavController()
     Scaffold(
-        modifier = Modifier.fillMaxSize() ,
+        modifier = modifier.fillMaxSize() ,
         bottomBar = {
             BottomNavBar(
                 items = listOf(
                     Bottom_Nav_item(
-                        name = "Home" ,
-                        route = "home2" ,
-                        icon = Icons.Default.Home
-                    ) ,
-                    Bottom_Nav_item(
                         name = "Settings" ,
                         route = "home" ,
                         icon = Icons.Default.Person
+                    ) ,
+                    Bottom_Nav_item(
+                        name = "Home" ,
+                        route = "home2" ,
+                        icon = Icons.Default.Home
                     ) ,
                     Bottom_Nav_item(
                         name = "Chat" ,
@@ -47,7 +47,7 @@ fun MainScreen(
             )
         }
     ) { innerPadding ->
-        Bottom_Navigation(modifier = Modifier.padding(innerPadding) , navController = bottomNavController )
+        Bottom_Navigation(modifier = Modifier.padding(innerPadding) , bottomnavController = bottomNavController , navController = navController)
     }
 
 }

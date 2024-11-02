@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
@@ -21,6 +22,8 @@ import com.example.vsgarments.navigation.Bottom_Nav_item
 import com.example.vsgarments.navigation.Bottom_Navigation
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
+import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.view_functions.blue_Button
 
 @Composable
 fun HomeScreen(
@@ -29,11 +32,20 @@ fun HomeScreen(
 ){
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(appbackgroundcolor)
+            .background(appbackgroundcolor) ,
+        contentAlignment = Alignment.Center
     ){
         Text(text = "Home Screen")
+
+        blue_Button(
+            width_fraction = 0.8f,
+            button_text = "Profile",
+            font_Family = fontBaloo ,
+        ) {
+            navController.navigate(Screen.Profile_Screen.route)
+        }
     }
 
 }

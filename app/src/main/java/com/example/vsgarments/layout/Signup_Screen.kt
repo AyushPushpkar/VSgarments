@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vsgarments.R
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
@@ -30,10 +31,11 @@ import com.example.vsgarments.view_functions.char_editText
 @Composable
 fun Signup_Screen(
     modifier: Modifier,
+    navController: NavController
 ) {
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .background(Color.White)
             .padding(horizontal = 50.dp , vertical = 30.dp)
             .fillMaxSize(),

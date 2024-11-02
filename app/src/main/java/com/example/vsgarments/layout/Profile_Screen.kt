@@ -478,6 +478,9 @@ fun Profile_Screen(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "",
                         modifier = Modifier.size(30.dp)
+                            .clickable {
+                                navController.navigate(Screen.MainScreen.route)
+                            }
                     )
                     Spacer(modifier = Modifier.width(50.dp))
                     Text(
