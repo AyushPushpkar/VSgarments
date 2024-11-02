@@ -105,16 +105,13 @@ fun BottomNavBar(
     val backStackEntry = navController.currentBackStackEntryAsState()
     val middleIndex = items.size / 2
 
-    // Selected index and item based on navigation or fallback to middle index initially
     val selectedItem = items.find { it.route == backStackEntry.value?.destination?.route }
         ?: items[middleIndex]
     val selectedIndex = items.indexOf(selectedItem)
 
-    // Animatable for circle position and size, starting at middleIndex
     val circleOffset = remember { Animatable(middleIndex.toFloat()) }
     val circleSize = remember { Animatable(1.2f) }
 
-    // Update circle position and size based on selectedIndex
     LaunchedEffect(selectedIndex) {
         circleOffset.animateTo(
             selectedIndex.toFloat(),
@@ -167,7 +164,6 @@ fun BottomNavBar(
                                 onItemClick(item)
                             }
                     ) {
-                        // Use AnimatedVisibility to fade out the selected icon
                         AnimatedVisibility(
                             visible = index != selectedIndex,
                             enter = fadeIn(),
@@ -185,8 +181,7 @@ fun BottomNavBar(
             }
         }
 
-        // Animated Circle for Selected Tab
-        val horizontalPadding = 16.dp // Adjust padding as needed
+        val horizontalPadding = 16.dp
         val screenWidth = LocalConfiguration.current.screenWidthDp.dp
         val tabWidth = (screenWidth - horizontalPadding * 2) / items.size
         val circleOffsetX = (circleOffset.value * tabWidth.value - tabWidth.value).dp
@@ -198,7 +193,7 @@ fun BottomNavBar(
                     x = circleOffsetX,
                     y = 0.dp
                 ) // Updated here
-                .size(60.dp * circleSize.value) // Control the size of the circle
+                .size(60.dp * circleSize.value)
                 .clip(CircleShape)
                 .background(
                     brush = Brush.radialGradient(
@@ -208,7 +203,7 @@ fun BottomNavBar(
                         )
                     )
                 )
-                .animateContentSize() // Automatically animate size changes
+//                .animateContentSize()
         ) {
             if (selectedIndex >= 0) {
                 Icon(
@@ -217,7 +212,7 @@ fun BottomNavBar(
                     tint = Color.White,
                     modifier = Modifier
                         .size(28.dp)
-                        .align(Alignment.Center) // Center the icon inside the circle
+                        .align(Alignment.Center)
                 )
             }
         }
