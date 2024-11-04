@@ -24,18 +24,18 @@ fun MainScreen(
             BottomNavBar(
                 items = listOf(
                     Bottom_Nav_item(
-                        name = "Settings" ,
-                        route = "home" ,
+                        name = "Category" ,
+                        route = "category" ,
                         icon = Icons.Default.Person
                     ) ,
                     Bottom_Nav_item(
                         name = "Home" ,
-                        route = "home2" ,
+                        route = "home" ,
                         icon = Icons.Default.Home
                     ) ,
                     Bottom_Nav_item(
-                        name = "Chat" ,
-                        route = "home3" ,
+                        name = "Order" ,
+                        route = "order" ,
                         icon = Icons.Default.ShoppingCart ,
                         badge = 12
                     )

@@ -32,9 +32,12 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import com.example.vsgarments.navigation.Screen
+import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.blue_Button
 
 @Composable
 fun Order_Screen(
@@ -42,73 +45,21 @@ fun Order_Screen(
     navController: NavController
 ){
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(appbackgroundcolor),
-        verticalArrangement = Arrangement.Top ,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ){
-        BoxWithSemiCircularCutout()
+        blue_Button(
+            width_fraction = 0.6f,
+            button_text = "Profile",
+            font_Family = fontBaloo,
+        ) {
+            navController.navigate(Screen.Profile_Screen.route)
+        }
     }
 }
 
-@Composable
-fun BoxWithSemiCircularCutout() {
-    Box(
-        modifier = Modifier
-            .height(150.dp) // Size of the box
-            .fillMaxWidth()
-            .drawBehind {
-                val semicircleDiameter = with(density) { 100.dp.toPx() }
-                val semicircleRadius = semicircleDiameter / 2
 
-                val path = Path()
 
-                // Start the path at the top-left corner of the cutout
-                path.moveTo(0f, semicircleRadius)
-
-                // Draw the left vertical line down to the bottom
-                path.lineTo(0f, size.height)
-
-                // Draw the bottom horizontal line across
-                path.lineTo(size.width, size.height)
-
-                // Draw the right vertical line up to the cutout level
-                path.lineTo(size.width, semicircleRadius)
-
-                // Move to the top edge of the semicircle
-                path.lineTo(size.width / 2 + semicircleRadius, semicircleRadius)
-
-                // Create the semicircular arc
-                path.arcTo(
-                    Rect(
-                        left = size.width / 2 - semicircleRadius,
-                        top = 0f,
-                        right = size.width / 2 + semicircleRadius,
-                        bottom = semicircleDiameter
-                    ),
-                    startAngleDegrees = 0f,
-                    sweepAngleDegrees = 180f,
-                    forceMoveTo = false
-                )
-
-                // Close the path to finish the shape
-                path.lineTo(0f, semicircleRadius)
-                path.close()
-
-                // Draw the path on the canvas
-                drawPath(
-                    path = path,
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            topbarlightblue,
-                            topbardarkblue
-                        )
-                    )
-                )
-            }
-    ) {
-        // Content of the box goes here
-    }
-}

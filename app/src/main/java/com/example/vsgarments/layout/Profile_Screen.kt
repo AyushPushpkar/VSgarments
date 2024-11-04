@@ -215,17 +215,16 @@ fun Profile_Screen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .width(130.dp),
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = tintGreen
                     ),
                     shape = RoundedCornerShape(15.dp),
                     contentPadding = PaddingValues(
-                        start = 22.dp,
-                        end = 32.dp,
-                        top = 12.dp,
-                        bottom = 12.dp
+                        horizontal = 20.dp ,
+                        vertical = 12.dp
                     ),
                     border = BorderStroke(
                         width = 2.dp,
@@ -251,7 +250,7 @@ fun Profile_Screen(
 
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "Order",
+                            text = "My Cart ",
                             fontSize = 17.sp,
                         )
 
