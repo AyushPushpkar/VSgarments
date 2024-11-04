@@ -27,25 +27,16 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -62,6 +53,7 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.BottomBarShape
 
 @Composable
 fun Bottom_Navigation(
@@ -72,21 +64,21 @@ fun Bottom_Navigation(
 
     NavHost(
         navController = bottomnavController,
-        startDestination = "home2"
+        startDestination = "home"
     ) {
-        composable(route = "home") {
-            HomeScreen(
+        composable(route = "category") {
+            Signup_Screen(
                 navController = navController,
                 modifier = modifier
             )
         }
-        composable(route = "home2") {
-            Signup_Screen(
+        composable(route = "home") {
+            HomeScreen(
                 modifier = modifier,
                 navController = navController
             )
         }
-        composable(route = "home3") {
+        composable(route = "order") {
             Order_Screen(
                 navController = navController,
                 modifier = modifier
@@ -112,6 +104,8 @@ fun BottomNavBar(
     val circleOffset = remember { Animatable(middleIndex.toFloat()) }
     val circleSize = remember { Animatable(1.2f) }
 
+    val cutoutCenterOffset = remember { Animatable(middleIndex.toFloat()) }
+
     LaunchedEffect(selectedIndex) {
         circleOffset.animateTo(
             selectedIndex.toFloat(),
@@ -122,12 +116,23 @@ fun BottomNavBar(
             animationSpec = tween(durationMillis = 300)
         )
     }
+    LaunchedEffect(selectedIndex) {
+        cutoutCenterOffset.animateTo(
+            selectedIndex.toFloat(),
+            animationSpec = tween(durationMillis = 300)
+        )
+    }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.2f)
+            .height(115.dp)
     ) {
+        val horizontalPadding = 16.dp
+        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+        val tabWidth = (screenWidth - horizontalPadding * 2) / items.size
+        val circleOffsetX = (circleOffset.value * tabWidth.value - tabWidth.value).dp
+
         Card(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -135,13 +140,17 @@ fun BottomNavBar(
             shape = RoundedCornerShape(
                 topStart = 10.dp,
                 topEnd = 10.dp
-            )
+            ),
+            colors = CardDefaults.cardColors(Color.Transparent)
         ) {
+            val density = LocalDensity.current.density
+            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.65f)
             Row(
                 modifier = Modifier
-                    .fillMaxHeight(0.4f)
+                    .height(60.dp)
                     .fillMaxWidth()
                     .background(
+                        shape = BottomBarShape(cutoutCenter = cutoutCenterPx),
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 topbarlightblue,
@@ -181,18 +190,10 @@ fun BottomNavBar(
             }
         }
 
-        val horizontalPadding = 16.dp
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-        val tabWidth = (screenWidth - horizontalPadding * 2) / items.size
-        val circleOffsetX = (circleOffset.value * tabWidth.value - tabWidth.value).dp
-
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(
-                    x = circleOffsetX,
-                    y = 0.dp
-                ) // Updated here
+                .offset(x = circleOffsetX, y = 0.dp)
                 .size(60.dp * circleSize.value)
                 .clip(CircleShape)
                 .background(
@@ -203,7 +204,7 @@ fun BottomNavBar(
                         )
                     )
                 )
-//                .animateContentSize()
+                .animateContentSize()
         ) {
             if (selectedIndex >= 0) {
                 Icon(
