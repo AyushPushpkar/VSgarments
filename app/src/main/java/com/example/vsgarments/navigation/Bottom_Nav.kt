@@ -3,6 +3,7 @@ package com.example.vsgarments.navigation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +57,11 @@ import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.BottomBarShape
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import com.example.vsgarments.layout.CartScreen
+import kotlinx.coroutines.async
+
 @Composable
 fun Bottom_Navigation(
     modifier: Modifier,
@@ -64,12 +71,12 @@ fun Bottom_Navigation(
 
     NavHost(
         navController = bottomnavController,
-        startDestination = "home"
+        startDestination = "category"
     ) {
         composable(route = "category") {
-            Signup_Screen(
-                navController = navController,
-                modifier = modifier
+            CartScreen(
+                modifier = modifier,
+                navController = navController
             )
         }
         composable(route = "home") {
@@ -94,6 +101,7 @@ fun BottomNavBar(
     modifier: Modifier = Modifier,
     onItemClick: (Bottom_Nav_item) -> Unit,
 ) {
+
     val backStackEntry = navController.currentBackStackEntryAsState()
     val middleIndex = items.size / 2
 
@@ -102,25 +110,21 @@ fun BottomNavBar(
     val selectedIndex = items.indexOf(selectedItem)
 
     val circleOffset = remember { Animatable(middleIndex.toFloat()) }
-    val circleSize = remember { Animatable(1.2f) }
-
     val cutoutCenterOffset = remember { Animatable(middleIndex.toFloat()) }
 
     LaunchedEffect(selectedIndex) {
-        circleOffset.animateTo(
-            selectedIndex.toFloat(),
-            animationSpec = tween(durationMillis = 300)
-        )
-        circleSize.animateTo(
-            1.2f,
-            animationSpec = tween(durationMillis = 300)
-        )
-    }
-    LaunchedEffect(selectedIndex) {
-        cutoutCenterOffset.animateTo(
-            selectedIndex.toFloat(),
-            animationSpec = tween(durationMillis = 300)
-        )
+        async {
+            circleOffset.animateTo(
+                selectedIndex.toFloat(),
+                animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing)
+            )
+        }
+        async {
+            cutoutCenterOffset.animateTo(
+                selectedIndex.toFloat(),
+                animationSpec = tween(durationMillis = 500 , easing = LinearOutSlowInEasing)
+            )
+        }
     }
 
     Box(
@@ -163,7 +167,6 @@ fun BottomNavBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items.forEachIndexed { index, item ->
-
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
@@ -193,8 +196,11 @@ fun BottomNavBar(
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(x = circleOffsetX, y = 0.dp)
-                .size(60.dp * circleSize.value)
+                .offset(
+                    x = circleOffsetX,
+                    y = 0.dp
+                )
+                .size(60.dp * 1.2f)
                 .clip(CircleShape)
                 .background(
                     brush = Brush.radialGradient(
@@ -219,4 +225,3 @@ fun BottomNavBar(
         }
     }
 }
-

@@ -39,7 +39,7 @@ fun Splash_Screen(
 ){
 
     LaunchedEffect(Unit) {
-        delay(3000)
+        delay(30)
         navController.navigate(Screen.MainScreen.route) {
             popUpTo(Screen.Splash_Screen.route) { inclusive = true } // removes Splash from back stack
         }

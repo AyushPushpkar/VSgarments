@@ -24,25 +24,29 @@ fun MainScreen(
             BottomNavBar(
                 items = listOf(
                     Bottom_Nav_item(
-                        name = "Category" ,
-                        route = "category" ,
-                        icon = Icons.Default.Person
-                    ) ,
-                    Bottom_Nav_item(
                         name = "Home" ,
                         route = "home" ,
                         icon = Icons.Default.Home
+                    ) ,
+                    Bottom_Nav_item(
+                        name = "Category" ,
+                        route = "category" ,
+                        icon = Icons.Default.Person
                     ) ,
                     Bottom_Nav_item(
                         name = "Order" ,
                         route = "order" ,
                         icon = Icons.Default.ShoppingCart ,
                         badge = 12
-                    )
+                    ) ,
+
                 ),
                 navController = bottomNavController ,
                 onItemClick = {
-                    bottomNavController.navigate(it.route)
+                    bottomNavController.navigate(it.route){
+                        popUpTo(bottomNavController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

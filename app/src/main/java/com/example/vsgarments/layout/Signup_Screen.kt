@@ -2,6 +2,7 @@ package com.example.vsgarments.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.textcolorgrey
@@ -35,7 +37,7 @@ fun Signup_Screen(
 ) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
             .padding(horizontal = 50.dp , vertical = 30.dp)
             .fillMaxSize(),
@@ -47,7 +49,11 @@ fun Signup_Screen(
         Image(
             painter = painterResource(id = R.drawable.back_arrow),
             contentDescription = "",
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .clickable {
+                    navController.navigate(Screen.MainScreen.route)
+                }
         )
 
         Spacer(
