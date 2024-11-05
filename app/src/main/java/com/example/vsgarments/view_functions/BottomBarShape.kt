@@ -1,12 +1,10 @@
 package com.example.vsgarments.view_functions
 
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
@@ -22,9 +20,11 @@ class BottomBarShape(
         val width = size.width
         val height = size.height
 
-        fun withDensity(value: Float): Float {
-            return with(density) { value.dp.toPx() }
-        }
+        val extraSpace = with(density) { 40.dp.toPx() }
+        val cutoutOffset20 = with(density) { 20.dp.toPx() }
+        val cutoutOffset5 = with(density) { 5.dp.toPx() }
+        val cutoutOffset15 = with(density) { 15.dp.toPx() }
+        val cutoutOffset60 = with(density) { 60.dp.toPx() }
 
         val path = Path()
 
@@ -35,24 +35,24 @@ class BottomBarShape(
 
         val cutoutPosition = cutoutCenter.coerceIn(sidelength, width - sidelength)
 
-        path.lineTo(x = cutoutPosition + sidelength + withDensity(40f), y = withDensity(0f))
-
+        // Draw the cutout path with precomputed values
+        path.lineTo(x = cutoutPosition + sidelength + extraSpace, y = 0f)
         path.cubicTo(
-            x1 = cutoutPosition + sidelength + withDensity(20f), y1 = withDensity(0f),
-            x2 = cutoutPosition + sidelength + withDensity(5f), y2 = withDensity(0f),
-            x3 = cutoutPosition + sidelength, y3 = withDensity(15f)
+            x1 = cutoutPosition + sidelength + cutoutOffset20, y1 = 0f,
+            x2 = cutoutPosition + sidelength + cutoutOffset5, y2 = 0f,
+            x3 = cutoutPosition + sidelength, y3 = cutoutOffset15
         )
 
         path.cubicTo(
-            x1 = cutoutPosition + sidelength - withDensity(20f), y1 = withDensity(60f),
-            x2 = cutoutPosition - sidelength + withDensity(20f), y2 = withDensity(60f),
-            x3 = cutoutPosition - sidelength, y3 = withDensity(15f)
+            x1 = cutoutPosition + sidelength - cutoutOffset20, y1 = cutoutOffset60,
+            x2 = cutoutPosition - sidelength + cutoutOffset20, y2 = cutoutOffset60,
+            x3 = cutoutPosition - sidelength, y3 = cutoutOffset15
         )
 
         path.cubicTo(
-            x1 = cutoutPosition - sidelength - withDensity(5f), y1 = withDensity(0f),
-            x2 = cutoutPosition - sidelength - withDensity(20f), y2 = withDensity(0f),
-            x3 = cutoutPosition - sidelength - withDensity(40f), y3 = withDensity(0f)
+            x1 = cutoutPosition - sidelength - cutoutOffset5, y1 = 0f,
+            x2 = cutoutPosition - sidelength - cutoutOffset20, y2 = 0f,
+            x3 = cutoutPosition - sidelength - extraSpace, y3 = 0f
         )
 
         path.lineTo(0f, 0f)
