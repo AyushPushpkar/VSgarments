@@ -35,7 +35,6 @@ class BottomBarShape(
 
         val cutoutPosition = cutoutCenter.coerceIn(sidelength, width - sidelength)
 
-        // Draw the cutout path with precomputed values
         path.lineTo(x = cutoutPosition + sidelength + extraSpace, y = 0f)
         path.cubicTo(
             x1 = cutoutPosition + sidelength + cutoutOffset20, y1 = 0f,

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,7 +50,7 @@ fun HomeScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(75.dp)
+                .height(100.dp)
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(
@@ -61,8 +62,8 @@ fun HomeScreen(
                     spotColor = Color.Black
                 ),
             shape = RoundedCornerShape(
-                bottomStart = 5.dp,
-                bottomEnd = 5.dp
+                bottomStart = 10.dp,
+                bottomEnd = 10.dp
             ),
             elevation = CardDefaults.cardElevation(10.dp),
         ) {
@@ -76,9 +77,6 @@ fun HomeScreen(
                                 topbarlightblue
                             )
                         )
-                    )
-                    .padding(
-                        start = 30.dp
                     ),
                 contentAlignment = Alignment.CenterStart
             ) {
@@ -104,6 +102,13 @@ fun HomeScreen(
                     )
                 }
 
+                Image(
+                    painter = painterResource(id = R.drawable.test_topback),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxSize() ,
+                    contentScale = ContentScale.FillWidth
+                )
             }
         }
     }

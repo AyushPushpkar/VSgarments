@@ -16,7 +16,7 @@ class BottomNavViewModel : ViewModel() {
     )
     val bottomNavItems: List<Bottom_Nav_item> = _bottomNavItems
 
-    private val _selectedRoute = MutableLiveData<String>("category")
+    private val _selectedRoute = MutableLiveData("home")
     val selectedRoute: LiveData<String> = _selectedRoute
 
     fun onItemClick(route: String) {

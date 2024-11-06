@@ -224,7 +224,7 @@ fun Profile_Screen(
                     shape = RoundedCornerShape(15.dp),
                     contentPadding = PaddingValues(
                         horizontal = 20.dp ,
-                        vertical = 12.dp
+                        vertical = 11.dp
                     ),
                     border = BorderStroke(
                         width = 2.dp,
@@ -240,7 +240,7 @@ fun Profile_Screen(
                         Box(
                             modifier = Modifier
                                 .background(tintGreen)
-                                .size(18.dp)
+                                .size(17.dp)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.edit_pen),
@@ -251,7 +251,7 @@ fun Profile_Screen(
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "My Cart ",
-                            fontSize = 17.sp,
+                            fontSize = 16.sp,
                         )
 
                     }
@@ -264,7 +264,7 @@ fun Profile_Screen(
                     ),
                     contentPadding = PaddingValues(
                         horizontal = 20.dp,
-                        vertical = 12.dp
+                        vertical = 11.dp
                     ),
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(
@@ -280,7 +280,7 @@ fun Profile_Screen(
                         Box(
                             modifier = Modifier
                                 .background(tintGreen)
-                                .size(18.dp)
+                                .size(17.dp)
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.edit_pen),
@@ -290,7 +290,7 @@ fun Profile_Screen(
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "Wishlist",
-                            fontSize = 17.sp,
+                            fontSize = 16.sp,
                         )
                     }
 

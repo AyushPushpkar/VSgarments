@@ -71,7 +71,7 @@ fun Bottom_Navigation(
 
     NavHost(
         navController = bottomnavController,
-        startDestination = "category"
+        startDestination = "home"
     ) {
         composable(route = "category") {
             CartScreen(
