@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,12 +22,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -36,93 +39,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vsgarments.R
-import com.example.vsgarments.fontBaloo
-import com.example.vsgarments.fontInter
+import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
+import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.lightblack
+import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.textdarkblue
+import com.example.vsgarments.ui.theme.tintGreen
+import com.example.vsgarments.ui.theme.topbardarkblue
+import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.AppTopBar
 
 
 @Composable
-fun CategoryScreen() {
-    Column(
+fun CategoryScreen(
+    navController: NavController ,
+    modifier: Modifier
+) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
-           .background(color = Color.Magenta)
+            .background(appbackgroundcolor)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight(.2f)
-                .fillMaxWidth()
-                .background(color = Color.Transparent)
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight(.5f)
-                        .offset(x = 25.dp)
-                        .padding(horizontal = 10.dp)
-                        .background(color = Color.Transparent, shape = RectangleShape),
-                         contentAlignment = Alignment.CenterStart
-                ){
-
-                    Row(modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically){
-                        Card(modifier = Modifier
-                            .fillMaxHeight(.5f)
-                            .offset(x = 40.dp)
-                            .clip(shape = CircleShape)
-                            .border(BorderStroke(0.dp, color = Color.Transparent), shape = CircleShape)) {
-                            Box(modifier = Modifier
-                                .padding(horizontal = 12.dp, vertical = 13.dp),
-                                contentAlignment = Alignment.BottomCenter) {
-                                Text(
-                                    text = "Aryan Kumar",
-                                    modifier = Modifier
-                                        .padding(start = 25.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Card(modifier = Modifier
-                        .size(70.dp)
-                        .clip(shape = CircleShape)
-                        .background(color = Color.Cyan)
-                        .border(BorderStroke(2.5.dp, color = Color.Cyan), shape = CircleShape)){
-
-                        Image(painter = painterResource(id = R.drawable.waddle_dees), contentDescription = "")
-                    }
-
-                }
-                Row(modifier = Modifier
-                    .fillMaxWidth()) {
-
-                }
-            }
-
-
-        }
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(topEnd = 15.dp , topStart = 15.dp)),
-            shape = RoundedCornerShape(
-                topEnd = 15.dp, topStart = 15.dp
-            )
-        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = appbackgroundcolor)
             ) {
+                Spacer(modifier = Modifier.height(155.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -136,6 +83,7 @@ fun CategoryScreen() {
                         color = textdarkblue
                     )
                 }
+                Spacer(modifier = Modifier.height(25.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -144,15 +92,16 @@ fun CategoryScreen() {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
-                            .fillMaxHeight(.45537f)
+                            .fillMaxHeight(.5f)
                     ) {
                         Box(
                             modifier = Modifier
                         ){
 
                             Image(
-                                painter = painterResource(id = R.drawable.bulk_order),
+                                painter = painterResource(id = R.drawable.topback),
                                 contentDescription = "",
+                                modifier = Modifier.fillMaxSize() ,
                                 contentScale = ContentScale.Crop
                             )
 
@@ -162,7 +111,8 @@ fun CategoryScreen() {
                                     .background(
                                         brush = Brush.horizontalGradient(
                                             colors = listOf(
-                                                lightblack,Color.Transparent
+                                                lightblack,
+                                                Color.Transparent
                                             )
                                         )
                                     )
@@ -171,7 +121,7 @@ fun CategoryScreen() {
                                 .fillMaxHeight(.5f),
                                 contentAlignment = Alignment.Center){
                                 Text(
-                                    text = "  Bulk \n  Order",
+                                    text = "  Bulk \n\n  Order",
                                     fontSize = 35.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     fontFamily = fontInter,
@@ -183,16 +133,17 @@ fun CategoryScreen() {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(.7f)
-                            .fillMaxHeight(.45537f)
+                            .fillMaxHeight(.5f)
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.hanger),
+                                painter = painterResource(id = R.drawable.topback),
                                 contentDescription = "",
-                                contentScale = ContentScale.Crop
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.FillHeight
                             )
 
                             Box(
@@ -201,7 +152,8 @@ fun CategoryScreen() {
                                     .background(
                                         brush = Brush.horizontalGradient(
                                             colors = listOf(
-                                                lightblack,Color.Transparent
+                                                lightblack,
+                                                Color.Transparent
                                             )
                                         )
                                     )
@@ -210,7 +162,7 @@ fun CategoryScreen() {
                             Box(modifier = Modifier
                                 .rotate(270f)
                                 .fillMaxHeight(.5f)
-                                .offset(y= (-10).dp),
+                                .offset(y = (-10).dp),
                                 contentAlignment = Alignment.CenterStart){
                                 Text(
                                     text = "Retail" ,
@@ -226,7 +178,7 @@ fun CategoryScreen() {
                 }
                 Spacer(
                     modifier = Modifier
-                        .height(21.dp)
+                        .height(30.dp)
                 )
 
                 Box(
@@ -237,15 +189,16 @@ fun CategoryScreen() {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(.90f)
-                            .fillMaxHeight(.4f)
+                            .fillMaxHeight(.5f)
                     ) {
 
 
                         Box(modifier = Modifier){
 
                             Image(
-                                painter = painterResource(id = R.drawable.custom),
+                                painter = painterResource(id = R.drawable.topback),
                                 contentDescription = "",
+                                modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
 
@@ -255,7 +208,8 @@ fun CategoryScreen() {
                                     .background(
                                         brush = Brush.horizontalGradient(
                                             colors = listOf(
-                                                lightblack,Color.Transparent
+                                                lightblack,
+                                                Color.Transparent
                                             )
                                         )
                                     )
@@ -277,7 +231,8 @@ fun CategoryScreen() {
                 }
 
             }
-        }
+
+        AppTopBar(navController = navController)
 
 
     }

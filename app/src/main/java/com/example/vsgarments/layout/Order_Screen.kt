@@ -37,6 +37,7 @@ import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.AppTopBar
 import com.example.vsgarments.view_functions.blue_Button
 
 @Composable
@@ -49,15 +50,8 @@ fun Order_Screen(
         modifier = Modifier
             .fillMaxSize()
             .background(appbackgroundcolor),
-        contentAlignment = Alignment.Center
     ){
-        blue_Button(
-            width_fraction = 0.6f,
-            button_text = "Profile",
-            font_Family = fontBaloo,
-        ) {
-            navController.navigate(Screen.Profile_Screen.route)
-        }
+        AppTopBar(navController = navController)
     }
 }
 

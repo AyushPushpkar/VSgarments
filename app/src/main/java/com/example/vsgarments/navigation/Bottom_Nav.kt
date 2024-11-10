@@ -60,6 +60,7 @@ import com.example.vsgarments.view_functions.BottomBarShape
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.vsgarments.layout.CartScreen
+import com.example.vsgarments.layout.CategoryScreen
 import kotlinx.coroutines.async
 
 @Composable
@@ -74,7 +75,7 @@ fun Bottom_Navigation(
         startDestination = "home"
     ) {
         composable(route = "category") {
-            CartScreen(
+            CategoryScreen(
                 modifier = modifier,
                 navController = navController
             )
@@ -130,7 +131,7 @@ fun BottomNavBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(115.dp)
+            .height(130.dp)
     ) {
         val horizontalPadding = 16.dp
         val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -148,10 +149,10 @@ fun BottomNavBar(
             colors = CardDefaults.cardColors(Color.Transparent)
         ) {
             val density = LocalDensity.current.density
-            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.625f)
+            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.62f)
             Row(
                 modifier = Modifier
-                    .height(60.dp)
+                    .height(70.dp)
                     .fillMaxWidth()
                     .background(
                         shape = BottomBarShape(cutoutCenter = cutoutCenterPx),
