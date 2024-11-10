@@ -1,17 +1,20 @@
 package com.example.vsgarments.layout
+
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -20,18 +23,47 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.vsgarments.R
-import com.example.vsgarments.fontKalnia
+import com.example.vsgarments.navigation.Screen
+import com.example.vsgarments.ui.theme.fontKalnia
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.splashlightblue
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun Splash_Screen(
-    modifier: Modifier
+    modifier: Modifier ,
+    navController: NavController
 ){
+
+    LaunchedEffect(Unit) {
+        delay(30)
+        navController.navigate(Screen.MainScreen.route) {
+            popUpTo(Screen.Splash_Screen.route) { inclusive = true } // removes Splash from back stack
+        }
+    }
+
+    var heightstate by remember {
+        mutableFloatStateOf(0f)
+    }
+
+    val height by animateFloatAsState(
+        targetValue = heightstate ,
+        tween(
+            durationMillis = 1950 ,
+            delayMillis = 50 ,
+            easing = FastOutSlowInEasing
+        )
+    )
+
+    LaunchedEffect(Unit) {
+        heightstate = 0.8f
+    }
+
     Box (
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
@@ -43,11 +75,14 @@ fun Splash_Screen(
             ),
     ){
         Box(modifier = Modifier
-            .fillMaxHeight(0.80f)
+            .fillMaxHeight(.8f)
             .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ){
-            Image(painter = painterResource(id = R.drawable.white_logo),
+            Image(
+                modifier = Modifier
+                    .fillMaxHeight(height),
+                painter = painterResource(id = R.drawable.white_logo),
                 contentDescription = "Aryan")
         }
         Box(modifier = Modifier
