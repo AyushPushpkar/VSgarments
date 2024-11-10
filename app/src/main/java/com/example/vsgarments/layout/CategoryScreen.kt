@@ -37,9 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vsgarments.R
-import com.example.vsgarments.fontBaloo
-import com.example.vsgarments.fontInter
 import com.example.vsgarments.ui.theme.appbackgroundcolor
+import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.lightblack
 import com.example.vsgarments.ui.theme.textdarkblue
 
