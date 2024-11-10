@@ -1,5 +1,6 @@
 package com.example.vsgarments.view_functions
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -52,7 +53,8 @@ fun number_editText(
             fontWeight = FontWeight.Normal,
             color = textcolorblue
         ) },
-        modifier = Modifier
+        modifier = Modifier.
+        fillMaxWidth()
     )
 }
 
@@ -85,6 +87,7 @@ fun char_editText(
             color = textcolorblue
         ) },
         modifier = Modifier
+            .fillMaxWidth()
 
     )
 }

@@ -422,8 +422,6 @@ fun Profile_Screen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(70.dp))
-
             }
         }
 
@@ -690,7 +688,7 @@ fun Login_dialog(
                         modifier = Modifier,
                         width_fraction = 0.5f,
                         button_text = "Continue",
-                        font_Family = fontInter ,
+                        font_Family = fontBaloo ,
                         onClick = {
                             navController.navigate(Screen.Login_Screen.route)
                         }

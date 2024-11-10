@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.vsgarments.R
 import com.example.vsgarments.navigation.Screen
+import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
@@ -150,7 +151,7 @@ fun LoginScreen(
                 modifier = Modifier,
                 width_fraction = 0.5f,
                 button_text = "Login",
-                font_Family = fontInter ,
+                font_Family = fontBaloo ,
                 onClick = {}
             )
         }

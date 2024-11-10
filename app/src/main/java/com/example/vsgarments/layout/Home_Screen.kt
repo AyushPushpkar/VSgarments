@@ -2,7 +2,9 @@ package com.example.vsgarments.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,13 +14,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -32,39 +37,46 @@ import com.example.vsgarments.R
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
+import com.example.vsgarments.ui.theme.splashdarkblue
+import com.example.vsgarments.ui.theme.splashlightblue
+import com.example.vsgarments.ui.theme.textcolorgrey
+import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.AppSearchBar
 import com.example.vsgarments.view_functions.blue_Button
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier ,
-    navController: NavController
-){
+    modifier: Modifier,
+    navController: NavController,
+) {
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(appbackgroundcolor)
-    ){
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .height(125.dp)
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
+                        bottomStart = 15.dp,
+                        bottomEnd = 15.dp
                     ),
                     clip = false,
                     ambientColor = Color.Black,
                     spotColor = Color.Black
                 ),
             shape = RoundedCornerShape(
-                bottomStart = 10.dp,
-                bottomEnd = 10.dp
+                bottomStart = 15.dp,
+                bottomEnd = 15.dp
             ),
+            colors = CardDefaults.cardColors(Color.Transparent),
             elevation = CardDefaults.cardElevation(10.dp),
         ) {
             Box(
@@ -77,40 +89,136 @@ fun HomeScreen(
                                 topbarlightblue
                             )
                         )
-                    ),
-                contentAlignment = Alignment.CenterStart
+                    )
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.topback),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.FillWidth
+                )
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(
+                            horizontal = 15.dp,
+                            vertical = 20.dp
+                        ),
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "",
-                        modifier = Modifier.size(30.dp)
+                    Box(
+                        modifier = Modifier
                             .clickable {
-                                navController.navigate(Screen.MainScreen.route)
-                            }
-                    )
-                    Spacer(modifier = Modifier.width(50.dp))
-                    Text(
-                        text = "Profile",
-                        fontSize = 23.sp,
-                        color = Color.Black,
-                        fontFamily = fontBaloo,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
+                                navController.navigate(Screen.EditProfile_Screen.route)
 
-                Image(
-                    painter = painterResource(id = R.drawable.test_topback),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxSize() ,
-                    contentScale = ContentScale.FillWidth
-                )
+                            },
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .height(36.dp)
+                                .clip(
+                                    shape = RoundedCornerShape(18.dp)
+                                )
+                                .background(tintGreen)
+                                .border(
+                                    width = 2.5f.dp,
+                                    color = Color(0xFFABE5FF),
+                                    shape = CircleShape
+                                )
+                                .padding(
+                                    start = 65.dp,
+                                    end = 10.dp
+                                ),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Text(
+                                text = "Pavitr Prabhakar",
+                                fontFamily = fontInter,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 11.sp,
+                                color = textcolorgrey
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(
+                                    shape = CircleShape
+                                )
+                                .border(
+                                    width = 2.5f.dp,
+                                    color = Color(0xFFABE5FF),
+                                    shape = CircleShape
+                                )
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.waddle_dees),
+                                contentDescription = "Your image description",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 15.dp),
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        Spacer(modifier = Modifier.width(15.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .width(20.dp)
+                                .padding(top = 20.dp)
+                                .background(tintGreen)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.edit_pen),
+                                contentDescription = "add account icon"
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(15.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .width(20.dp)
+                                .padding(top = 20.dp)
+                                .background(tintGreen)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.edit_pen),
+                                contentDescription = "add account icon"
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(15.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .width(20.dp)
+                                .padding(top = 20.dp)
+                                .background(tintGreen)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.edit_pen),
+                                contentDescription = "add account icon"
+                            )
+                        }
+                    }
+                }
             }
         }
     }
+
+    AppSearchBar()
 
 }

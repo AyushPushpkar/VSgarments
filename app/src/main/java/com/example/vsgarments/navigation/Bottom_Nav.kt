@@ -148,7 +148,7 @@ fun BottomNavBar(
             colors = CardDefaults.cardColors(Color.Transparent)
         ) {
             val density = LocalDensity.current.density
-            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.65f)
+            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.625f)
             Row(
                 modifier = Modifier
                     .height(60.dp)
