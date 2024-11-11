@@ -83,7 +83,7 @@ fun CategoryScreen(
                         color = textdarkblue
                     )
                 }
-                Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -92,14 +92,15 @@ fun CategoryScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
-                            .fillMaxHeight(.5f)
+                            .fillMaxHeight(.5f) ,
+                        elevation = CardDefaults.cardElevation(8.dp)
                     ) {
                         Box(
                             modifier = Modifier
                         ){
 
                             Image(
-                                painter = painterResource(id = R.drawable.topback),
+                                painter = painterResource(id = R.drawable.bulk_order),
                                 contentDescription = "",
                                 modifier = Modifier.fillMaxSize() ,
                                 contentScale = ContentScale.Crop
@@ -133,7 +134,8 @@ fun CategoryScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(.7f)
-                            .fillMaxHeight(.5f)
+                            .fillMaxHeight(.5f) ,
+                        elevation = CardDefaults.cardElevation(8.dp)
                     ) {
                         Box(
                             modifier = Modifier
@@ -143,7 +145,7 @@ fun CategoryScreen(
                                 painter = painterResource(id = R.drawable.topback),
                                 contentDescription = "",
                                 modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.FillHeight
+                                contentScale = ContentScale.Crop
                             )
 
                             Box(
@@ -189,14 +191,15 @@ fun CategoryScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(.90f)
-                            .fillMaxHeight(.5f)
+                            .fillMaxHeight(.5f) ,
+                        elevation = CardDefaults.cardElevation(8.dp)
                     ) {
 
 
                         Box(modifier = Modifier){
 
                             Image(
-                                painter = painterResource(id = R.drawable.topback),
+                                painter = painterResource(id = R.drawable.custom),
                                 contentDescription = "",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
