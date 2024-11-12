@@ -93,7 +93,7 @@ fun CategoryScreen(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
                             .fillMaxHeight(.5f) ,
-                        elevation = CardDefaults.cardElevation(8.dp)
+                        elevation = CardDefaults.cardElevation(5.dp)
                     ) {
                         Box(
                             modifier = Modifier
@@ -135,7 +135,7 @@ fun CategoryScreen(
                         modifier = Modifier
                             .fillMaxWidth(.7f)
                             .fillMaxHeight(.5f) ,
-                        elevation = CardDefaults.cardElevation(8.dp)
+                        elevation = CardDefaults.cardElevation(5.dp)
                     ) {
                         Box(
                             modifier = Modifier
@@ -192,7 +192,7 @@ fun CategoryScreen(
                         modifier = Modifier
                             .fillMaxWidth(.90f)
                             .fillMaxHeight(.5f) ,
-                        elevation = CardDefaults.cardElevation(8.dp)
+                        elevation = CardDefaults.cardElevation(5.dp)
                     ) {
 
 

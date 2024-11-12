@@ -7,30 +7,27 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,22 +42,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.vsgarments.layout.EditProfile_Screen
+import com.example.vsgarments.layout.CategoryScreen
 import com.example.vsgarments.layout.HomeScreen
-import com.example.vsgarments.layout.LoginScreen
 import com.example.vsgarments.layout.Order_Screen
-import com.example.vsgarments.layout.Profile_Screen
-import com.example.vsgarments.layout.Signup_Screen
-import com.example.vsgarments.ui.theme.tintGreen
-import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.BottomBarShape
-
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
-import com.example.vsgarments.layout.CartScreen
-import com.example.vsgarments.layout.CategoryScreen
 import kotlinx.coroutines.async
 
 @Composable
@@ -149,7 +136,8 @@ fun BottomNavBar(
             colors = CardDefaults.cardColors(Color.Transparent)
         ) {
             val density = LocalDensity.current.density
-            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.62f)
+            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.625f)
+
             Row(
                 modifier = Modifier
                     .height(70.dp)
@@ -172,15 +160,23 @@ fun BottomNavBar(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier
+                            .clip(RoundedCornerShape(14.dp))
+                            .width(56.dp)
                             .weight(1f)
-                            .clickable {
-                                onItemClick(item)
-                            }
+                            .clickable(
+                                onClick = { onItemClick(item) },
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            )
                     ) {
                         AnimatedVisibility(
                             visible = index != selectedIndex,
-                            enter = fadeIn(),
-                            exit = fadeOut()
+                            enter = fadeIn(
+                                animationSpec = tween(durationMillis = 30)
+                            ),
+                            exit = fadeOut(
+                                animationSpec = tween(durationMillis = 30)
+                            )
                         ) {
                             Icon(
                                 imageVector = item.icon,
@@ -194,7 +190,7 @@ fun BottomNavBar(
             }
         }
 
-        Box(
+        Card (
             modifier = Modifier
                 .align(Alignment.Center)
                 .offset(
@@ -203,25 +199,33 @@ fun BottomNavBar(
                 )
                 .size(60.dp * 1.2f)
                 .clip(CircleShape)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            topbarlightblue,
-                            topbardarkblue
+                .animateContentSize() ,
+            elevation = CardDefaults.cardElevation(10.dp)
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                topbarlightblue,
+                                topbardarkblue
+                            )
                         )
                     )
-                )
-                .animateContentSize()
-        ) {
-            if (selectedIndex >= 0) {
-                Icon(
-                    imageVector = selectedItem.icon,
-                    contentDescription = selectedItem.name,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.Center)
-                )
+                    .animateContentSize()
+            ) {
+                if (selectedIndex >= 0) {
+                    Icon(
+                        imageVector = selectedItem.icon,
+                        contentDescription = selectedItem.name,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .align(Alignment.Center)
+                    )
+                }
             }
         }
     }
