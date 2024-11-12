@@ -14,6 +14,8 @@ import com.example.vsgarments.layout.Profile_Screen
 import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
+import com.example.vsgarments.layout.Wishlist
+import com.example.vsgarments.layout.imageList
 
 @Composable
 fun App_Navigation(modifier: Modifier ){
@@ -49,6 +51,10 @@ fun App_Navigation(modifier: Modifier ){
         composable(route = Screen.Signup_Screen.route){
             Signup_Screen(navController = navController , modifier = modifier)
         }
+        composable(route = Screen.Wishlist.route){
+            Wishlist(navController = navController , modifier = modifier, imageList = imageList)
+        }
+
 
     }
 }
