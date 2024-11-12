@@ -39,12 +39,6 @@ fun App_Navigation(modifier: Modifier ){
         composable(route = Screen.Splash_Screen.route) {
             Splash_Screen(modifier = modifier , navController = navController)
         }
-//        composable(route = Screen.Home_Screen.route){
-//            HomeScreen( modifier = modifier , navController = navController )
-//        }
-//        composable(route = Screen.Order_Screen.route){
-//            Order_Screen(navController = navController , modifier = modifier)
-//        }
         composable(route = Screen.MainScreen.route){
             MainScreen(navController = navController , modifier = modifier)
         }
@@ -52,7 +46,7 @@ fun App_Navigation(modifier: Modifier ){
             Signup_Screen(navController = navController , modifier = modifier)
         }
         composable(route = Screen.Wishlist.route){
-            Wishlist(navController = navController , modifier = modifier, imageList = imageList)
+            Wishlist(navController = navController , modifier = modifier)
         }
 
 
