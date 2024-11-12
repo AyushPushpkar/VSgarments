@@ -8,10 +8,10 @@
       <SelectionState runConfigName="EditProfileActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="EditProfileActivity (1)">
+      <SelectionState runConfigName="preview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="MainActivity">
+      <SelectionState runConfigName="prview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

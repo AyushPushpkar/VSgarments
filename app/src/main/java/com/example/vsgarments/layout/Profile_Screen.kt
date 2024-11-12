@@ -217,7 +217,9 @@ fun Profile_Screen(
                 Button(
                     modifier = Modifier
                         .width(130.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        navController.navigate(Screen.Wishlist.route)
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = tintGreen
                     ),
