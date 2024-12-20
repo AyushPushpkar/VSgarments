@@ -155,47 +155,48 @@ fun AppTopBar(
                         .padding(end = 15.dp),
                     horizontalArrangement = Arrangement.End,
                 ) {
-                    Spacer(modifier = Modifier.width(15.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Box(
                         modifier = Modifier
-                            .height(40.dp)
-                            .width(20.dp)
-                            .padding(top = 20.dp)
-                            .background(tintGreen)
+                            .height(60.dp)
+                            .width(40.dp)
+                            .padding(top = 15.dp)
+                            .background(color = Color.Transparent)
+
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.edit_pen),
+                            painter = painterResource(id = R.drawable.heart),
+                            contentDescription = "add account icon",
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .height(60.dp)
+                            .width(40.dp)
+                            .padding(top = 13.dp)
+                            .background(color = Color.Transparent)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bitcoin_icons_cart_filled),
                             contentDescription = "add account icon"
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(15.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Box(
                         modifier = Modifier
-                            .height(40.dp)
-                            .width(20.dp)
-                            .padding(top = 20.dp)
-                            .background(tintGreen)
+                            .height(60.dp)
+                            .width(40.dp)
+                            .padding(top = 15.dp)
+                            .background(color = Color.Transparent)
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.edit_pen),
-                            contentDescription = "add account icon"
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(15.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .width(20.dp)
-                            .padding(top = 20.dp)
-                            .background(tintGreen)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.edit_pen),
+                            painter = painterResource(id = R.drawable.bell),
                             contentDescription = "add account icon"
                         )
                     }

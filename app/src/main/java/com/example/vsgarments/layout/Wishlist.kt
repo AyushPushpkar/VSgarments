@@ -333,7 +333,7 @@ fun percentLess(
     return percentage
 }
 
-val imageList = listOf(
+private val imageList = listOf(
     ImageList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ),
     ImageList(R.drawable.bulk_order, 300, 400 , "Aryan" , 4.0f ),
     ImageList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ),
@@ -356,7 +356,7 @@ val imageList = listOf(
     ImageList(R.drawable.custom, 300,400 , "Aryan" , 3.5f),
     )
 
-data class ImageList(
+private data class ImageList(
     val imageresId: Int,
     val currprice: Int,
     val ogprice : Int ,

@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.vsgarments.layout.Wishlist
-import com.example.vsgarments.layout.imageList
 import com.example.vsgarments.navigation.App_Navigation
 import com.example.vsgarments.navigation.BottomNavBar
 import com.example.vsgarments.navigation.Bottom_Nav_item
