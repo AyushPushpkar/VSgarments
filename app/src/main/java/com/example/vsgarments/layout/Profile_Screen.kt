@@ -218,7 +218,7 @@ fun Profile_Screen(
                     modifier = Modifier
                         .width(130.dp),
                     onClick = {
-
+                        navController.navigate(Screen.CartScreen.route)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = tintGreen
