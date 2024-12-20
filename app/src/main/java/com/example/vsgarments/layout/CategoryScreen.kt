@@ -142,7 +142,7 @@ fun CategoryScreen(
                                 .fillMaxSize()
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.topback),
+                                painter = painterResource(id = R.drawable.retail),
                                 contentDescription = "",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop

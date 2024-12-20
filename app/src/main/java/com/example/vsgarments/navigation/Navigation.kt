@@ -15,7 +15,7 @@ import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
-import com.example.vsgarments.layout.imageList
+
 
 @Composable
 fun App_Navigation(modifier: Modifier ){
