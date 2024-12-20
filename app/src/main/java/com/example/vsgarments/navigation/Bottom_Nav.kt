@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -36,15 +37,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.vsgarments.layout.CategoryScreen
 import com.example.vsgarments.layout.HomeScreen
 import com.example.vsgarments.layout.Order_Screen
+import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.BottomBarShape
@@ -92,6 +96,7 @@ fun BottomNavBar(
 
     val backStackEntry = navController.currentBackStackEntryAsState()
     val middleIndex = items.size / 2
+    val lastIndex = items.size - 1
 
     val selectedItem = items.find { it.route == backStackEntry.value?.destination?.route }
         ?: items[middleIndex]
@@ -123,6 +128,7 @@ fun BottomNavBar(
         val horizontalPadding = 16.dp
         val screenWidth = LocalConfiguration.current.screenWidthDp.dp
         val tabWidth = (screenWidth - horizontalPadding * 2) / items.size
+        val width = (screenWidth )/2
         val circleOffsetX = (circleOffset.value * tabWidth.value - tabWidth.value).dp
 
         Card(
@@ -136,8 +142,7 @@ fun BottomNavBar(
             colors = CardDefaults.cardColors(Color.Transparent)
         ) {
             val density = LocalDensity.current.density
-            val cutoutCenterPx = (tabWidth.value * density) * (cutoutCenterOffset.value + 0.625f)
-
+            val cutoutCenterPx = (tabWidth.value* density)* (cutoutCenterOffset.value + 0.62f)
             Row(
                 modifier = Modifier
                     .height(70.dp)
@@ -230,3 +235,5 @@ fun BottomNavBar(
         }
     }
 }
+
+
