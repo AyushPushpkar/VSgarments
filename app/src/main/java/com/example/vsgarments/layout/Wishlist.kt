@@ -69,7 +69,7 @@ fun Wishlist(
     modifier: Modifier,
     navController: NavController,
 ) {
-    val scrollview = rememberScrollState()
+
     Column(
         modifier = modifier
             .background(appbackgroundcolor)
