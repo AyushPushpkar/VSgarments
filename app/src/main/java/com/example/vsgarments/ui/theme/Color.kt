@@ -31,6 +31,6 @@ val rateboxGreen = Color(0xFF57F989)
 val lightblack = Color(0xE6151515)
 val textdarkblue = Color(0xFF0056A6)
 
-val iconcolor = Color(0xFF7AFFFF)
+val grey = Color(0xFF525252)
 
 
