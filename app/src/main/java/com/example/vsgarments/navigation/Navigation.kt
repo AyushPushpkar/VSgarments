@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.vsgarments.layout.CartScreen
 import com.example.vsgarments.layout.EditProfile_Screen
 import com.example.vsgarments.layout.HomeScreen
 import com.example.vsgarments.layout.LoginScreen
@@ -47,6 +48,9 @@ fun App_Navigation(modifier: Modifier ){
         }
         composable(route = Screen.Wishlist.route){
             Wishlist(navController = navController , modifier = modifier)
+        }
+        composable(route = Screen.CartScreen.route){
+            CartScreen(navController = navController , modifier = modifier)
         }
 
 

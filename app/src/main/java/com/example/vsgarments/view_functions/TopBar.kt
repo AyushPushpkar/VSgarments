@@ -166,6 +166,11 @@ fun AppTopBar(
 
                     ) {
                         Image(
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate(Screen.Wishlist.route)
+
+                                },
                             painter = painterResource(id = R.drawable.heart),
                             contentDescription = "add account icon",
                         )
@@ -181,6 +186,11 @@ fun AppTopBar(
                             .background(color = Color.Transparent)
                     ) {
                         Image(
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate(Screen.CartScreen.route)
+
+                                },
                             painter = painterResource(id = R.drawable.bitcoin_icons_cart_filled),
                             contentDescription = "add account icon"
                         )
@@ -196,6 +206,11 @@ fun AppTopBar(
                             .background(color = Color.Transparent)
                     ) {
                         Image(
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate(Screen.Profile_Screen.route)
+
+                                },
                             painter = painterResource(id = R.drawable.bell),
                             contentDescription = "add account icon"
                         )
