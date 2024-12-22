@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,67 +68,76 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                    itemsIndexed(imageItem.chunked(2)) { _, pair ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            pair.forEach { imageitem ->
-                                val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
-                                Column(modifier = Modifier
-                                    .width(screenwidth/2)
-                                    .padding(10.dp)) {
+                itemsIndexed(imageItem.chunked(2)) { _, pair ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        pair.forEach { imageitem ->
+                            val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
+                            Column(
+                                modifier = Modifier
+                                    .width(screenwidth / 2)
+                                    .padding(10.dp)
+                            ) {
 
-                                    Image(
-                                        painter = painterResource(id = imageitem.imageresId1),
-                                        contentDescription = "",
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .align(alignment = Alignment.CenterHorizontally)
-                                            .fillMaxWidth()
-                                            .height(278.dp)
-                                            .clip(shape = RoundedCornerShape(10))
+                                Image(
+                                    painter = painterResource(id = imageitem.imageresId1),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .align(alignment = Alignment.CenterHorizontally)
+                                        .fillMaxWidth()
+                                        .height(278.dp)
+                                        .clip(shape = RoundedCornerShape(10))
 
-                                    )
-                                    Row {
-                                        Column {
-                                            Text(
-                                                text = imageitem.Cname,
-                                                color = lightblack,
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.SemiBold,
-                                                fontFamily = fontInter
-                                            )
-                                            Text(text = "Aryan",
-                                                color = grey,
-                                                fontSize = 14.sp,
-                                                fontFamily = fontInter,
-                                                maxLines = 1,
-                                                modifier = Modifier
-                                                    .offset(y = -(5).dp))
+                                )
+                                Row {
+                                    Column {
+                                        Text(
+                                            text = imageitem.Cname,
+                                            color = lightblack,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontFamily = fontInter
+                                        )
+                                        Text(
+                                            text = "Aryan",
+                                            color = grey,
+                                            fontSize = 14.sp,
+                                            fontFamily = fontInter,
+                                            maxLines = 1,
+                                            modifier = Modifier
+                                                .offset(y = -(5).dp)
+                                        )
 
-                                            Text(text = "${imageitem.rate}",
-                                                color = lightblack,
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.SemiBold,
-                                                fontFamily = fontInter,
-                                                maxLines = 1,
-                                                modifier = Modifier
-                                                    .offset(y = -(7).dp))
-                                        }
-                                        //Image(painter = painterResource(id = R.drawable.heart), contentDescription = "")
-                                        Heartcheckbox()
+                                        Text(
+                                            text = "${imageitem.rate}",
+                                            color = lightblack,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontFamily = fontInter,
+                                            maxLines = 1,
+                                            modifier = Modifier
+                                                .offset(y = -(7).dp)
+                                        )
                                     }
+                                    //Image(painter = painterResource(id = R.drawable.heart), contentDescription = "")
+                                    Heartcheckbox()
                                 }
                             }
                         }
+                    }
 
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(75.dp).background(appbackgroundcolor))
                 }
             }
         }
     }
-        }
-
+}
 
 
 private val imageItem = listOf(
@@ -242,29 +252,32 @@ private val imageItem = listOf(
     ),
 
     )
+
 private data class ImageList1(
     val imageresId1: Int,
     val rate: Int,
     val name: String,
-    val Cname:String
+    val Cname: String,
 )
 
 @Composable
-fun Heartcheckbox(modifier :Modifier = Modifier){
+fun Heartcheckbox(modifier: Modifier = Modifier) {
     var ischecked by remember { mutableStateOf(false) }
 
-    val satate by animateFloatAsState(
-        targetValue = if(ischecked) 1.2f else 1f,
+    val state by animateFloatAsState(
+        targetValue = if (ischecked) 1.2f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
     )
-    val tintcolor = if(ischecked) Color.Red else Color.Gray
+    val tintcolor = if (ischecked) Color.Red else Color.Gray
 
     Column(modifier = Modifier
         .clickable { ischecked = !ischecked }
-        .scale(satate)) {
-         Image(painter = painterResource(R.drawable.heart),
-             contentDescription = "Heart",
-             colorFilter = ColorFilter.tint(tintcolor))
+        .scale(state)) {
+        Image(
+            painter = painterResource(R.drawable.heart),
+            contentDescription = "Heart",
+            colorFilter = ColorFilter.tint(tintcolor)
+        )
     }
 
 }
