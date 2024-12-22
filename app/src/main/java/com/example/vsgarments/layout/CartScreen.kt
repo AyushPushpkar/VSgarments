@@ -1,5 +1,6 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
 import android.widget.Spinner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -58,6 +59,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -77,7 +79,9 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
+import com.example.vsgarments.view_functions.ToggleableInfo
 import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.number_editText
 
@@ -86,6 +90,8 @@ fun CartScreen(
     modifier: Modifier,
     navController: NavController,
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -107,6 +113,12 @@ fun CartScreen(
             ) {
 
                 item {
+
+                    val savedOption = getSavedAddressOption(context)
+                    val address = savedOption.address
+                    val pincode = savedOption.pincode
+                    val name = savedOption.name
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -134,8 +146,9 @@ fun CartScreen(
                                 modifier = Modifier
                                     .fillMaxWidth(0.7f)
                             ) {
+
                                 Text(
-                                    text = "Deliver to : ",
+                                    text = if (!pincode.isNullOrEmpty()) "$name , $pincode" else name ?: "Name",
                                     color = Color(0xFF6188A0),
                                     fontFamily = fontInter,
                                     fontWeight = FontWeight.Medium,
@@ -143,8 +156,9 @@ fun CartScreen(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
+
                                 Text(
-                                    text = "Address : cbjksdbsdc  sjbsdjcnsdaj jabcsddncalc sdjbbadjv ",
+                                    text = address ?: "Address : ",
                                     color = Color(0xFF6188A0),
                                     fontFamily = fontInter,
                                     fontWeight = FontWeight.Medium,
@@ -162,7 +176,7 @@ fun CartScreen(
                                     modifier = Modifier
                                         .width(90.dp),
                                     onClick = {
-                                        navController.navigate(Screen.CartScreen.route)
+                                       initiallyOpened = true
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = tintGreen
@@ -231,14 +245,7 @@ fun CartScreen(
 
                                     Spacer(modifier = Modifier.height(5.dp))
 
-                                    val quantity = listOf(
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "44"
-                                    )
+                                    val quantity = listOf("1", "2", "3", "4", "5", "44")
                                     var selectedqty by rememberSaveable {
                                         mutableStateOf("")
                                     }
@@ -658,10 +665,11 @@ fun CartScreen(
                 }
             }
         }
-        Login_dialog(
+        Address_dialog(
             navController = navController,
             initiallyOpened = initiallyOpened,
-            onDismissRequest = { initiallyOpened = false }
+            onDismissRequest = { initiallyOpened = false } ,
+            context = context
         )
 
         Card(
@@ -750,6 +758,7 @@ fun Address_dialog(
     modifier: Modifier = Modifier,
     initiallyOpened: Boolean,
     onDismissRequest: () -> Unit,
+    context: Context
 ) {
 
     AnimatedVisibility(
@@ -796,9 +805,9 @@ fun Address_dialog(
                 Row {
                     Text(
                         modifier = Modifier.weight(9f),
-                        text = "Log in for best experience ",
+                        text = "Select Delivery Address ",
                         color = textcolorgrey,
-                        fontSize = 16.sp,
+                        fontSize = 20.sp,
                         fontFamily = fontInter,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -821,75 +830,64 @@ fun Address_dialog(
                     fontWeight = FontWeight.Medium
                 )
 
-                number_editText(
-                    hint = "Mobile Number",
-                    char_no = 10,
-                    font_Family = fontInter
+                val options = listOf(
+                    ToggleableInfo(false, "Option 1" , "fjba b w wvwqiv twv w4j jt 34j joov  ", "800054"),
+                    ToggleableInfo(false, "Option 2" , "gvrvnwc uy wrrg uurg g3412t3fvhrhrq ug 2ug httw t" , "844545"),
+                    ToggleableInfo(false, "Option 3" , "ayushs khhrv wtt hti hyi jt jyoyu" , "235224")
                 )
 
-                Column {
-                    Row {
-                        Text(
-                            text = "By continuing, you agree to our",
-                            color = textcolorgrey,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                        )
-                        Text(
-                            text = " Terms of Use",
-                            color = topbardarkblue,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier
-                                .clickable {
-                                }
-                        )
-                    }
-                    Row {
-                        Text(
-                            text = "& ",
-                            color = textcolorgrey,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                        )
-                        Text(
-                            text = "Privacy Policy",
-                            color = topbardarkblue,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier
-                                .clickable {
-                                }
-                        )
-                    }
-                }
+                val savedOption = getSavedAddressOption(context)
+                val defaultOption = options.find {
+                    it.addresstext == savedOption.address &&
+                            it.nametext == savedOption.name &&
+                            it.pincode == savedOption.pincode
+                } ?: options.firstOrNull()
 
-                Spacer(
-                    modifier = Modifier
-                        .height(0.dp)
+                var selectedOption by remember { mutableStateOf(defaultOption) }
+
+
+                RadioButtons(
+                    options = options,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selected ->
+                        selectedOption = selected
+                        saveAddressOption(
+                            context,
+                            selected.addresstext,
+                            selected.nametext,
+                            selected.pincode
+                        )
+                        onDismissRequest()
+                    }
                 )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                )
-                {
-                    blue_Button(
-                        modifier = Modifier,
-                        width_fraction = 0.5f,
-                        button_text = "Continue",
-                        font_Family = fontBaloo ,
-                        onClick = {
-                            navController.navigate(Screen.Login_Screen.route)
-                        }
-                    )
-                }
+
 
             }
         }
     }
 }
+
+fun saveAddressOption(context: Context, addressText: String , nameText : String , pincode : String) {
+    val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
+    with(sharedPreferences.edit()) {
+        putString("AddressOption", addressText)
+        putString("NameOption", nameText)
+        putString("PincodeOption", pincode)
+        apply()
+    }
+}
+
+data class AddressInfo(
+    val address: String?,
+    val name: String?,
+    val pincode: String?
+)
+
+fun getSavedAddressOption(context: Context): AddressInfo {
+    val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
+    val address = sharedPreferences.getString("AddressOption", null)
+    val name = sharedPreferences.getString("NameOption", null)
+    val pincode = sharedPreferences.getString("PincodeOption", null)
+    return AddressInfo(address, name, pincode)
+}
+
