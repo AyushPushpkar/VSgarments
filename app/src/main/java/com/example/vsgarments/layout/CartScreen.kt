@@ -84,12 +84,15 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.ImageItem
 import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
 import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.number_editText
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 
 @Composable
 fun CartScreen(
@@ -114,7 +117,7 @@ fun CartScreen(
         var totalOgPrice by remember { mutableDoubleStateOf(0.0) }
         val coroutineScope = rememberCoroutineScope()
 
-        fun recalculateTotal(cartList: List<CartList>, selectedQuantities: Map<Int, Int>) {
+        fun recalculateTotal(cartList: List<ImageItem>, selectedQuantities: Map<Int, Int>) {
             coroutineScope.launch {
                 totalCurrentPrice = 0.0
                 totalOgPrice = 0.0
@@ -129,7 +132,7 @@ fun CartScreen(
 
         LaunchedEffect(Unit) {
             cartList.forEachIndexed { index, item ->
-                selectedQuantities[index] = item.minItemQty
+                selectedQuantities[index] = item.minQuantity
             }
             recalculateTotal(cartList, selectedQuantities)
         }
@@ -249,8 +252,8 @@ fun CartScreen(
                             .background(Color.White)
                     ) {
 
-                        val minQty = item.minItemQty
-                        val maxQty = item.maxItemQty
+                        val minQty = item.minQuantity
+                        val maxQty = item.maxQuantity
 
                         Column(
                             modifier = Modifier
@@ -267,6 +270,8 @@ fun CartScreen(
                                     .fillMaxWidth()
                             ) {
                                 Column {
+                                    val imageItemJson = Gson().toJson(item)
+                                    val encodedImageItem = URLEncoder.encode(imageItemJson, "UTF-8")
                                     Image(
                                         painter = painterResource(id = item.imageresId),
                                         contentDescription = null,
@@ -275,7 +280,10 @@ fun CartScreen(
                                             .height(115.dp)
                                             .clip(
                                                 RoundedCornerShape(10.dp)
-                                            ),
+                                            )
+                                            .clickable {
+                                                navController.navigate("${Screen.DisplayScreen.route}/$encodedImageItem")
+                                            },
                                         contentScale = ContentScale.Crop
                                     )
 
@@ -805,21 +813,11 @@ fun CartScreen(
 }
 
 private val cartList = listOf(
-    CartList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ,1 , 20),
-    CartList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f ,4 , 444) ,
-    CartList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f ,1 , 5),
-    CartList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f, 2, 50) ,
-    CartList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f ,1, 10),
-)
-
-private data class CartList(
-    val imageresId: Int,
-    val currprice: Int,
-    val ogprice: Int,
-    val name: String,
-    val rating: Float,
-    val minItemQty : Int ,
-    val maxItemQty : Int
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan"  , "The VS Garments" , 4.0f ,1 , 20),
+    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" , "The VS Garments",4.5f ,4 , 444) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" , "The VS Garments",3.5f ,1 , 5),
+    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" , "The VS Garments",4.5f, 2, 50) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" , "The VS Garments",3.5f ,1, 10),
 )
 
 @Composable

@@ -149,27 +149,28 @@ fun HomeScreen(
 }
 
 private val imageList = listOf(
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" , "The VS Garments" ,4.0f ),
-    ImageItem(R.drawable.custom, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.retail, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f) ,
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
-    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
-)
+    ImageItem(R.drawable.retail, 300, 400 ,"Aryan" , "The VS Garments" ,4.0f ,1,10),
+    ImageItem(R.drawable.bulk_order, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ,1,10),
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ,1,10),
+    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f,1,10) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.retail, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
+
+    )
 
 
 @Composable

@@ -6,5 +6,7 @@ data class ImageItem(
     val ogprice : Int ,
     val name: String,
     val CompanyName : String ,
-    val rating : Float
+    val rating : Float ,
+    val minQuantity : Int ,
+    val maxQuantity : Int ,
 )
