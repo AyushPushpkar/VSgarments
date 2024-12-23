@@ -62,6 +62,7 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.ImageItem
 import com.example.vsgarments.view_functions.blue_Button
 
 @Composable
@@ -334,35 +335,28 @@ fun percentLess(
 }
 
 private val imageList = listOf(
-    ImageList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ),
-    ImageList(R.drawable.bulk_order, 300, 400 , "Aryan" , 4.0f ),
-    ImageList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ),
-    ImageList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f) ,
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f) ,
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300,400 , "Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300,400 , "Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300,400 , "Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    ImageList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f) ,
-    ImageList(R.drawable.custom, 300,400 , "Aryan" , 3.5f),
-    ImageList(R.drawable.custom, 300,400 , "Aryan" , 3.5f),
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" , "The VS Garments" ,4.0f ),
+    ImageItem(R.drawable.bulk_order, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ),
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ),
+    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f) ,
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
     )
 
-private data class ImageList(
-    val imageresId: Int,
-    val currprice: Int,
-    val ogprice : Int ,
-    val name: String,
-    val rating : Float
-)
 
 
 

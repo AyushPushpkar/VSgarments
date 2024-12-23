@@ -46,7 +46,10 @@ import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.ui.theme.lightblack
+import com.example.vsgarments.ui.theme.tintGreen
+import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
+import com.example.vsgarments.view_functions.ImageItem
 
 @Composable
 fun HomeScreen(
@@ -68,7 +71,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                itemsIndexed(imageItem.chunked(2)) { _, pair ->
+                itemsIndexed(imageList.chunked(2)) { _, pair ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
@@ -82,7 +85,7 @@ fun HomeScreen(
                             ) {
 
                                 Image(
-                                    painter = painterResource(id = imageitem.imageresId1),
+                                    painter = painterResource(id = imageitem.imageresId),
                                     contentDescription = "",
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
@@ -95,7 +98,7 @@ fun HomeScreen(
                                 Row {
                                     Column {
                                         Text(
-                                            text = imageitem.Cname,
+                                            text = imageitem.CompanyName,
                                             color = lightblack,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
@@ -112,7 +115,7 @@ fun HomeScreen(
                                         )
 
                                         Text(
-                                            text = "${imageitem.rate}",
+                                            text = "${imageitem.currprice}",
                                             color = lightblack,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
@@ -122,7 +125,6 @@ fun HomeScreen(
                                                 .offset(y = -(7).dp)
                                         )
                                     }
-                                    //Image(painter = painterResource(id = R.drawable.heart), contentDescription = "")
                                     Heartcheckbox()
                                 }
                             }
@@ -139,126 +141,29 @@ fun HomeScreen(
     }
 }
 
-
-private val imageItem = listOf(
-    ImageList1(
-        R.drawable.bulk_order,
-        300,
-        "Aryan",
-        "The VS Garments"
-    ),
-    ImageList1(
-        R.drawable.bulk_order,
-        300,
-        "Aryan",
-        "The VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "The VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "The VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "The VS Garments"
-    ),
-    ImageList1(
-        R.drawable.custom,
-        300,
-        "Aryan",
-        "The VS Garments"
-    ),
-
-    )
-
-private data class ImageList1(
-    val imageresId1: Int,
-    val rate: Int,
-    val name: String,
-    val Cname: String,
+private val imageList = listOf(
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" , "The VS Garments" ,4.0f ),
+    ImageItem(R.drawable.custom, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ),
+    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ),
+    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f) ,
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.retail, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f) ,
+    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
+    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f),
 )
+
 
 @Composable
 fun Heartcheckbox(modifier: Modifier = Modifier) {
@@ -266,9 +171,10 @@ fun Heartcheckbox(modifier: Modifier = Modifier) {
 
     val state by animateFloatAsState(
         targetValue = if (ischecked) 1.2f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = ""
     )
-    val tintcolor = if (ischecked) Color.Red else Color.Gray
+    val tintcolor = if (ischecked) topbardarkblue else Color.Gray
 
     Column(modifier = Modifier
         .clickable { ischecked = !ischecked }
