@@ -50,6 +50,8 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
 import com.example.vsgarments.view_functions.ImageItem
+import com.google.gson.Gson
+import java.net.URLEncoder
 
 @Composable
 fun HomeScreen(
@@ -83,6 +85,8 @@ fun HomeScreen(
                                     .width(screenwidth / 2)
                                     .padding(10.dp)
                             ) {
+                                val imageItemJson = Gson().toJson(imageitem)
+                                val encodedImageItem = URLEncoder.encode(imageItemJson, "UTF-8")
 
                                 Image(
                                     painter = painterResource(id = imageitem.imageresId),
@@ -93,6 +97,9 @@ fun HomeScreen(
                                         .fillMaxWidth()
                                         .height(278.dp)
                                         .clip(shape = RoundedCornerShape(10))
+                                        .clickable {
+                                            navController.navigate("${Screen.DisplayScreen.route}/$encodedImageItem")
+                                        }
 
                                 )
                                 Row {
