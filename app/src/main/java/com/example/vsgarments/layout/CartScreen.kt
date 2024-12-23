@@ -1,5 +1,7 @@
 package com.example.vsgarments.layout
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.widget.Spinner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -40,9 +42,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,6 +56,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -58,6 +64,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -77,15 +84,20 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
+import com.example.vsgarments.view_functions.ToggleableInfo
 import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.number_editText
+import kotlinx.coroutines.launch
 
 @Composable
 fun CartScreen(
     modifier: Modifier,
     navController: NavController,
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -94,6 +106,32 @@ fun CartScreen(
 
         var initiallyOpened by remember {
             mutableStateOf(false)
+        }
+
+        val selectedQuantities = remember { mutableMapOf<Int, Int>() }
+
+        var totalCurrentPrice by remember { mutableDoubleStateOf(0.0) }
+        var totalOgPrice by remember { mutableDoubleStateOf(0.0) }
+        val coroutineScope = rememberCoroutineScope()
+
+        fun recalculateTotal(cartList: List<CartList>, selectedQuantities: Map<Int, Int>) {
+            coroutineScope.launch {
+                totalCurrentPrice = 0.0
+                totalOgPrice = 0.0
+
+                selectedQuantities.forEach { (key, selectedQty) ->
+                    val item = cartList[key]
+                    totalCurrentPrice += item.currprice * selectedQty
+                    totalOgPrice += item.ogprice * selectedQty
+                }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            cartList.forEachIndexed { index, item ->
+                selectedQuantities[index] = item.minItemQty
+            }
+            recalculateTotal(cartList, selectedQuantities)
         }
 
         Column(
@@ -107,6 +145,12 @@ fun CartScreen(
             ) {
 
                 item {
+
+                    val savedOption = getSavedAddressOption(context)
+                    val address = savedOption.address
+                    val pincode = savedOption.pincode
+                    val name = savedOption.name
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -134,8 +178,9 @@ fun CartScreen(
                                 modifier = Modifier
                                     .fillMaxWidth(0.7f)
                             ) {
+
                                 Text(
-                                    text = "Deliver to : ",
+                                    text = if (!pincode.isNullOrEmpty()) "$name , $pincode" else name ?: "Name",
                                     color = Color(0xFF6188A0),
                                     fontFamily = fontInter,
                                     fontWeight = FontWeight.Medium,
@@ -143,8 +188,9 @@ fun CartScreen(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
+
                                 Text(
-                                    text = "Address : cbjksdbsdc  sjbsdjcnsdaj jabcsddncalc sdjbbadjv ",
+                                    text = address ?: "Address : ",
                                     color = Color(0xFF6188A0),
                                     fontFamily = fontInter,
                                     fontWeight = FontWeight.Medium,
@@ -162,7 +208,7 @@ fun CartScreen(
                                     modifier = Modifier
                                         .width(90.dp),
                                     onClick = {
-                                        navController.navigate(Screen.CartScreen.route)
+                                       initiallyOpened = true
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = tintGreen
@@ -190,18 +236,22 @@ fun CartScreen(
                     Spacer(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(2.dp)
+                            .height(3.dp)
                             .background(appbackgroundcolor)
                     )
                 }
 
 
-                itemsIndexed(cartList) { _, item ->
+                itemsIndexed(cartList) { index, item ->
 
                     Column(
                         modifier = Modifier
                             .background(Color.White)
                     ) {
+
+                        val minQty = item.minItemQty
+                        val maxQty = item.maxItemQty
+
                         Column(
                             modifier = Modifier
                                 .background(Color.White)
@@ -221,8 +271,8 @@ fun CartScreen(
                                         painter = painterResource(id = item.imageresId),
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .width(110.dp)
-                                            .height(110.dp)
+                                            .width(115.dp)
+                                            .height(115.dp)
                                             .clip(
                                                 RoundedCornerShape(10.dp)
                                             ),
@@ -231,23 +281,24 @@ fun CartScreen(
 
                                     Spacer(modifier = Modifier.height(5.dp))
 
-                                    val quantity = listOf(
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "44"
-                                    )
+                                    val quantity = (minQty..maxQty).map { it.toString() }
+
                                     var selectedqty by rememberSaveable {
-                                        mutableStateOf("")
+                                        mutableStateOf("$minQty")
                                     }
                                     Spinner(
                                         modifier = Modifier,
                                         itemList = quantity,
                                         selectedItem = selectedqty,
-                                        onItemSelected = { selectedqty = it },
-                                        spinnerwidth = 110.dp
+                                        onItemSelected = {
+                                            selectedqty = it
+                                            selectedQuantities[index] = it.toInt()
+                                            recalculateTotal(
+                                                cartList,
+                                                selectedQuantities
+                                            )
+                                        },
+                                        spinnerwidth = 115.dp
                                     )
 
                                 }
@@ -364,9 +415,40 @@ fun CartScreen(
                                     maxLines = 1
                                 )
                             }
+                        }
 
+                        if(minQty != 1){
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(
+                                modifier = Modifier
+                                    .height(2.dp)
+                                    .padding(horizontal = 20.dp)
+                                    .fillMaxWidth()
+                                    .background(appbackgroundcolor)
+                            )
+
+                            Spacer(modifier = Modifier.height(15.dp))
+
+                            Box (
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .background(tintGreen)
+                                    .padding(horizontal = 25.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                Text(
+                                    text = "Minimum Order Quantity :  $minQty " ,
+                                    color = textcolorgrey
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(15.dp))
+                        }
+                        else{
                             Spacer(modifier = Modifier.height(20.dp))
                         }
+                        
                         Row {
                             Box(
                                 modifier = Modifier
@@ -538,7 +620,7 @@ fun CartScreen(
 
                         Box(
                             modifier = Modifier
-                                .height(3.dp)
+                                .height(4.dp)
                                 .fillMaxWidth()
                                 .background(appbackgroundcolor)
                         )
@@ -611,20 +693,13 @@ fun CartScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
 
-                        var totalogprice = 0
-                        var totalcurrprice = 0
-                        cartList.forEach {
-                            totalogprice += it.ogprice
-                            totalcurrprice += it.currprice
-                        }
-
                         Column() {
                             Text(
                                 modifier = Modifier.padding(
                                     horizontal = 5.dp,
                                     vertical = 2.dp
                                 ),
-                                text = "${totalogprice}$",
+                                text = "${totalOgPrice}$",
                                 color = tintGrey,
                                 textDecoration = TextDecoration.LineThrough,
                                 fontSize = 12.sp
@@ -634,7 +709,7 @@ fun CartScreen(
                                     horizontal = 5.dp,
                                     vertical = 2.dp
                                 ),
-                                text = "${totalcurrprice}$",
+                                text = "${totalCurrentPrice}$",
                                 color = textcolorblue,
                                 fontSize = 20.sp
                             )
@@ -658,10 +733,11 @@ fun CartScreen(
                 }
             }
         }
-        Login_dialog(
+        Address_dialog(
             navController = navController,
             initiallyOpened = initiallyOpened,
-            onDismissRequest = { initiallyOpened = false }
+            onDismissRequest = { initiallyOpened = false } ,
+            context = context
         )
 
         Card(
@@ -710,7 +786,7 @@ fun CartScreen(
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
-                                navController.navigate(Screen.MainScreen.route)
+                                navController.navigate(Screen.Profile_Screen.route)
                             }
                     )
                     Spacer(modifier = Modifier.width(50.dp))
@@ -729,11 +805,11 @@ fun CartScreen(
 }
 
 private val cartList = listOf(
-    CartList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ),
-    CartList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f) ,
-    CartList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
-    CartList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f) ,
-    CartList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f),
+    CartList(R.drawable.bulk_order, 300, 400 ,"Aryan" , 4.0f ,1 , 20),
+    CartList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f ,4 , 444) ,
+    CartList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f ,1 , 5),
+    CartList(R.drawable.test , 300 , 400 ,"Aryan" , 4.5f, 2, 50) ,
+    CartList(R.drawable.custom, 300, 400 ,"Aryan" , 3.5f ,1, 10),
 )
 
 private data class CartList(
@@ -742,6 +818,8 @@ private data class CartList(
     val ogprice: Int,
     val name: String,
     val rating: Float,
+    val minItemQty : Int ,
+    val maxItemQty : Int
 )
 
 @Composable
@@ -750,6 +828,7 @@ fun Address_dialog(
     modifier: Modifier = Modifier,
     initiallyOpened: Boolean,
     onDismissRequest: () -> Unit,
+    context: Context
 ) {
 
     AnimatedVisibility(
@@ -796,9 +875,9 @@ fun Address_dialog(
                 Row {
                     Text(
                         modifier = Modifier.weight(9f),
-                        text = "Log in for best experience ",
+                        text = "Select Delivery Address ",
                         color = textcolorgrey,
-                        fontSize = 16.sp,
+                        fontSize = 20.sp,
                         fontFamily = fontInter,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -813,83 +892,66 @@ fun Address_dialog(
                     )
                 }
 
-                Text(
-                    text = "Enter your phone number to continue",
-                    color = textcolorgrey,
-                    fontSize = 12.sp,
-                    fontFamily = fontInter,
-                    fontWeight = FontWeight.Medium
+                Spacer(modifier = Modifier.height(20.dp))
+
+                val options = listOf(
+                    ToggleableInfo(false, "Option 1" , "fjba b w wvwqiv twv w4j jt 34j joov  ", "800054"),
+                    ToggleableInfo(false, "Option 2" , "gvrvnwc uy wrrg uurg g3412t3fvhrhrq ug 2ug httw t" , "844545"),
+                    ToggleableInfo(false, "Option 3" , "ayushs khhrv wtt hti hyi jt jyoyu" , "235224")
                 )
 
-                number_editText(
-                    hint = "Mobile Number",
-                    char_no = 10,
-                    font_Family = fontInter
-                )
+                val savedOption = getSavedAddressOption(context)
+                val defaultOption = options.find {
+                    it.addresstext == savedOption.address &&
+                            it.nametext == savedOption.name &&
+                            it.pincode == savedOption.pincode
+                } ?: options.firstOrNull()
 
-                Column {
-                    Row {
-                        Text(
-                            text = "By continuing, you agree to our",
-                            color = textcolorgrey,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
+                var selectedOption by remember { mutableStateOf(defaultOption) }
+
+
+                RadioButtons(
+                    options = options,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selected ->
+                        selectedOption = selected
+                        saveAddressOption(
+                            context,
+                            selected.addresstext,
+                            selected.nametext,
+                            selected.pincode
                         )
-                        Text(
-                            text = " Terms of Use",
-                            color = topbardarkblue,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier
-                                .clickable {
-                                }
-                        )
+                        onDismissRequest()
                     }
-                    Row {
-                        Text(
-                            text = "& ",
-                            color = textcolorgrey,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                        )
-                        Text(
-                            text = "Privacy Policy",
-                            color = topbardarkblue,
-                            fontSize = 12.sp,
-                            fontFamily = fontInter,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier
-                                .clickable {
-                                }
-                        )
-                    }
-                }
+                )
 
-                Spacer(
-                    modifier = Modifier
-                        .height(0.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                )
-                {
-                    blue_Button(
-                        modifier = Modifier,
-                        width_fraction = 0.5f,
-                        button_text = "Continue",
-                        font_Family = fontBaloo ,
-                        onClick = {
-                            navController.navigate(Screen.Login_Screen.route)
-                        }
-                    )
-                }
 
             }
         }
     }
 }
+
+fun saveAddressOption(context: Context, addressText: String , nameText : String , pincode : String) {
+    val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
+    with(sharedPreferences.edit()) {
+        putString("AddressOption", addressText)
+        putString("NameOption", nameText)
+        putString("PincodeOption", pincode)
+        apply()
+    }
+}
+
+data class AddressInfo(
+    val address: String?,
+    val name: String?,
+    val pincode: String?
+)
+
+fun getSavedAddressOption(context: Context): AddressInfo {
+    val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
+    val address = sharedPreferences.getString("AddressOption", null)
+    val name = sharedPreferences.getString("NameOption", null)
+    val pincode = sharedPreferences.getString("PincodeOption", null)
+    return AddressInfo(address, name, pincode)
+}
+

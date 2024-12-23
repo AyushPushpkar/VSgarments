@@ -7,8 +7,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -46,11 +50,10 @@ fun Spinner(
     initiallyOpened : Boolean = false ,
     spinnerwidth : Dp
 ){
-    var tempselectedItem = selectedItem
+    var tempSelectedItem = selectedItem
 
-    if(tempselectedItem.isBlank() && itemList.isNotEmpty()){
+    if(tempSelectedItem.isBlank() && itemList.isNotEmpty()){
         onItemSelected(itemList[0])
-        tempselectedItem = itemList[0]
     }
     var expanded by rememberSaveable() {
         mutableStateOf(initiallyOpened)
@@ -69,7 +72,7 @@ fun Spinner(
             enabled = itemList.isNotEmpty()
         ) {
             Text(
-                text = "Qty : $tempselectedItem",
+                text = "Qty : $tempSelectedItem",
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 modifier = Modifier
@@ -89,9 +92,12 @@ fun Spinner(
                     .scale(
                         1f,
                         if (expanded) -1f else 1f
-                    ) // mirror the icon
+                    )
             )
         }
+
+        val itemHeight = 50.dp
+        val menuHeight = itemHeight * 4
 
         DropdownMenu(
             expanded = expanded,
@@ -100,18 +106,28 @@ fun Spinner(
                 .background(Color.White)
                 .align(Alignment.TopStart)
                 .width(spinnerwidth)
+                .heightIn(max = menuHeight)
         ) {
-            itemList.forEach {
-                DropdownMenuItem(
-                    text = {
-                        Text(text = it)
-                    },
-                    onClick = {
-                        expanded = false
-                        onItemSelected(it)
-                    },
-                    colors = MenuDefaults.itemColors(textcolorgrey),
-                )
+            LazyColumn(
+                modifier = Modifier
+                    .width(spinnerwidth)
+                    .height(200.dp) ,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(itemList.size) { index ->
+                    DropdownMenuItem(
+                        onClick = {
+                            expanded = false
+                            onItemSelected(itemList[index])
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding =  PaddingValues(horizontal = 30.dp) ,
+                        text = {
+                            Text(text = itemList[index])
+                        } ,
+                        colors = MenuDefaults.itemColors(textcolorgrey),
+                    )
+                }
             }
         }
     }

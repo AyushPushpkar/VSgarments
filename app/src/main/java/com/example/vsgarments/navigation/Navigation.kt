@@ -3,10 +3,13 @@ package com.example.vsgarments.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.vsgarments.layout.CartScreen
+import com.example.vsgarments.layout.DisplayScreen
 import com.example.vsgarments.layout.EditProfile_Screen
 import com.example.vsgarments.layout.HomeScreen
 import com.example.vsgarments.layout.LoginScreen
@@ -16,6 +19,9 @@ import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
+import com.example.vsgarments.view_functions.ImageItem
+import com.google.gson.Gson
+import java.net.URLDecoder
 
 
 @Composable
@@ -51,6 +57,23 @@ fun App_Navigation(modifier: Modifier ){
         }
         composable(route = Screen.CartScreen.route){
             CartScreen(navController = navController , modifier = modifier)
+        }
+        composable(
+            route = "${Screen.DisplayScreen.route}/{imageItem}" ,
+            arguments = listOf(navArgument("imageItem") { type = NavType.StringType })
+        ){
+            // Retrieve and decode the JSON strings
+            val imageItemJson = it.arguments?.getString("imageItem")
+
+            // Deserialize the JSON strings to objects
+            val imageItem = imageItemJson?.let { jsonString ->
+                Gson().fromJson(URLDecoder.decode(jsonString, "UTF-8"), ImageItem::class.java)
+            }
+            DisplayScreen(
+                modifier = modifier,
+                navController = navController,
+                imageItem = imageItem
+            )
         }
 
 
