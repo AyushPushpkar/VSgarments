@@ -18,7 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +31,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +44,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,15 +54,15 @@ import com.example.vsgarments.R
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
-import com.example.vsgarments.ui.theme.rateboxGreen
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.view_functions.ImageItem
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.imageList
+import com.example.vsgarments.view_functions.SizeSelection
 
 @Composable
 fun DisplayScreen(
@@ -65,6 +70,9 @@ fun DisplayScreen(
     navController: NavController,
     imageItem: ImageItem?,
 ) {
+
+    val updatedImageItem = remember { mutableStateOf(imageItem) }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -77,7 +85,10 @@ fun DisplayScreen(
                 .fillMaxSize()
                 .verticalScroll(displayScrollview)
         ) {
-            imageItem?.let {
+            updatedImageItem.value?.let {item ->
+                val selectedSize = remember { mutableStateOf(item.size ?: "") }
+                val currentPrice = remember { mutableIntStateOf(item.currprice) }
+                val originalPrice = remember { mutableIntStateOf(item.ogprice) }
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -108,7 +119,7 @@ fun DisplayScreen(
                             ),
                     ) {
                         Image(
-                            painter = painterResource(id = imageItem.imageresId),
+                            painter = painterResource(id = item.imageresId),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -130,7 +141,7 @@ fun DisplayScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(0.013f)
+                            .weight(0.01f)
                             .background(appbackgroundcolor)
                     )
                 }
@@ -141,14 +152,14 @@ fun DisplayScreen(
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 2.dp) ,
-                        text = it.CompanyName,
+                        text = item.CompanyName,
                         color = textcolorgrey,
                         fontSize = 20.sp ,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
                         modifier = Modifier.padding(vertical = 2.dp) ,
-                        text = it.name ,
+                        text = item.name ,
                         color = textcolorgrey ,
                         fontSize = 18.sp
                     )
@@ -158,23 +169,23 @@ fun DisplayScreen(
                     ){
                         Text(
                             modifier = Modifier.padding( vertical = 2.dp),
-                            text = "MRP",
+                            text = "MRP ",
                             color = tintGrey ,
                         )
                         Text(
                             modifier = Modifier.padding( vertical = 2.dp),
-                            text = "${imageItem.ogprice}$",
+                            text = "₹${originalPrice.value}",
                             color = tintGrey ,
                             textDecoration = TextDecoration.LineThrough
                         )
                         Spacer(modifier = Modifier.width(2.dp))
                         Text(
                             modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
-                            text = "${imageItem.currprice}$",
+                            text = "₹${currentPrice.value}",
                             color = textcolorblue
                         )
                     }
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         modifier = Modifier.padding(vertical = 2.dp) ,
                         text = "Select Size",
@@ -182,7 +193,19 @@ fun DisplayScreen(
                         fontSize = 20.sp ,
                         fontWeight = FontWeight.Medium
                     )
-                    Spacer(modifier = Modifier.height(80.dp))
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    SizeSelection(
+                        imageItem = item ,
+                        onSizeUpdated = {
+                            updatedImageItem.value = it
+                            currentPrice.value = it.currprice
+                            originalPrice.value = it.ogprice
+                            selectedSize.value = it.size ?: ""
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
 
                     Row(
                         modifier = Modifier
@@ -366,14 +389,14 @@ fun DisplayScreen(
 
                                 Text(
                                     modifier = Modifier.padding(horizontal = 5.dp , vertical = 1.dp),
-                                    text = "${imageItem.ogprice}$",
+                                    text = "₹${imageItem.ogprice}",
                                     color = tintGrey ,
                                     textDecoration = TextDecoration.LineThrough ,
                                     fontSize = 12.sp
                                 )
                                 Text(
                                     modifier = Modifier.padding(horizontal = 5.dp , vertical = 1.dp),
-                                    text = "${imageItem.currprice}$",
+                                    text = "₹${imageItem.currprice}",
                                     color = textcolorblue ,
                                     fontSize = 12.sp
                                 )
@@ -596,27 +619,3 @@ fun DisplayScreen(
         }
     }
 }
-
-private val imageList = listOf(
-    ImageItem(R.drawable.retail, 300, 400 ,"Kipo and the age of wonderbeasts" , "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.retail, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-
-    )
