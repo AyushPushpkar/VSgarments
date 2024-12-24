@@ -2,7 +2,6 @@ package com.example.vsgarments.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,15 +10,13 @@ import androidx.navigation.navArgument
 import com.example.vsgarments.layout.CartScreen
 import com.example.vsgarments.layout.DisplayScreen
 import com.example.vsgarments.layout.EditProfile_Screen
-import com.example.vsgarments.layout.HomeScreen
 import com.example.vsgarments.layout.LoginScreen
-import com.example.vsgarments.layout.Order_Screen
 import com.example.vsgarments.layout.Profile_Screen
 import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
-import com.example.vsgarments.view_functions.ImageItem
+import com.example.vsgarments.dataStates.ImageItem
 import com.google.gson.Gson
 import java.net.URLDecoder
 
