@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,10 +45,10 @@ import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.ui.theme.lightblack
-import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
-import com.example.vsgarments.view_functions.ImageItem
+import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.imageList
 import com.google.gson.Gson
 import java.net.URLEncoder
 
@@ -112,7 +111,7 @@ fun HomeScreen(
                                             fontFamily = fontInter
                                         )
                                         Text(
-                                            text = "Aryan",
+                                            text = imageitem.name,
                                             color = grey,
                                             fontSize = 14.sp,
                                             fontFamily = fontInter,
@@ -122,7 +121,7 @@ fun HomeScreen(
                                         )
 
                                         Text(
-                                            text = "${imageitem.currprice}",
+                                            text = "₹${imageitem.currprice}",
                                             color = lightblack,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
@@ -147,30 +146,6 @@ fun HomeScreen(
         }
     }
 }
-
-private val imageList = listOf(
-    ImageItem(R.drawable.retail, 300, 400 ,"Aryan" , "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.retail, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.bulk_order, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.retail , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-
-    )
 
 
 @Composable

@@ -1,8 +1,6 @@
 package com.example.vsgarments.layout
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.Spinner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,11 +9,9 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,15 +27,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,16 +46,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.dataStates.AddressInfo
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
@@ -84,12 +73,12 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.view_functions.ImageItem
+import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.generateRandomSizeToPriceMap
 import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
 import com.example.vsgarments.view_functions.blue_Button
-import com.example.vsgarments.view_functions.number_editText
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -348,7 +337,7 @@ fun CartScreen(
                                                 horizontal = 5.dp,
                                                 vertical = 2.dp
                                             ),
-                                            text = "${item.ogprice}$",
+                                            text = "₹${item.ogprice}",
                                             color = tintGrey,
                                             textDecoration = TextDecoration.LineThrough
                                         )
@@ -358,7 +347,7 @@ fun CartScreen(
                                                 horizontal = 5.dp,
                                                 vertical = 2.dp
                                             ),
-                                            text = "${item.currprice}$",
+                                            text = "₹${item.currprice}",
                                             color = textcolorblue
                                         )
                                     }
@@ -707,7 +696,7 @@ fun CartScreen(
                                     horizontal = 5.dp,
                                     vertical = 2.dp
                                 ),
-                                text = "${totalOgPrice}$",
+                                text = "₹${totalOgPrice}",
                                 color = tintGrey,
                                 textDecoration = TextDecoration.LineThrough,
                                 fontSize = 12.sp
@@ -717,7 +706,7 @@ fun CartScreen(
                                     horizontal = 5.dp,
                                     vertical = 2.dp
                                 ),
-                                text = "${totalCurrentPrice}$",
+                                text = "₹${totalCurrentPrice}",
                                 color = textcolorblue,
                                 fontSize = 20.sp
                             )
@@ -813,11 +802,61 @@ fun CartScreen(
 }
 
 private val cartList = listOf(
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan"  , "The VS Garments" , 4.0f ,1 , 20),
-    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" , "The VS Garments",4.5f ,4 , 444) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" , "The VS Garments",3.5f ,1 , 5),
-    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" , "The VS Garments",4.5f, 2, 50) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" , "The VS Garments",3.5f ,1, 10),
+    ImageItem(
+        imageresId = R.drawable.retail,
+        currprice = 300,
+        ogprice = 400,
+        name = "Kipo and the Age of Wonderbeasts",
+        CompanyName = "The VS Garments",
+        rating = 4.0f,
+        minQuantity = 1,
+        maxQuantity = 20,
+        sizeToPriceMap = generateRandomSizeToPriceMap()
+    ).apply { updatePriceBasedOnSize("S") },
+    ImageItem(
+        imageresId = R.drawable.bulk_order,
+        currprice = 350,
+        ogprice = 450,
+        name = "Aryan",
+        CompanyName = "The VS Garments",
+        rating = 4.2f,
+        minQuantity = 4,
+        maxQuantity = 16,
+        sizeToPriceMap = generateRandomSizeToPriceMap()
+    ).apply { updatePriceBasedOnSize("S")},
+    ImageItem(
+        imageresId = R.drawable.custom,
+        currprice = 400,
+        ogprice = 500,
+        name = "Eterna",
+        CompanyName = "The VS Garments",
+        rating = 4.5f,
+        minQuantity = 2,
+        maxQuantity = 10,
+        sizeToPriceMap = generateRandomSizeToPriceMap()
+    ).apply { updatePriceBasedOnSize("S")},
+    ImageItem(
+        imageresId = R.drawable.retail,
+        currprice = 320,
+        ogprice = 420,
+        name = "Nimbus",
+        CompanyName = "The VS Garments",
+        rating = 4.1f,
+        minQuantity = 1,
+        maxQuantity = 444,
+        sizeToPriceMap = generateRandomSizeToPriceMap()
+    ).apply { updatePriceBasedOnSize("S")},
+    ImageItem(
+        imageresId = R.drawable.bulk_order,
+        currprice = 360,
+        ogprice = 460,
+        name = "Luna",
+        CompanyName = "The VS Garments",
+        rating = 4.3f,
+        minQuantity = 4,
+        maxQuantity = 200,
+        sizeToPriceMap = generateRandomSizeToPriceMap()
+    ).apply { updatePriceBasedOnSize("S")},
 )
 
 @Composable
@@ -938,12 +977,6 @@ fun saveAddressOption(context: Context, addressText: String , nameText : String 
         apply()
     }
 }
-
-data class AddressInfo(
-    val address: String?,
-    val name: String?,
-    val pincode: String?
-)
 
 fun getSavedAddressOption(context: Context): AddressInfo {
     val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)

@@ -1,6 +1,5 @@
 package com.example.vsgarments.layout
 
-import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,10 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
@@ -31,27 +28,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.vsgarments.R
-import com.example.vsgarments.navigation.MainScreen
 import com.example.vsgarments.navigation.Screen
-import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
@@ -62,10 +53,11 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.view_functions.ImageItem
+import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.view_functions.blue_Button
 import com.google.gson.Gson
 import java.net.URLEncoder
+import com.example.vsgarments.dataStates.imageList
 
 @Composable
 fun Wishlist(
@@ -263,14 +255,14 @@ fun Wishlist(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
-                                    text = "${imageitem.ogprice}$",
+                                    text = "₹${imageitem.ogprice}",
                                     color = tintGrey ,
                                     textDecoration = TextDecoration.LineThrough
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
                                     modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
-                                    text = "${imageitem.currprice}$",
+                                    text = "₹${imageitem.currprice}",
                                     color = textcolorblue
                                 )
                             }
@@ -340,30 +332,5 @@ fun percentLess(
     percentage = (ogprice - currprice) * 100 / ogprice
     return percentage
 }
-
-private val imageList = listOf(
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" , "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 , "Aryan" ,  "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.bulk_order, 300, 400 ,"Aryan" ,  "The VS Garments" ,4.0f ,1,10),
-    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" , "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300, 400 ,"Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.test , 300 , 400 ,"Aryan" ,  "The VS Garments" ,4.5f,1,10) ,
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    ImageItem(R.drawable.custom, 300,400 , "Aryan" ,  "The VS Garments" ,3.5f,1,10),
-    )
-
-
 
 
