@@ -232,8 +232,9 @@ fun Wishlist(
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp , vertical = 2.dp),
                                 text = imageitem.name,
-                                color = textcolorblue ,
-                                maxLines = 1
+                                color = tintGrey ,
+                                maxLines = 1 ,
+                                fontWeight = FontWeight.SemiBold
                             )
 
                             Row (
@@ -250,7 +251,8 @@ fun Wishlist(
                                 Text(
                                     modifier = Modifier.padding( vertical = 2.dp),
                                     text = "${percentless}%",
-                                    color = rateboxGreen
+                                    color = rateboxGreen ,
+                                    fontWeight = FontWeight.Medium
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
@@ -263,7 +265,8 @@ fun Wishlist(
                                 Text(
                                     modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
                                     text = "₹${imageitem.currprice}",
-                                    color = textcolorblue
+                                    color = textcolorblue ,
+                                    fontWeight = FontWeight.Medium
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))

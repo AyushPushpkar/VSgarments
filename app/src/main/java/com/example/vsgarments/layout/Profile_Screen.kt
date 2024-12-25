@@ -210,13 +210,13 @@ fun Profile_Screen(
                         )
                     )
                     .background(Color.White)
-                    .padding(vertical = 25.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                    .padding(vertical = 25.dp , horizontal = 30.dp),
+                horizontalArrangement = Arrangement.spacedBy(25.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
                     modifier = Modifier
-                        .width(130.dp),
+                        .weight(1f),
                     onClick = {
                         navController.navigate(Screen.CartScreen.route)
                     },
@@ -259,7 +259,8 @@ fun Profile_Screen(
                     }
                 }
                 Button(
-                    modifier = Modifier ,
+                    modifier = Modifier
+                        .weight(1f),
                     onClick = {
                         navController.navigate(Screen.Wishlist.route)
                     },
@@ -473,7 +474,8 @@ fun Profile_Screen(
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.back_arrow),

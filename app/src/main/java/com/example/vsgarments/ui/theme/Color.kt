@@ -26,7 +26,7 @@ val buttonEndColor = Color(0x1791D4)
 
 val  tintGreen = Color(0xFFC5FDD6)
 val tintGrey = Color(0xFF6188A0)
-val rateboxGreen = Color(0xFF57F989)
+val rateboxGreen = Color(0xFF45F77C)
 
 val lightblack = Color(0xE6151515)
 val textdarkblue = Color(0xFF0056A6)
