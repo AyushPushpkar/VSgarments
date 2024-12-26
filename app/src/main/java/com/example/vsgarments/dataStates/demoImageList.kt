@@ -65,11 +65,15 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap() ,
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
-            },
+    },
     ImageItem(
         imageresId = R.drawable.bulk_order,
         currprice = 350,
@@ -89,7 +93,11 @@ val imageList = listOf(
             ,"XXL" to false
         ),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -106,7 +114,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -123,7 +135,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -140,7 +156,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -157,7 +177,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -174,7 +198,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -191,7 +219,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -208,7 +240,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -225,7 +261,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -242,7 +282,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -259,7 +303,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -276,7 +324,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -293,7 +345,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -310,7 +366,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -327,7 +387,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -344,7 +408,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -361,7 +429,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -378,7 +450,11 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
@@ -395,10 +471,14 @@ val imageList = listOf(
         sizeToPriceMap = generateRandomSizeToPriceMap(),
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
-        description = ""
+        description = "",
+        orderId = "ABCD1234",
+        orderType = "Pre Order",
+        orderDate = "10/07/2024",
+        supplier = "VS Garments"
     ).apply {
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
     },
 
-)
+    )

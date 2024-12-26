@@ -1,4 +1,6 @@
 package com.example.vsgarments.layout
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,23 +24,43 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.SearchBar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.vsgarments.dataStates.imageList
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
+import com.example.vsgarments.ui.theme.fontKalnia
+import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.ui.theme.splashdarkblue
+import com.example.vsgarments.ui.theme.splashlightblue
+import com.example.vsgarments.ui.theme.textcolorblue
+import com.example.vsgarments.ui.theme.textcolorgrey
+import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.AppTopBar
@@ -82,6 +104,9 @@ fun Order_Screen(
                             Text(
                                 text = "My Order",
                                 color = Color.Black,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 24.sp,
+                                fontFamily = fontBaloo,
                                 modifier = Modifier.background(color = Color.Transparent)
                             )
                             Text(
@@ -93,70 +118,141 @@ fun Order_Screen(
                                 modifier = Modifier
                                     .height(20.dp)
                             )
-                            /*
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 15.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween) {
-                                order("All")
-                                order("Shipped")
-                                order("Order")
-                                order("Delivered")
-                            }
-                            Spacer(
-                                modifier = Modifier
-                                    .height(10.dp)
-                            )
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 15.dp, bottom = 10.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween) {
-                                order("Cancelled")
-                                order("Exchange")
-                                order("Return")
-                                Text("    ")
-                            }
 
- */
                           Orderbutton()
 
                         }
                     }
                 }
+
+             itemsIndexed(imageList.chunked(1)){_,single->
+                 Row(modifier = Modifier
+                     .padding(top = 10.dp)){
+                    single.forEach{ imageitem->
+                        Column(modifier = Modifier
+                            .background(color = Color.White)
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp, horizontal = 20.dp)) {
+                            Row {
+                                Text(
+                                    text = "Order Date :",
+                                    color = splashdarkblue,
+                                )
+                                Text(
+                                    text = "${imageitem.orderDate}",
+                                    color = textcolorgrey
+                                )
+                            }
+                            Spacer(modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 2.dp))
+                            Divider(
+                                thickness = 1.dp,
+                                color = topbarlightblue,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Row {
+                                Text(
+                                    text = "Order Id :",
+                                    color = textcolorblue,
+                                )
+                                Text(
+                                    text = imageitem.orderId,
+                                    color = textcolorgrey
+                                )
+                            }
+                            Spacer(modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 2.dp))
+                            Divider(
+                                thickness = 1.dp,
+                                color = topbarlightblue,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Row {
+                                Text(
+                                    text = "Supplier :",
+                                    color = textcolorblue
+                                )
+                                Text(
+                                    text = imageitem.supplier,
+                                    color = textcolorgrey
+                                )
+                            }
+                            Spacer(modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 2.dp))
+                            Divider(
+                                thickness = 1.dp,
+                                color = topbarlightblue,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Row(modifier = Modifier
+                                .padding(vertical = 10.dp)) {
+                                Image(painter = painterResource(id = imageitem.imageresId),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .height(80.dp)
+                                        .width(80.dp)
+                                        .clip(shape = RoundedCornerShape(10)))
+                                Column(modifier = Modifier
+                                    .padding(start = 10.dp)) {
+                                    Box(modifier = Modifier
+                                        .clip(shape = CircleShape)
+                                        .background(color = tintGreen)
+                                        .padding(horizontal = 7.dp)){
+                                        Text(
+                                            text = imageitem.orderType,
+                                            color = textcolorgrey,
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                    Column(modifier = Modifier,
+                                        verticalArrangement = Arrangement.spacedBy(-(5).dp)) {
+                                        Text(
+                                            text = imageitem.CompanyName,
+                                            color = Color.Black,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        Text(
+                                            text = imageitem.name,
+                                            color = textcolorgrey,
+                                            fontSize = 12.sp,
+                                        )
+                                        Text(
+                                            text = "${imageitem.ogprice}",
+                                            color = textcolorgrey,
+                                            fontSize = 14.sp,
+                                        )
+                                    }
+                                }
+
+                            }
+                            Divider(
+                                thickness = 1.dp,
+                                color = topbarlightblue,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Text(
+                                text = "Feedback",
+                                color = splashdarkblue,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier
+                                    .clickable {  }
+                            )
+                        }
+                    }
+                 }
+             }
             }
         }
-
     }
 }
-
-/*
-*
-*
-@Composable
-fun order(name:String,modifier: Modifier = Modifier){
-
-    var isChecked by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if(isChecked) 1.5f else 1f,
-        animationSpec = spring(dampingRatio = Spring.StiffnessMedium)
-    )
-    val tintColor = if(isChecked)Color.Blue else Color.Gray
-
-    Column(modifier = Modifier
-        .scale(scale)
-        .clickable { isChecked = !isChecked }) {
-        Box(modifier = Modifier
-            .background(color = tintColor, shape = CircleShape)
-            .padding(horizontal = 10.dp, vertical = 2.dp)) {
-            Text(
-                text = name
-            )
-        }
-
-    }
-}
-
- */
 
 @Composable
 fun Orderbutton(){
@@ -191,7 +287,7 @@ fun Orderbutton(){
             .padding(end = 10.dp)){
             buttonlabes1.forEachIndexed{index, lable ->
              val isSelected = selectedRow == "row1" && selectedbutton == index
-                val backgroundView = if(isSelected) Color.Cyan else Color.LightGray
+                val backgroundView = if(isSelected) tintGreen else appbackgroundcolor
 
                 Button(
                     onClick = {
@@ -207,13 +303,15 @@ fun Orderbutton(){
 
                     },
                     colors = ButtonDefaults.buttonColors(backgroundView),
+                    border = if(isSelected)BorderStroke(1.dp, color = textcolorblue) else BorderStroke(1.dp, color = Color.LightGray),
                     modifier = Modifier
                         .wrapContentWidth()
                         .padding(horizontal = 3.dp)
 
                 ) {
                     Text(
-                        text = lable
+                        text = lable,
+                        color = if(isSelected) textcolorblue else grey
                     )
                 }
 
@@ -224,7 +322,7 @@ fun Orderbutton(){
             .padding(end =  10.dp)){
             buttonlabes2.forEachIndexed{index, lable ->
                 val isSelected = selectedRow == "row2" && selectedbutton == index
-                val backgroundView = if(isSelected) Color.Cyan else Color.LightGray
+                val backgroundView = if(isSelected) tintGreen else appbackgroundcolor
 
                 Button(
                     onClick = {
@@ -237,12 +335,14 @@ fun Orderbutton(){
                         }
                     },
                     colors = ButtonDefaults.buttonColors(backgroundView),
+                    border = if(isSelected)BorderStroke(1.dp, color = textcolorblue) else BorderStroke(1.dp, color = Color.LightGray),
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(3.dp)
                 ) {
                     Text(
-                        text = lable
+                        text = lable,
+                        color = if(isSelected) textcolorblue else grey
                     )
                 }
 

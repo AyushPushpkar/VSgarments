@@ -1,5 +1,4 @@
 package com.example.vsgarments.navigation
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -8,10 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.vsgarments.layout.CartScreen
+import com.example.vsgarments.layout.Profile_Screen
 import com.example.vsgarments.layout.DisplayScreen
 import com.example.vsgarments.layout.EditProfile_Screen
 import com.example.vsgarments.layout.LoginScreen
-import com.example.vsgarments.layout.Profile_Screen
+
 import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
@@ -29,7 +29,7 @@ fun App_Navigation(modifier: Modifier ){
         startDestination = Screen.Splash_Screen.route
     ) {
         composable(route = Screen.Profile_Screen.route){
-            Profile_Screen(navController = navController , modifier = modifier)
+            Profile_Screen(navController = navController, modifier = modifier)
         }
         composable(route = Screen.EditProfile_Screen.route) {
             EditProfile_Screen(navController = navController , modifier = modifier)
