@@ -85,8 +85,8 @@ fun ExpandableText3(item: String, textColor: Color) {
         if (!isExpanded && item.length > 300) {
             append(item.take(300))
             append("... ")
-            pushStringAnnotation(tag = "MORE", annotation = "More")
-            withStyle(style = SpanStyle(color = tintGrey, textDecoration = TextDecoration.Underline)) {
+            pushStringAnnotation(tag = "MORE", annotation = "Expand")
+            withStyle(style = SpanStyle(color = textcolorblue, textDecoration = TextDecoration.Underline)) {
                 append("More")
             }
             pop()
@@ -97,7 +97,7 @@ fun ExpandableText3(item: String, textColor: Color) {
 
     Text(
         text = annotatedText,
-        style = TextStyle(color = tintGrey , fontSize = 16.sp),
+        style = TextStyle(color = textColor , fontSize = 16.sp),
         onTextLayout = { layoutResult ->
             textLayoutResult = layoutResult
         },
