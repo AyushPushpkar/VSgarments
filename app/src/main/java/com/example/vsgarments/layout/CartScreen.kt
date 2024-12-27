@@ -74,11 +74,9 @@ import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.dataStates.ImageItem
-import com.example.vsgarments.dataStates.generateClothDescriptionParagraph
 import com.example.vsgarments.dataStates.generateRandomAttributes
 import com.example.vsgarments.dataStates.generateRandomSizeToPriceMap
 import com.example.vsgarments.dataStates.generateRandomSizeToStockMap
-import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
@@ -304,9 +302,7 @@ fun CartScreen(
 
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
-                                Column(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
+                                Column {
                                     Text(
                                         modifier = Modifier
                                             .padding(
@@ -314,10 +310,8 @@ fun CartScreen(
                                                 vertical = 2.dp
                                             ),
                                         text = item.name,
-                                        color = tintGrey,
-                                        maxLines = 1 ,
-                                        overflow = TextOverflow.Ellipsis ,
-                                        fontWeight = FontWeight.SemiBold
+                                        color = textcolorblue,
+                                        maxLines = 1
                                     )
 
                                     Row(
@@ -337,8 +331,7 @@ fun CartScreen(
                                         Text(
                                             modifier = Modifier.padding(vertical = 2.dp),
                                             text = "${percentless}%",
-                                            color = rateboxGreen ,
-                                            fontWeight = FontWeight.Medium
+                                            color = rateboxGreen
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
@@ -357,8 +350,7 @@ fun CartScreen(
                                                 vertical = 2.dp
                                             ),
                                             text = "₹${item.currprice}",
-                                            color = textcolorblue ,
-                                            fontWeight = FontWeight.Medium
+                                            color = textcolorblue
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(10.dp))
@@ -407,8 +399,7 @@ fun CartScreen(
                                         ),
                                     text = "Delivery by Jan 12 , Fri ",
                                     color = tintGrey,
-                                    maxLines = 1 ,
-                                    fontWeight = FontWeight.Medium
+                                    maxLines = 1
                                 )
 
                                 Text(
@@ -420,8 +411,7 @@ fun CartScreen(
                                         ),
                                     text = "FREE",
                                     color = topbardarkblue,
-                                    maxLines = 1 ,
-                                    fontWeight = FontWeight.Medium
+                                    maxLines = 1
                                 )
                             }
                         }
@@ -536,8 +526,7 @@ fun CartScreen(
                                     Spacer(modifier = Modifier.width(20.dp))
                                     Text(
                                         text = "Remove",
-                                        color = tintGrey ,
-                                        fontWeight = FontWeight.Medium
+                                        color = tintGrey
                                     )
 
                                 }
@@ -620,8 +609,7 @@ fun CartScreen(
                                     Spacer(modifier = Modifier.width(20.dp))
                                     Text(
                                         text = "Buy Now",
-                                        color = tintGrey ,
-                                        fontWeight = FontWeight.Medium
+                                        color = tintGrey
                                     )
 
                                 }
@@ -699,8 +687,7 @@ fun CartScreen(
                             .padding(
                                 start = 23.dp,
                                 end = 23.dp,
-                                bottom = 4.dp,
-                                top = 2.dp
+                                bottom = 2.dp
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -709,7 +696,7 @@ fun CartScreen(
                             Text(
                                 modifier = Modifier.padding(
                                     horizontal = 5.dp,
-                                    vertical = 1.dp
+                                    vertical = 2.dp
                                 ),
                                 text = "₹${totalOgPrice}",
                                 color = tintGrey,
@@ -719,12 +706,11 @@ fun CartScreen(
                             Text(
                                 modifier = Modifier.padding(
                                     horizontal = 5.dp,
-                                    vertical = 1.dp
+                                    vertical = 2.dp
                                 ),
                                 text = "₹${totalCurrentPrice}",
-                                color = topbardarkblue,
-                                fontSize = 20.sp ,
-                                fontWeight = FontWeight.SemiBold
+                                color = textcolorblue,
+                                fontSize = 20.sp
                             )
                         }
 
@@ -791,8 +777,7 @@ fun CartScreen(
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth()
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.back_arrow),
@@ -829,13 +814,16 @@ private val cartList = listOf(
         minQuantity = 1,
         maxQuantity = 20,
         sizeToPriceMap = generateRandomSizeToPriceMap(),
+        orderDate ="",
+        orderId = "",
+        orderType = "",
+        supplier = "",
+        size = "",
+        inStock = false,
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
         description = ""
-    ).apply {
-        description = generateClothDescriptionParagraph(productDetails = this.productDetails)
-        updatePriceBasedOnSize("S")
-    },
+    ).apply { updatePriceBasedOnSize("S") },
     ImageItem(
         imageresId = R.drawable.bulk_order,
         currprice = 350,
@@ -846,13 +834,16 @@ private val cartList = listOf(
         minQuantity = 4,
         maxQuantity = 16,
         sizeToPriceMap = generateRandomSizeToPriceMap(),
+        orderDate ="",
+        orderId = "",
+        orderType = "",
+        supplier = "",
+        size = "",
+        inStock = false,
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
         description = ""
-    ).apply {
-        description = generateClothDescriptionParagraph(productDetails = this.productDetails)
-        updatePriceBasedOnSize("S")
-    },
+    ).apply { updatePriceBasedOnSize("S")},
     ImageItem(
         imageresId = R.drawable.custom,
         currprice = 400,
@@ -863,13 +854,16 @@ private val cartList = listOf(
         minQuantity = 2,
         maxQuantity = 10,
         sizeToPriceMap = generateRandomSizeToPriceMap(),
+        orderDate ="",
+        orderId = "",
+        orderType = "",
+        supplier = "",
+        size = "",
+        inStock = false,
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
         description = ""
-    ).apply {
-        description = generateClothDescriptionParagraph(productDetails = this.productDetails)
-        updatePriceBasedOnSize("S")
-    },
+    ).apply { updatePriceBasedOnSize("S")},
     ImageItem(
         imageresId = R.drawable.retail,
         currprice = 320,
@@ -880,13 +874,16 @@ private val cartList = listOf(
         minQuantity = 1,
         maxQuantity = 444,
         sizeToPriceMap = generateRandomSizeToPriceMap(),
+        orderDate ="",
+        orderId = "",
+        orderType = "",
+        supplier = "",
+        size = "",
+        inStock = false,
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
         description = ""
-    ).apply {
-        description = generateClothDescriptionParagraph(productDetails = this.productDetails)
-        updatePriceBasedOnSize("S")
-    },
+    ).apply { updatePriceBasedOnSize("S")},
     ImageItem(
         imageresId = R.drawable.bulk_order,
         currprice = 360,
@@ -897,13 +894,16 @@ private val cartList = listOf(
         minQuantity = 4,
         maxQuantity = 200,
         sizeToPriceMap = generateRandomSizeToPriceMap(),
+        orderDate ="",
+        orderId = "",
+        orderType = "",
+        supplier = "",
+        size = "",
+        inStock = false,
         sizeToStockMap = generateRandomSizeToStockMap(),
         productDetails = generateRandomAttributes() ,
         description = ""
-    ).apply {
-        description = generateClothDescriptionParagraph(productDetails = this.productDetails)
-        updatePriceBasedOnSize("S")
-    },
+    ).apply { updatePriceBasedOnSize("S")},
 )
 
 @Composable

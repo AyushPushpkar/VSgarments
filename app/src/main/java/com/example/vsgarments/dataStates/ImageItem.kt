@@ -9,12 +9,16 @@ data class ImageItem(
     var rating: Float,
     val minQuantity: Int,
     val maxQuantity: Int,
+    val orderDate:String,
+    val orderId: String,
+    val orderType: String,
+    val supplier: String,
     var size: String? = null,
     val sizeToPriceMap: Map<String, Pair<Int, Int>>,
     var inStock: Boolean = true,
     val sizeToStockMap: Map<String, Boolean>,
-    val productDetails : Map<String , String>,
-    var description : String,
+    val productDetails: Map<String , String>,
+    var description: String,
 ) {
     fun updatePriceBasedOnSize(defaultSize: String? = null) {
         val selectedSize = size ?: defaultSize
