@@ -26,7 +26,9 @@ import com.example.vsgarments.navigation.Bottom_Nav_item
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.textcolorgrey
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
