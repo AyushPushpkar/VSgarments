@@ -60,6 +60,7 @@ fun number_editText(
 
 @Composable
 fun char_editText(
+    modifier: Modifier,
     hint : String ,
     font_Family: FontFamily ,
     text : String,
@@ -87,7 +88,7 @@ fun char_editText(
             fontWeight = FontWeight.Normal,
             color = textcolorblue
         ) },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
 
     )
