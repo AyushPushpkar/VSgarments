@@ -1,4 +1,4 @@
-package com.example.vsgarments.authentication
+package com.example.vsgarments.authentication.util
 
 
 // for better structure

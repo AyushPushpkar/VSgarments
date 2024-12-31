@@ -18,7 +18,6 @@ import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
 import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.layout.EmailVerificationScreen
-import com.example.vsgarments.layout.RegisterScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -73,10 +72,6 @@ fun App_Navigation(modifier: Modifier ){
                 navController = navController,
                 imageItem = imageItem
             )
-        }
-
-        composable(route = Screen.RegisterScreen.route){
-            RegisterScreen(navController = navController , modifier = modifier)
         }
 
         composable(
