@@ -29,6 +29,7 @@ import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontKalnia
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.splashlightblue
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 
@@ -39,9 +40,17 @@ fun Splash_Screen(
 ){
 
     LaunchedEffect(Unit) {
-        delay(30)
-        navController.navigate(Screen.MainScreen.route) {
-            popUpTo(Screen.Splash_Screen.route) { inclusive = true } // removes Splash from back stack
+        val auth = FirebaseAuth.getInstance()
+        delay(30) // delay for 3 seconds or as needed
+
+        if (auth.currentUser == null) {
+            navController.navigate(Screen.Signup_Screen.route) {
+                popUpTo(Screen.Splash_Screen.route) { inclusive = true }
+            }
+        } else {
+            navController.navigate(Screen.MainScreen.route) {
+                popUpTo(Screen.Splash_Screen.route) { inclusive = true }
+            }
         }
     }
 
