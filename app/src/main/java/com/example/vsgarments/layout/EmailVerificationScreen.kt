@@ -66,7 +66,7 @@ fun EmailVerificationScreen(
     val auth = remember { FirebaseAuth.getInstance() }
     val context = LocalContext.current
 
-    var isEmailVerified by remember { mutableStateOf(auth.currentUser?.isEmailVerified ?: false) }
+    var isEmailVerified by rememberSaveable { mutableStateOf(auth.currentUser?.isEmailVerified ?: false) }
 
     Box{
         Column(
@@ -88,7 +88,15 @@ fun EmailVerificationScreen(
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .clickable {
-                        navController.navigate(Screen.MainScreen.route)
+                        if (!isEmailVerified) {
+                            val currentUser = auth.currentUser
+                            currentUser?.delete()?.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    customToast(context , "Email verification incomplete")
+                                }
+                            }
+                        }
+                        navController.navigate(Screen.Signup_Screen.route)
                     }
             )
 
