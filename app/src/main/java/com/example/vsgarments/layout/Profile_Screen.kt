@@ -1,5 +1,7 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -40,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,12 +54,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.RegisterViewModel
+import com.example.vsgarments.authentication.User
+import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
@@ -68,13 +76,54 @@ import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.char_editText
+import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_editText
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun Profile_Screen(
     navController: NavController ,
     modifier: Modifier
 ) {
+
+    val context = LocalContext.current
+
+    var userName by rememberSaveable {
+        mutableStateOf("Anonymous")
+    }
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val savedUserName = sharedPreferences.getString("username", null)
+
+    if (savedUserName != null) {
+        userName = savedUserName
+    }
+
+    val viewModel : RegisterViewModel = hiltViewModel()
+    val currentUserResource by viewModel.currentUser.collectAsState()
+
+    when (currentUserResource) {
+        is Resource.Loading -> {
+            //CircularProgressIndicator()
+        }
+        is Resource.Success -> {
+            val user = (currentUserResource as Resource.Success<User>).data
+
+            if (user != null && savedUserName == null) {
+                // Save the username to SharedPreferences on the first successful fetch
+                userName = user.userName
+                sharedPreferences.edit().putString("username", user.userName).apply()
+            }
+        }
+        is Resource.Error -> {
+
+            // Show error message
+
+        }
+        else -> {
+            // Handle unspecified state if necessary
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -409,7 +458,19 @@ fun Profile_Screen(
                             .clickable(
                                 indication = rememberRipple(color = Color(0xFFFF7A7A)), // Add ripple effect
                                 interactionSource = remember { MutableInteractionSource() }
-                            ) {}
+                            ) {
+                                FirebaseAuth.getInstance().signOut()
+
+                                // Clear SharedPreferences to remove the username
+                                val userPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                                userPreferences.edit().remove("username").apply()
+
+                                val addressPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
+                                addressPreferences.edit().clear().apply()
+
+                                // Navigate back to the login screen or display a confirmation message
+                                customToast(context , "Logged out successfully")
+                            }
                             .border(
                                 color = Color(0xFFCECECE),
                                 width = 1.dp,

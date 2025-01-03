@@ -80,19 +80,19 @@ fun LoginScreen(
         )
         var isEmail by remember { mutableStateOf(false) }
 
-        Column {
-            if (isEmail) {
-                char_editText(
-                    hint = "Email id",
-                    font_Family = fontInter
-                )
-            } else {
-                number_editText(
-                    hint = "Mobile Number",
-                    char_no = 10,
-                    font_Family = fontInter
-                )
-            }
+       Column {
+//            if (isEmail) {
+//                char_editText(
+//                    hint = "Email id",
+//                    font_Family = fontInter
+//                )
+//            } else {
+//                number_editText(
+//                    hint = "Mobile Number",
+//                    char_no = 10,
+//                    font_Family = fontInter
+//                )
+//            }
 
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -116,7 +116,7 @@ fun LoginScreen(
             }
         }
 
-        char_editText("Password" , fontInter)
+//        char_editText("Password" , fontInter)
 
         Row {
             Text(
