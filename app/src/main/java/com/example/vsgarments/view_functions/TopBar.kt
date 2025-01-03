@@ -1,5 +1,6 @@
 package com.example.vsgarments.view_functions
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,8 +19,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +38,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.RegisterViewModel
+import com.example.vsgarments.authentication.User
+import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.textcolorgrey
@@ -40,10 +54,49 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 
+
 @Composable
 fun AppTopBar(
-    navController : NavController
+    navController : NavController ,
+    context: Context
 ) {
+
+    var userName by rememberSaveable {
+        mutableStateOf("Anonymous")
+    }
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val savedUserName = sharedPreferences.getString("username", null)
+
+    if (savedUserName != null) {
+        userName = savedUserName
+    }
+
+    val viewModel : RegisterViewModel = hiltViewModel()
+    val currentUserResource by viewModel.currentUser.collectAsState()
+
+    when (currentUserResource) {
+        is Resource.Loading -> {
+            //CircularProgressIndicator()
+        }
+        is Resource.Success -> {
+            val user = (currentUserResource as Resource.Success<User>).data
+
+            if (user != null && savedUserName == null) {
+                // Save the username to SharedPreferences on the first successful fetch
+                userName = user.userName
+                sharedPreferences.edit().putString("username", user.userName).apply()
+            }
+        }
+        is Resource.Error -> {
+
+            // Show error message
+
+        }
+        else -> {
+            // Handle unspecified state if necessary
+        }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,6 +148,7 @@ fun AppTopBar(
             ) {
                 Box(
                     modifier = Modifier
+                        .width(200.dp)
                         .clickable {
                             navController.navigate(Screen.Profile_Screen.route)
 
@@ -115,16 +169,18 @@ fun AppTopBar(
                             )
                             .padding(
                                 start = 65.dp,
-                                end = 10.dp
+                                end = 12.dp
                             ),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
-                            text = "Pavitr Prabhakar",
+                            text = userName,
                             fontFamily = fontInter,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 11.sp,
-                            color = textcolorgrey
+                            color = textcolorgrey ,
+                            maxLines = 1 ,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
