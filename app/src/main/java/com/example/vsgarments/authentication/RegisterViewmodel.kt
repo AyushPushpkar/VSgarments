@@ -1,5 +1,6 @@
 package com.example.vsgarments.authentication
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vsgarments.authentication.util.Constants.USER_COLLECTION
@@ -105,6 +106,48 @@ class RegisterViewModel @Inject constructor(
                 }
             } ?: run {
                 _currentUser.emit(Resource.Error("No user signed in."))
+            }
+        }
+    }
+
+    fun updateUserDetails(updatedFields: Map<String, Any?>) {
+        viewModelScope.launch {
+            val firebaseUser = firebaseAuth.currentUser
+            firebaseUser?.uid?.let { uid ->
+                try {
+
+                    userDb.collection(USER_COLLECTION)
+                        .document(uid)
+                        .update(updatedFields)
+                        .await()
+
+                    // Emit a loading state before fetching the updated user data
+                    _currentUser.emit(Resource.Loading())
+
+                    fetchCurrentUser()  //the updated user data
+
+                } catch (e: Exception) {
+                    _currentUser.emit(Resource.Error(e.message ?: "Failed to update user details."))
+                }
+            } ?: run {
+                _currentUser.emit(Resource.Error("No user signed in."))
+            }
+        }
+    }
+
+
+    fun logout(context: Context) {
+        viewModelScope.launch {
+            try {
+                firebaseAuth.signOut()
+
+                val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPreferences.edit().clear().apply()
+
+                // Clear current user state
+                _currentUser.emit(Resource.Error("User logged out.")) // Emit logout state
+            } catch (e: Exception) {
+                _currentUser.emit(Resource.Error(e.message ?: "Failed to log out."))
             }
         }
     }
