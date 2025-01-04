@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.LogoutViewModel
 import com.example.vsgarments.authentication.RegisterViewModel
 import com.example.vsgarments.authentication.User
 import com.example.vsgarments.authentication.util.Resource
@@ -89,8 +90,9 @@ fun Profile_Screen(
     val context = LocalContext.current
 
     var userName by rememberSaveable {
-        mutableStateOf("Anonymous")
+        mutableStateOf("")
     }
+    val registerViewModel: RegisterViewModel = hiltViewModel()
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     val savedUserName = sharedPreferences.getString("username", null)
 
@@ -98,30 +100,15 @@ fun Profile_Screen(
         userName = savedUserName
     }
 
-    val viewModel : RegisterViewModel = hiltViewModel()
-    val currentUserResource by viewModel.currentUser.collectAsState()
+    val logoutViewModel: LogoutViewModel = hiltViewModel()
+
+    val currentUserResource by registerViewModel.currentUser.collectAsState()
 
     when (currentUserResource) {
-        is Resource.Loading -> {
-            //CircularProgressIndicator()
-        }
-        is Resource.Success -> {
-            val user = (currentUserResource as Resource.Success<User>).data
-
-            if (user != null && savedUserName == null) {
-                // Save the username to SharedPreferences on the first successful fetch
-                userName = user.userName
-                sharedPreferences.edit().putString("username", user.userName).apply()
-            }
-        }
         is Resource.Error -> {
-
-            // Show error message
-
+            userName = ""
         }
-        else -> {
-            // Handle unspecified state if necessary
-        }
+        else -> {}
     }
 
     Box(
@@ -184,7 +171,7 @@ fun Profile_Screen(
                             color = topbarlightblue,
                             width = 3.dp
                         )
-                        .padding(5.dp)
+                        .padding(start = 5.dp , end = if (userName.isNotEmpty()) 10.dp else 5.dp , top = 5.dp , bottom = 5.dp)
                         .clickable {
                             navController.navigate(Screen.EditProfile_Screen.route)
 
@@ -206,14 +193,19 @@ fun Profile_Screen(
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
 
-                    Text(
-                        text = "Hey ! Pavitr  ",
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.SemiBold,
-                        color = textcolorgrey
-                    )
+                    if (userName.isNotEmpty()){
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        Text(
+                            text = "Hey! ${userName.substringBefore(" ")}",
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textcolorgrey ,
+                            fontSize = 13.sp
+                        )
+                    }
+
                 }
                 Box(
                     modifier = Modifier
@@ -259,7 +251,10 @@ fun Profile_Screen(
                         )
                     )
                     .background(Color.White)
-                    .padding(vertical = 25.dp , horizontal = 30.dp),
+                    .padding(
+                        vertical = 25.dp,
+                        horizontal = 30.dp
+                    ),
                 horizontalArrangement = Arrangement.spacedBy(25.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -459,17 +454,15 @@ fun Profile_Screen(
                                 indication = rememberRipple(color = Color(0xFFFF7A7A)), // Add ripple effect
                                 interactionSource = remember { MutableInteractionSource() }
                             ) {
-                                FirebaseAuth.getInstance().signOut()
 
-                                // Clear SharedPreferences to remove the username
-                                val userPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                                userPreferences.edit().remove("username").apply()
-
-                                val addressPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
-                                addressPreferences.edit().clear().apply()
+                                registerViewModel.logout(context)
+                                logoutViewModel.logout()
 
                                 // Navigate back to the login screen or display a confirmation message
-                                customToast(context , "Logged out successfully")
+                                customToast(
+                                    context,
+                                    "Logged out successfully"
+                                )
                             }
                             .border(
                                 color = Color(0xFFCECECE),
@@ -541,7 +534,8 @@ fun Profile_Screen(
                     Image(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier
+                            .size(30.dp)
                             .clickable {
                                 navController.navigate(Screen.MainScreen.route)
                             }
