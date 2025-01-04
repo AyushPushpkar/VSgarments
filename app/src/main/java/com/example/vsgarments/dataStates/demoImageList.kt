@@ -3,11 +3,11 @@ package com.example.vsgarments.dataStates
 import com.example.vsgarments.R
 import kotlin.random.Random
 
-fun generateRandomSizeToPriceMap(): Map<String, Pair<Int, Int>> {
+fun generateRandomSizeToPriceMap(): Map<String, Pair<Double, Double>> {
     val sizes = listOf("XS", "S", "M", "L", "XL", "XXL")
     return sizes.associateWith { // creates map
-        val currPrice = Random.nextInt(300, 700)
-        val ogPrice = currPrice + Random.nextInt(50, 200)
+        val currPrice = Random.nextDouble(300.0, 700.0)
+        val ogPrice = currPrice + Random.nextDouble(50.0, 200.0)
         currPrice to ogPrice // pair
     }
 }
@@ -55,8 +55,8 @@ fun generateClothDescriptionParagraph(productDetails: Map<String, String>): Stri
 val imageList = listOf(
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 300,
-        ogprice = 400,
+        currprice = 300.0,
+        ogprice = 400.0,
         name = "Kipo and the Age of Wonderbeasts",
         CompanyName = "The VS Garments",
         rating = 4.0f,
@@ -76,8 +76,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.bulk_order,
-        currprice = 350,
-        ogprice = 450,
+        currprice = 350.0,
+        ogprice = 450.0,
         name = "Aryan",
         CompanyName = "The VS Garments",
         rating = 4.2f,
@@ -104,8 +104,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.custom,
-        currprice = 400,
-        ogprice = 500,
+        currprice = 400.0,
+        ogprice = 500.0,
         name = "Eterna",
         CompanyName = "The VS Garments",
         rating = 4.5f,
@@ -125,8 +125,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 320,
-        ogprice = 420,
+        currprice = 320.0,
+        ogprice = 420.0,
         name = "Nimbus",
         CompanyName = "The VS Garments",
         rating = 4.1f,
@@ -146,8 +146,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.bulk_order,
-        currprice = 360,
-        ogprice = 460,
+        currprice = 360.0,
+        ogprice = 460.0,
         name = "Luna",
         CompanyName = "The VS Garments",
         rating = 4.3f,
@@ -167,8 +167,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.custom,
-        currprice = 410,
-        ogprice = 510,
+        currprice = 410.0,
+        ogprice = 510.0,
         name = "Solaris",
         CompanyName = "The VS Garments",
         rating = 4.6f,
@@ -188,8 +188,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 340,
-        ogprice = 440,
+        currprice = 340.0,
+        ogprice = 440.0,
         name = "Zephyr",
         CompanyName = "The VS Garments",
         rating = 4.4f,
@@ -209,8 +209,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.bulk_order,
-        currprice = 390,
-        ogprice = 490,
+        currprice = 390.0,
+        ogprice = 490.0,
         name = "Aurora",
         CompanyName = "The VS Garments",
         rating = 4.5f,
@@ -230,8 +230,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.custom,
-        currprice = 420,
-        ogprice = 520,
+        currprice = 420.0,
+        ogprice = 520.0,
         name = "Vortex",
         CompanyName = "The VS Garments",
         rating = 4.7f,
@@ -251,8 +251,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 360,
-        ogprice = 460,
+        currprice = 360.0,
+        ogprice = 460.0,
         name = "Stellar",
         CompanyName = "The VS Garments",
         rating = 4.3f,
@@ -272,8 +272,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 300,
-        ogprice = 400,
+        currprice = 300.0,
+        ogprice = 400.0,
         name = "Kipo and the Age of Wonderbeasts",
         CompanyName = "The VS Garments",
         rating = 4.0f,
@@ -293,8 +293,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.bulk_order,
-        currprice = 350,
-        ogprice = 450,
+        currprice = 350.0,
+        ogprice = 450.0,
         name = "Aryan",
         CompanyName = "The VS Garments",
         rating = 4.2f,
@@ -314,8 +314,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.custom,
-        currprice = 400,
-        ogprice = 500,
+        currprice = 400.0,
+        ogprice = 500.0,
         name = "Eterna",
         CompanyName = "The VS Garments",
         rating = 4.5f,
@@ -335,8 +335,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 320,
-        ogprice = 420,
+        currprice = 320.0,
+        ogprice = 420.0,
         name = "Nimbus",
         CompanyName = "The VS Garments",
         rating = 4.1f,
@@ -356,8 +356,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.bulk_order,
-        currprice = 360,
-        ogprice = 460,
+        currprice = 360.0,
+        ogprice = 460.0,
         name = "Luna",
         CompanyName = "The VS Garments",
         rating = 4.3f,
@@ -377,8 +377,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.custom,
-        currprice = 410,
-        ogprice = 510,
+        currprice = 410.0,
+        ogprice = 510.0,
         name = "Solaris",
         CompanyName = "The VS Garments",
         rating = 4.6f,
@@ -398,8 +398,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 340,
-        ogprice = 440,
+        currprice = 340.0,
+        ogprice = 440.0,
         name = "Zephyr",
         CompanyName = "The VS Garments",
         rating = 4.4f,
@@ -419,8 +419,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.bulk_order,
-        currprice = 390,
-        ogprice = 490,
+        currprice = 390.0,
+        ogprice = 490.0,
         name = "Aurora",
         CompanyName = "The VS Garments",
         rating = 4.5f,
@@ -440,8 +440,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.custom,
-        currprice = 420,
-        ogprice = 520,
+        currprice = 420.0,
+        ogprice = 520.0,
         name = "Vortex",
         CompanyName = "The VS Garments",
         rating = 4.7f,
@@ -461,8 +461,8 @@ val imageList = listOf(
     },
     ImageItem(
         imageresId = R.drawable.retail,
-        currprice = 360,
-        ogprice = 460,
+        currprice = 360.0,
+        ogprice = 460.0,
         name = "Stellar",
         CompanyName = "The VS Garments",
         rating = 4.3f,
