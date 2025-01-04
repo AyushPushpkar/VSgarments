@@ -1028,7 +1028,7 @@ fun saveAddressOption(context: Context, addressText: String , nameText : String 
 fun getSavedAddressOption(context: Context): AddressInfo {
     val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
     val address = sharedPreferences.getString("AddressOption", null) ?: ""
-    val name = sharedPreferences.getString("NameOption", null) ?: ""
+    val name = sharedPreferences.getString("NameOption", null) ?: "Address : "
     val pincode = sharedPreferences.getString("PincodeOption", null) ?: ""
     return AddressInfo(address, name, pincode)
 }

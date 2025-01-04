@@ -18,7 +18,7 @@ import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
 import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.layout.EmailVerificationScreen
-import com.example.vsgarments.layout.RegisterLoginScreen
+import com.example.vsgarments.layout.IntroductionScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -85,8 +85,8 @@ fun App_Navigation(modifier: Modifier ){
             EmailVerificationScreen(navController = navController , modifier = modifier , userEmail = decodedEmail)
         }
 
-        composable(route = Screen.RegisterLoginScreen.route){
-            RegisterLoginScreen(navController = navController , modifier = modifier)
+        composable(route = Screen.IntroductionScreen.route){
+            IntroductionScreen(navController = navController , modifier = modifier)
         }
 
 

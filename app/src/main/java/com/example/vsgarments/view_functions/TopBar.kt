@@ -71,8 +71,8 @@ fun AppTopBar(
         userName = savedUserName
     }
 
-    val viewModel : RegisterViewModel = hiltViewModel()
-    val currentUserResource by viewModel.currentUser.collectAsState()
+    val registerViewModel : RegisterViewModel = hiltViewModel()
+    val currentUserResource by registerViewModel.currentUser.collectAsState()
 
     when (currentUserResource) {
         is Resource.Loading -> {
@@ -81,16 +81,19 @@ fun AppTopBar(
         is Resource.Success -> {
             val user = (currentUserResource as Resource.Success<User>).data
 
-            if (user != null && savedUserName == null) {
-                // Save the username to SharedPreferences on the first successful fetch
-                userName = user.userName
-                sharedPreferences.edit().putString("username", user.userName).apply()
+            if (user != null) {
+                // Update the displayed username only if it differs
+                if (userName != user.userName) {
+                    userName = user.userName
+                    // Save the updated username to SharedPreferences
+                    sharedPreferences.edit().putString("username", user.userName).apply()
+                }
             }
+
         }
         is Resource.Error -> {
-
             // Show error message
-
+            userName = "Anonymous"
         }
         else -> {
             // Handle unspecified state if necessary
