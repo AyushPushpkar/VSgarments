@@ -5,6 +5,7 @@ import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,10 +28,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,12 +53,16 @@ import com.example.vsgarments.authentication.User
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
+import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
+import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URLEncoder
 
 @Composable
@@ -65,7 +77,6 @@ fun Signup_Screen(
     var repeatPassword by rememberSaveable { mutableStateOf("") }
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
-    var triggeredByUser by rememberSaveable { mutableStateOf(false) }
 
     val emailFocusRequester = remember { FocusRequester() }
     val passwordFocusRequester = remember { FocusRequester() }
@@ -88,21 +99,6 @@ fun Signup_Screen(
 
             Spacer(modifier = Modifier.height(0.dp))
 
-            Image(
-                painter = painterResource(id = R.drawable.back_arrow),
-                contentDescription = "",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .clickable {
-                        navController.navigate(Screen.MainScreen.route)
-                    }
-            )
-
-            Spacer(
-                modifier = Modifier
-                    .height(0.dp)
-            )
-
             Text(
                 text = "Create your account",
                 color = textcolorgrey,
@@ -114,8 +110,7 @@ fun Signup_Screen(
                 name = it
             }
             char_editText(
-                modifier = Modifier
-                    .focusRequester(emailFocusRequester) ,
+                modifier = Modifier ,
                 "Email ",
                 fontInter,
                 email ,
@@ -125,8 +120,7 @@ fun Signup_Screen(
 
             )
             char_editText(
-                modifier = Modifier
-                    .focusRequester(passwordFocusRequester) ,
+                modifier = Modifier ,
                 "Password",
                 fontInter,
                 _password ,
@@ -163,26 +157,29 @@ fun Signup_Screen(
                     font_Family = fontBaloo,
                     onClick = {
                         if (name.isBlank() || email.isBlank() || _password.isBlank() || repeatPassword.isBlank()) {
+                            isLoading = false
                             errorMessage = "All fields are required."
                             return@blue_Button
                         }
 
                         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            isLoading = false
                             errorMessage = "Please enter a valid email address."
                             return@blue_Button
                         }
 
                         if (_password.length < 6) {
+                            isLoading = false
                             errorMessage = "Password must be at least 6 characters long."
                             return@blue_Button
                         }
 
                         if (_password != repeatPassword) {
+                            isLoading = false
                             errorMessage = "Passwords do not match."
                             return@blue_Button
                         }
 
-                        triggeredByUser = true
                         isLoading = true
                         val user = User(
                             userName = name.trim(),
@@ -193,20 +190,46 @@ fun Signup_Screen(
                             user,
                             password
                         )
-
-                        isLoading = false
-                        val encodedEmail = URLEncoder.encode(user.email, "UTF-8")
-
-                        navController.navigate("${Screen.EmailVerificationScreen.route}/$encodedEmail"){
-                            popUpTo(Screen.Signup_Screen.route) { inclusive = true }
-                        }
                     }
                 )
             }
 
+            var textLayoutResult : TextLayoutResult? by remember {
+                mutableStateOf(null)
+            }
+
+            val annotatedText = buildAnnotatedString {
+                append("Already have an account? ")
+
+                pushStringAnnotation(tag = "LOGIN" , annotation = "Login")
+                withStyle(style = SpanStyle(color = topbardarkblue, textDecoration = TextDecoration.Underline)){
+                    append("Login")
+                }
+                pop()
+
+            }
+
+            Text(
+                text = annotatedText ,
+                style = TextStyle(color = tintGrey , fontSize = 16.sp),
+                onTextLayout = {
+                    textLayoutResult = it
+                },
+                modifier = Modifier.pointerInput(Unit){
+                    detectTapGestures { offsetPosition ->
+                        textLayoutResult?.let { layoutResult ->
+                            val position = layoutResult.getOffsetForPosition(offsetPosition)
+                            annotatedText.getStringAnnotations(tag = "LOGIN" , start = position , end = position)
+                                .firstOrNull()?.let {
+                                    navController.navigate(Screen.Login_Screen.route)
+                                }
+                        }
+                    }
+                }
+            )
+
             LaunchedEffect(lifecycleOwner) {
                 viewModel.register.collect {
-                    if (triggeredByUser) {
                         when (it) {
                             is Resource.Error -> {
                                 isLoading = false
@@ -227,11 +250,20 @@ fun Signup_Screen(
                                     "test",
                                     "Signup_Screen: ${it.data}"
                                 )
+                                val user = it.data
+                                if (user != null) {
+                                    val encodedEmail = withContext(Dispatchers.IO) {
+                                        URLEncoder.encode(user.email, "UTF-8")
+                                    }
+                                    navController.navigate("${Screen.EmailVerificationScreen.route}/$encodedEmail") {
+                                        popUpTo(Screen.Signup_Screen.route) { inclusive = true }
+                                    }
+                                } else {
+                                    errorMessage = "Unexpected error: User data is null."
+                                }
                             }
                             else -> Unit
                         }
-                        triggeredByUser = false
-                    }
                 }
             }
 

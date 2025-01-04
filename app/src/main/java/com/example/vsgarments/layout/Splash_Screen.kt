@@ -44,7 +44,7 @@ fun Splash_Screen(
         delay(30) // delay for 3 seconds or as needed
 
         if (auth.currentUser == null) {
-            navController.navigate(Screen.Signup_Screen.route) {
+            navController.navigate(Screen.IntroductionScreen.route) {
                 popUpTo(Screen.Splash_Screen.route) { inclusive = true }
             }
         } else {
