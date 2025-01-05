@@ -1,5 +1,7 @@
 package com.example.vsgarments.dependencyinjection
 
+import com.example.vsgarments.product.FirebaseProductRepository
+import com.example.vsgarments.product.ProductRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,4 +26,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirebaseFirestoreDatabase() = FirebaseFirestore.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideProductRepository(
+        db: FirebaseFirestore
+    ): ProductRepository {
+        return FirebaseProductRepository(db)
+    }
 }
