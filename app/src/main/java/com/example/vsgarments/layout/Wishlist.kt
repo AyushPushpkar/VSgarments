@@ -53,7 +53,6 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.view_functions.blue_Button
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -331,8 +330,7 @@ fun percentLess(
     ogprice: Int,
     currprice: Int
 ): Int {
-    var percentage : Int
-    percentage = (ogprice - currprice) * 100 / ogprice
+    val percentage = ((ogprice - currprice) * 100 / ogprice).toInt()
     return percentage
 }
 

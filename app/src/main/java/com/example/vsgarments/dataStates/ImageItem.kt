@@ -1,12 +1,13 @@
 package com.example.vsgarments.dataStates
 
 import com.example.vsgarments.R
+import java.util.UUID
 
 data class ImageItem(
     val imageresId: Int,
     val imageUrl: String = "" ,
-    var currprice: Double,
-    var ogprice: Double,
+    var currprice: Int,
+    var ogprice: Int,
     var name: String,
     var CompanyName: String,
     var rating: Float,
@@ -17,7 +18,7 @@ data class ImageItem(
     val orderType: String,
     val supplier: String,
     var size: String? = null,
-    val sizeToPriceMap: Map<String, Pair<Double, Double>>,
+    val sizeToPriceMap: Map<String, Pair<Int, Int>>,
     var inStock: Boolean = true,
     val sizeToStockMap: Map<String, Boolean>,
     val productDetails: Map<String , String>,
@@ -44,10 +45,11 @@ data class ImageItem(
 }
 
 data class ProductItem(
+    val id: String = UUID.randomUUID().toString(),
     val placeholderResId: Int = R.drawable.retail,
     val imageUrl: String = "",
-    var currprice: Double = 0.0,
-    var ogprice: Double = 0.0,
+    var currprice: Int = 0,
+    var ogprice: Int = 0,
     var name: String,
     var CompanyName: String = "Unknown",
     var rating: Float = 0.0f,
@@ -58,7 +60,7 @@ data class ProductItem(
     val orderType: String = "Unknown",
     val supplier: String = "Unknown",
     var size: String? = null,
-    val sizeToPriceMap: Map<String, Pair<Double, Double>> = emptyMap(),
+    val sizeToPriceMap: Map<String, Pair<Int, Int>> = emptyMap(),
     var inStock: Boolean = true,
     val sizeToStockMap: Map<String, Boolean> = emptyMap(),
     val productDetails: Map<String, String> = emptyMap(),
