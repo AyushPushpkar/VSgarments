@@ -7,7 +7,7 @@ fun generateRandomSizeToPriceMap(): Map<String, Pair<Int, Int>> {
     val sizes = listOf("XS", "S", "M", "L", "XL", "XXL")
     return sizes.associateWith { // creates map
         val currPrice = Random.nextInt(300, 700)
-        val ogPrice = currPrice + Random.nextInt(50, 20)
+        val ogPrice = currPrice + Random.nextInt(50, 200)
         currPrice to ogPrice // pair
     }
 }
@@ -480,5 +480,6 @@ val imageList = listOf(
         description = generateClothDescriptionParagraph(productDetails = this.productDetails)
         updatePriceBasedOnSize("S")
     },
+
 
     )
