@@ -360,7 +360,9 @@ fun Profile_Screen(
                 icon = painterResource(id = R.drawable.edit_pen),
                 icon_des = "address icon",
                 text = "Address"  ,
-                onClick = {}
+                onClick = {
+                    navController.navigate(Screen.AddresScreen.route)
+                }
             )
             Spacer(modifier = Modifier.height(2.dp))
 

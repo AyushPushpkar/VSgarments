@@ -19,6 +19,7 @@ import com.example.vsgarments.layout.Wishlist
 import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.layout.EmailVerificationScreen
 import com.example.vsgarments.layout.IntroductionScreen
+import com.example.vsgarments.layout.ProductScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -89,6 +90,9 @@ fun App_Navigation(modifier: Modifier ){
             IntroductionScreen(navController = navController , modifier = modifier)
         }
 
+        composable(route = Screen.AddresScreen.route){
+            ProductScreen(navController = navController , modifier = modifier)
+        }
 
     }
 }
