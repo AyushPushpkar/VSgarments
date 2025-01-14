@@ -1,8 +1,14 @@
 [versions]
 agp = "8.5.0"
 androidCustomToastMessage = "1.0.5"
+appwrite = "1.3.3"
+b2sdk = "2.1.0"
+cloudinaryAndroid = "2.23.0"
+coilCompose = "2.2.2"
 coreKtxVersion = "1.7.0"
 fancytoast = "2.0.2"
+googleCloudStorage = "2.8.0"
+googleCloudStorageVersion = "2.47.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -19,12 +25,19 @@ firebaseAuth = "23.1.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.1"
 firebaseStorage = "21.0.1"
+identityJvm = "202411.1"
 
 [libraries]
 android-custom-toast-message = { module = "com.github.emreesen27:Android-Custom-Toast-Message", version.ref = "androidCustomToastMessage" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-ktx-v170 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+appwrite = { module = "io.appwrite:appwrite", version.ref = "appwrite" }
+b2sdk = { module = "com.backblaze:b2sdk", version.ref = "b2sdk" }
+cloudinary-android = { module = "com.cloudinary.android:cloudinary-android", version.ref = "cloudinaryAndroid" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 fancytoast = { module = "io.github.shashank02051997:FancyToast", version.ref = "fancytoast" }
+google-cloud-storage = { module = "com.google.cloud:google-cloud-storage", version.ref = "googleCloudStorage" }
+google-cloud-storage-v2470 = { module = "com.google.cloud:google-cloud-storage", version.ref = "googleCloudStorageVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -45,6 +58,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

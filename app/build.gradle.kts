@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.identity.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -80,6 +81,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx.v170)
+    implementation(libs.coil.compose)
+
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("androidx.core:core-ktx:1.7.0")
@@ -106,6 +109,12 @@ dependencies {
     implementation(libs.fancytoast)
     //custom toast
     implementation (libs.android.custom.toast.message)
+
+    //image show
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
+    //appwrite
+    implementation("io.appwrite:sdk-for-android:6.1.0")
 
 
 }
