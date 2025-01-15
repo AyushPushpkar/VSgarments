@@ -1,5 +1,6 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -134,7 +135,10 @@ fun HomeScreen(
                                                 .offset(y = -(7).dp)
                                         )
                                     }
-                                    Heartcheckbox()
+                                    HeartCheckBox(
+                                        context = context,
+                                        uid = imageitem.name
+                                    )
                                 }
                             }
                         }
@@ -143,35 +147,59 @@ fun HomeScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(75.dp).background(appbackgroundcolor))
+                    Spacer(modifier = Modifier
+                        .height(75.dp)
+                        .background(appbackgroundcolor))
                 }
             }
         }
     }
 }
 
+//Shared Preferences
+fun saveLikeButtonState(context: Context,isLiked: Boolean,uid:String){
+    val sharedPreferences = context.getSharedPreferences("likeButtonPref",Context.MODE_PRIVATE)
+    sharedPreferences.edit()
+        .putBoolean("isLiked_$uid",isLiked).apply()
+}
+
+fun getLikeButtonState(context: Context,uid: String):Boolean{
+    val sharedPreferences = context.getSharedPreferences("likeButtonPref",Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isLiked_$uid",false)
+}
 
 @Composable
-fun Heartcheckbox(modifier: Modifier = Modifier) {
-    var ischecked by remember { mutableStateOf(false) }
+fun HeartCheckBox(context: Context,uid: String){
+    var isLiked by remember {
+        mutableStateOf(false)
+    }
+
+    isLiked = getLikeButtonState(context,uid)
 
     val state by animateFloatAsState(
-        targetValue = if (ischecked) 1.2f else 1f,
+        targetValue = if(isLiked) 1.2f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
         label = ""
     )
-    val tintcolor = if (ischecked) topbardarkblue else Color.Gray
+
+    val color = if(isLiked) topbardarkblue else Color.Gray
 
     Column(modifier = Modifier
-        .clickable { ischecked = !ischecked }
+        .clickable {
+            isLiked = !isLiked
+            saveLikeButtonState(
+                context,
+                isLiked,
+                uid
+            )
+        }
         .scale(state)) {
         Image(
             painter = painterResource(R.drawable.heart),
             contentDescription = "Heart",
-            colorFilter = ColorFilter.tint(tintcolor)
+            colorFilter = ColorFilter.tint(color)
         )
     }
-
 }
 
 
