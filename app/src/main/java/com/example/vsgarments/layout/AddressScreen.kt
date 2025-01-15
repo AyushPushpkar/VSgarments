@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,12 +53,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.dataStates.ProductItem
@@ -316,7 +319,7 @@ fun ProductScreen(
                         localImageUri = imageUri.value
                     )
 
-                    productViewModel.addProduct(productItem)
+                    productViewModel.addProduct(productItem , context)
 
                     Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
                 },
@@ -443,6 +446,7 @@ fun ProductScreen(
 
 @Composable
 fun ProductItemCard(product: ProductItem) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -457,6 +461,37 @@ fun ProductItemCard(product: ProductItem) {
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
+
+            // Display the product image if available
+            // Load and display the image
+            product.remoteImageUrl?.let { imageUrl ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .error(R.drawable.retail) // Add a placeholder image for errors
+                        .placeholder(R.drawable.custom) // Add a placeholder for loading
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp) // Adjust height as needed
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.LightGray),
+                    contentScale = ContentScale.Crop ,
+                    onError = { error ->
+                        Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
+                    }
+                )
+            } ?: Text(
+                text = "No image available",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(Color.LightGray)
+                    .wrapContentHeight(Alignment.CenterVertically),
+                textAlign = TextAlign.Center
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 

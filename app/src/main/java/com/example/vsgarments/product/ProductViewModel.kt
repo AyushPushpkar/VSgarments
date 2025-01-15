@@ -1,5 +1,6 @@
 package com.example.vsgarments.product
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vsgarments.authentication.util.Resource
@@ -34,11 +35,11 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    fun addProduct(product: ProductItem) {
+    fun addProduct(product: ProductItem , context: Context) {
         viewModelScope.launch {
             _productState.value = Resource.Loading()
             try {
-                repository.addProduct(product)
+                repository.addProduct(product, context)
                 loadProducts() // Refresh the list
             } catch (e: Exception) {
                 _productState.value = Resource.Error("Failed to add product: ${e.message}")
