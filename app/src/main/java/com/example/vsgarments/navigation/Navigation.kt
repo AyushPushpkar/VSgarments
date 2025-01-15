@@ -17,6 +17,9 @@ import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
 import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.layout.EmailVerificationScreen
+import com.example.vsgarments.layout.IntroductionScreen
+import com.example.vsgarments.layout.ProductScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -73,6 +76,23 @@ fun App_Navigation(modifier: Modifier ){
             )
         }
 
+        composable(
+            route = "${Screen.EmailVerificationScreen.route}/{userEmail}" ,
+            arguments = listOf(
+                navArgument("userEmail"){type = NavType.StringType}
+            )
+        ){
+            val decodedEmail = URLDecoder.decode(it.arguments?.getString("userEmail"), "UTF-8")
+            EmailVerificationScreen(navController = navController , modifier = modifier , userEmail = decodedEmail)
+        }
+
+        composable(route = Screen.IntroductionScreen.route){
+            IntroductionScreen(navController = navController , modifier = modifier)
+        }
+
+        composable(route = Screen.AddresScreen.route){
+            ProductScreen(navController = navController , modifier = modifier)
+        }
 
     }
 }

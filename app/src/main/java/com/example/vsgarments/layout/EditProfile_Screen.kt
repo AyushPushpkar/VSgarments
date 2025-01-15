@@ -1,9 +1,11 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,21 +27,31 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.RegisterViewModel
+import com.example.vsgarments.authentication.User
+import com.example.vsgarments.authentication.util.Resource
+import com.example.vsgarments.dataStates.AddressInfo
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
@@ -48,8 +60,10 @@ import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_textField
 import com.example.vsgarments.view_functions.text_textField
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun EditProfile_Screen(navController: NavController , modifier: Modifier){
@@ -58,12 +72,116 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
             .fillMaxSize()
             .background(appbackgroundcolor)
     ) {
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val currentUser = firebaseAuth.currentUser
+
+        val context = LocalContext.current
+        var userName by rememberSaveable {
+            mutableStateOf("")
+        }
+        val email by rememberSaveable { mutableStateOf(currentUser?.email ?: "") }
+        var mobileNumber by rememberSaveable { mutableStateOf("") }
+        var alterEmail by rememberSaveable { mutableStateOf("") }
+        var alterMobileNumber by rememberSaveable { mutableStateOf("") }
+        var state by rememberSaveable { mutableStateOf("") }
+        var city by rememberSaveable { mutableStateOf("") }
+        var pincode by rememberSaveable { mutableStateOf("") }
+
+        val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+
+        LaunchedEffect(Unit) {
+            userName = sharedPreferences.getString("username", "") ?: ""
+            mobileNumber = sharedPreferences.getString("mobileNumber", "") ?: ""
+            alterEmail = sharedPreferences.getString("alterEmail", "") ?: ""
+            alterMobileNumber = sharedPreferences.getString("alterMobileNumber", "") ?: ""
+            state = sharedPreferences.getString("state", "") ?: ""
+            city = sharedPreferences.getString("city", "") ?: ""
+            pincode = sharedPreferences.getString("pincode", "") ?: ""
+        }
+
+        val registerViewModel : RegisterViewModel = hiltViewModel()
+        val currentUserResource by registerViewModel.currentUser.collectAsState()
+
+        var isEditing by rememberSaveable { mutableStateOf(false) }
+
+        when (currentUserResource) {
+            is Resource.Success -> {
+                val user = (currentUserResource as Resource.Success<User>).data
+
+                if (user != null && !isEditing) {
+                    var hasChanges = false
+
+                    if (userName != user.userName) {
+                        userName = user.userName
+                        hasChanges = true
+                    }
+                    if (mobileNumber != user.mobileNumber && user.mobileNumber.isNotEmpty()) {
+                        mobileNumber = user.mobileNumber
+                        hasChanges = true
+                    }
+                    if (alterEmail != user.alterEmail && user.alterEmail.isNotEmpty()) {
+                        alterEmail = user.alterEmail
+                        hasChanges = true
+                    }
+                    if (alterMobileNumber != user.alterMobileNumber && user.alterMobileNumber.isNotEmpty()) {
+                        alterMobileNumber = user.alterMobileNumber
+                        hasChanges = true
+                    }
+                    if (state != user.state && user.state.isNotEmpty()) {
+                        state = user.state
+                        hasChanges = true
+                    }
+                    if (city != user.city && user.city.isNotEmpty()) {
+                        city = user.city
+                        hasChanges = true
+                    }
+                    if (pincode != user.pincode && user.pincode.isNotEmpty()) {
+                        pincode = user.pincode
+                        hasChanges = true
+                    }
+
+                    // Only update SharedPreferences if there are changes
+                    if (hasChanges) {
+                        with(sharedPreferences.edit()) {
+                            putString("username", user.userName)
+                            putString("email", user.email)
+                            putString("mobileNumber", user.mobileNumber)
+                            putString("state", user.state)
+                            putString("city", user.city)
+                            putString("pincode", user.pincode)
+                            putString("alterEmail", user.alterEmail)
+                            putString("alterMobileNumber", user.alterMobileNumber)
+                            apply()
+                        }
+                    }
+                }
+            }
+
+            is Resource.Error -> {
+                userName = ""
+                mobileNumber = ""
+                alterEmail = ""
+                alterMobileNumber = ""
+                state = ""
+                city = ""
+                pincode = ""
+            }
+            else -> {}
+        }
+
         val editprofilescroll = rememberScrollState()
+
+        val focusManager = LocalFocusManager.current
+        val focusRequester = FocusRequester()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
                 .verticalScroll(editprofilescroll)
         ) {
 
@@ -186,7 +304,13 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     )
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontInter
+                        font_Family = fontInter ,
+                        text = userName ,
+                        onTextChange = {
+                            userName = it
+                            isEditing = true
+                        } ,
+                        focusRequester = focusRequester
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -200,7 +324,13 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     number_textField(
                         modifier = Modifier,
                         char_no = 10,
-                        font_Family = fontBaloo
+                        font_Family = fontInter ,
+                        focusRequester = focusRequester,
+                        text = mobileNumber ,
+                        onTextChange = {
+                            mobileNumber = it
+                            isEditing = true
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -212,9 +342,14 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
+
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontBaloo,
+                        font_Family = fontInter,
+                        text = email,
+                        onTextChange = {} ,
+                        enabled = false ,
+                        focusRequester = focusRequester
                     )
 
                     Spacer(modifier = Modifier.height(25.dp))
@@ -231,7 +366,19 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                             width_fraction = 0.4f,
                             button_text = "Save",
                             font_Family = fontBaloo ,
-                            onClick = {}
+                            onClick = {
+                                if (mobileNumber.length == 10 && mobileNumber.all { it.isDigit() }) {
+                                    val updatedFields = mapOf(
+                                        "userName" to userName,
+                                        "mobileNumber" to mobileNumber,
+                                    )
+                                    registerViewModel.updateUserDetails(updatedFields)
+
+                                    isEditing = false
+                                } else {
+                                    customToast(context, "Please enter a valid 10-digit mobile number")
+                                }
+                            }
                         )
                     }
                 }
@@ -278,7 +425,13 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     )
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontBaloo
+                        font_Family = fontInter ,
+                        text = state,
+                        onTextChange = {
+                            state = it
+                            isEditing = true
+                        } ,
+                        focusRequester = focusRequester
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -292,7 +445,13 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     )
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontBaloo,
+                        font_Family = fontInter,
+                        text = city,
+                        onTextChange = {
+                            city = it
+                            isEditing = true
+                        } ,
+                        focusRequester = focusRequester
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -307,7 +466,13 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     number_textField(
                         modifier = Modifier,
                         char_no = 6,
-                        font_Family = fontBaloo
+                        font_Family = fontInter ,
+                        focusRequester = focusRequester,
+                        text = pincode,
+                        onTextChange = {
+                            pincode = it
+                            isEditing = true
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(25.dp))
@@ -325,6 +490,17 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                                     MutableInteractionSource()
                                 }
                             ) {
+                                if (pincode.length == 6 && pincode.all { it.isDigit() }) {
+                                    val updatedFields = mapOf(
+                                        "state" to state,
+                                        "city" to city,
+                                        "pincode" to pincode
+                                    )
+                                    registerViewModel.updateUserDetails(updatedFields)
+                                    isEditing = false
+                                } else {
+                                    customToast(context, "Please enter a valid 6-digit pincode")
+                                }
                             },
                         text = " Update ",
                         softWrap = true,
@@ -349,7 +525,7 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(310.dp)
+                    .height(350.dp)
                     .clip(
                         RoundedCornerShape(
                             bottomStart = 23.dp,
@@ -362,7 +538,7 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(306.dp)
+                        .height(346.dp)
                         .clip(
                             RoundedCornerShape(
                                 bottomStart = 25.dp,
@@ -382,7 +558,13 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     number_textField(
                         modifier = Modifier,
                         char_no = 10,
-                        font_Family = fontBaloo
+                        font_Family = fontInter ,
+                        focusRequester = focusRequester,
+                        text = alterMobileNumber ,
+                        onTextChange = {
+                            alterMobileNumber = it
+                            isEditing = true
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -396,10 +578,16 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     )
                     text_textField(
                         modifier = Modifier,
-                        font_Family = fontBaloo
+                        font_Family = fontInter ,
+                        text = alterEmail,
+                        onTextChange = {
+                            isEditing = true
+                            alterEmail = it
+                        } ,
+                        focusRequester = focusRequester
                     )
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(25.dp))
 
                     Text(
                         modifier = Modifier
@@ -409,6 +597,50 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                         fontFamily = fontBaloo,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .clickable(
+                                enabled = true,
+                                indication = rememberRipple(
+                                    color = topbarlightblue
+                                ),
+                                interactionSource = remember {
+                                    MutableInteractionSource()
+                                }
+                            ) {
+                                if (alterMobileNumber.length == 10 && alterMobileNumber.all { it.isDigit() }) {
+
+                                    val emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}"
+                                    if (alterEmail.matches(Regex(emailPattern))) {
+                                        val updatedFields = mapOf(
+                                            "alterEmail" to alterEmail,
+                                            "alterMobileNumber" to alterMobileNumber
+                                        )
+                                        registerViewModel.updateUserDetails(updatedFields)
+
+                                        isEditing = false
+                                    } else {
+                                        customToast(context, "Please enter a valid email address")
+                                    }
+                                } else {
+                                    customToast(context, "Please enter a valid 10-digit mobile number")
+                                }
+                            },
+                        text = " Update ",
+                        softWrap = true,
+                        style = TextStyle(
+                            fontSize = 25.sp,
+                            fontFamily = fontBaloo,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            color = topbardarkblue
+                        )
                     )
                 }
 
@@ -469,7 +701,7 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                             ),
                             interactionSource = remember {
                                 MutableInteractionSource()
-                            } ,
+                            },
                         ) {
                         },
                     text = " Delete Account ",
@@ -527,7 +759,8 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                     Image(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier
+                            .size(30.dp)
                             .clickable {
                                 navController.navigate(Screen.Profile_Screen.route)
                             }

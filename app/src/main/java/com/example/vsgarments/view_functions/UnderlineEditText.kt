@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -20,17 +22,21 @@ import androidx.compose.ui.unit.sp
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
+import com.example.vsgarments.ui.theme.tintGrey
 
 @Composable
 fun number_textField(
     modifier: Modifier ,
     char_no : Int ,
-    font_Family: FontFamily
+    font_Family: FontFamily ,
+    text: String ,
+    onTextChange: (String) -> Unit ,
+    enabled : Boolean = true ,
+    focusRequester: FocusRequester
 ){
-    var numberstate by remember {
-        mutableStateOf("")
-    }
+
     TextField(
+        enabled = enabled ,
         textStyle = TextStyle(
             fontSize = 18.sp ,
             fontFamily = font_Family ,
@@ -39,16 +45,19 @@ fun number_textField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp)
+            .focusRequester(focusRequester)
             .heightIn(max = 52.dp),
-        value = numberstate,
+        value = text,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
         singleLine = true,
         onValueChange = {
-            numberstate = it.filter {char ->
-                char.isDigit()
-            }.take(char_no)
+            onTextChange(
+                it.filter {char ->
+                    char.isDigit()
+                }.take(char_no)
+            )
         },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = appbackgroundcolor,
@@ -60,6 +69,9 @@ fun number_textField(
             unfocusedContainerColor = Color.White,
             unfocusedTextColor = textcolorgrey,
             disabledContainerColor = Color.White ,
+            disabledTextColor = textcolorgrey,
+            disabledLabelColor = textcolorblue,
+            disabledIndicatorColor = textcolorblue,
             cursorColor = textcolorblue,
         ),
     )
@@ -68,12 +80,15 @@ fun number_textField(
 @Composable
 fun text_textField(
     modifier: Modifier ,
-    font_Family: FontFamily
+    font_Family: FontFamily,
+    text : String,
+    onTextChange: (String) -> Unit ,
+    enabled : Boolean = true ,
+    focusRequester: FocusRequester
 ){
-    var namestate by remember {
-        mutableStateOf("")
-    }
+
     TextField(
+        enabled = enabled,
         textStyle = TextStyle(
             fontSize = 18.sp ,
             fontFamily = font_Family ,
@@ -81,9 +96,10 @@ fun text_textField(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp),
-        value = namestate,
-        onValueChange = { namestate = it } ,
+            .padding(top = 8.dp)
+            .focusRequester(focusRequester),
+        value = text,
+        onValueChange = { onTextChange(it) } ,
         singleLine = true,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = appbackgroundcolor,
@@ -94,6 +110,9 @@ fun text_textField(
             unfocusedIndicatorColor = textcolorblue,
             unfocusedContainerColor = Color.White,
             unfocusedTextColor = textcolorgrey,
+            disabledTextColor = textcolorgrey,
+            disabledLabelColor = textcolorblue,
+            disabledIndicatorColor = textcolorblue,
             disabledContainerColor = Color.White ,
             cursorColor = textcolorblue,
         ),

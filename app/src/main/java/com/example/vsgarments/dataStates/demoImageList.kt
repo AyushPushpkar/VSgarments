@@ -481,4 +481,5 @@ val imageList = listOf(
         updatePriceBasedOnSize("S")
     },
 
+
     )

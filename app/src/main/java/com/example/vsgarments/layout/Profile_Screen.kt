@@ -1,5 +1,7 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -40,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,12 +54,18 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.LogoutViewModel
+import com.example.vsgarments.authentication.RegisterViewModel
+import com.example.vsgarments.authentication.User
+import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
@@ -68,13 +77,40 @@ import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.blue_Button
 import com.example.vsgarments.view_functions.char_editText
+import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_editText
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun Profile_Screen(
     navController: NavController ,
     modifier: Modifier
 ) {
+
+    val context = LocalContext.current
+
+    var userName by rememberSaveable {
+        mutableStateOf("")
+    }
+    val registerViewModel: RegisterViewModel = hiltViewModel()
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val savedUserName = sharedPreferences.getString("username", null)
+
+    if (savedUserName != null) {
+        userName = savedUserName
+    }
+
+    val logoutViewModel: LogoutViewModel = hiltViewModel()
+
+    val currentUserResource by registerViewModel.currentUser.collectAsState()
+
+    when (currentUserResource) {
+        is Resource.Error -> {
+            userName = ""
+        }
+        else -> {}
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -135,7 +171,7 @@ fun Profile_Screen(
                             color = topbarlightblue,
                             width = 3.dp
                         )
-                        .padding(5.dp)
+                        .padding(start = 5.dp , end = if (userName.isNotEmpty()) 10.dp else 5.dp , top = 5.dp , bottom = 5.dp)
                         .clickable {
                             navController.navigate(Screen.EditProfile_Screen.route)
 
@@ -157,14 +193,19 @@ fun Profile_Screen(
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
 
-                    Text(
-                        text = "Hey ! Pavitr  ",
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.SemiBold,
-                        color = textcolorgrey
-                    )
+                    if (userName.isNotEmpty()){
+                        Spacer(modifier = Modifier.width(5.dp))
+
+                        Text(
+                            text = "Hey! ${userName.substringBefore(" ")}",
+                            fontFamily = fontInter,
+                            fontWeight = FontWeight.SemiBold,
+                            color = textcolorgrey ,
+                            fontSize = 13.sp
+                        )
+                    }
+
                 }
                 Box(
                     modifier = Modifier
@@ -210,7 +251,10 @@ fun Profile_Screen(
                         )
                     )
                     .background(Color.White)
-                    .padding(vertical = 25.dp , horizontal = 30.dp),
+                    .padding(
+                        vertical = 25.dp,
+                        horizontal = 30.dp
+                    ),
                 horizontalArrangement = Arrangement.spacedBy(25.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -316,7 +360,9 @@ fun Profile_Screen(
                 icon = painterResource(id = R.drawable.edit_pen),
                 icon_des = "address icon",
                 text = "Address"  ,
-                onClick = {}
+                onClick = {
+                    navController.navigate(Screen.AddresScreen.route)
+                }
             )
             Spacer(modifier = Modifier.height(2.dp))
 
@@ -409,7 +455,17 @@ fun Profile_Screen(
                             .clickable(
                                 indication = rememberRipple(color = Color(0xFFFF7A7A)), // Add ripple effect
                                 interactionSource = remember { MutableInteractionSource() }
-                            ) {}
+                            ) {
+
+                                registerViewModel.logout(context)
+                                logoutViewModel.logout()
+
+                                // Navigate back to the login screen or display a confirmation message
+                                customToast(
+                                    context,
+                                    "Logged out successfully"
+                                )
+                            }
                             .border(
                                 color = Color(0xFFCECECE),
                                 width = 1.dp,
@@ -480,7 +536,8 @@ fun Profile_Screen(
                     Image(
                         painter = painterResource(id = R.drawable.back_arrow),
                         contentDescription = "",
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier
+                            .size(30.dp)
                             .clickable {
                                 navController.navigate(Screen.MainScreen.route)
                             }

@@ -23,7 +23,7 @@ import com.example.vsgarments.ui.theme.textcolorgrey
 fun number_editText(
     hint : String ,
     char_no : Int ,
-    font_Family: FontFamily
+    font_Family: FontFamily ,
 ){
     var text by remember { mutableStateOf("") }
 
@@ -60,15 +60,17 @@ fun number_editText(
 
 @Composable
 fun char_editText(
+    modifier: Modifier,
     hint : String ,
-    font_Family: FontFamily
+    font_Family: FontFamily ,
+    text : String,
+    onTextChange: (String) -> Unit
 ){
-    var text by remember { mutableStateOf("") }
 
     OutlinedTextField(
         value = text ,
         onValueChange = {
-            text = it
+            onTextChange(it)
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = textcolorblue,
@@ -86,7 +88,7 @@ fun char_editText(
             fontWeight = FontWeight.Normal,
             color = textcolorblue
         ) },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
 
     )

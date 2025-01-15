@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+//    alias(libs.plugins.google.gms.google.services)
+    id("com.google.gms.google-services")
+    id ("dagger.hilt.android.plugin")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -60,6 +64,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,11 +77,36 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.core.ktx.v170)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("androidx.core:core-ktx:1.7.0")
+
     //navigation
     implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.appwrite:sdk-for-android:5.1.0")
 
     //Gson
     implementation ("com.google.code.gson:gson:2.11.0")
+
+    //firebase
+    implementation ("com.google.firebase:firebase-analytics:22.1.2")
+    implementation( "com.google.firebase:firebase-firestore:25.1.1")
+    implementation ("com.google.firebase:firebase-auth:23.1.0")
+    implementation ("com.google.firebase:firebase-database:21.0.0")
+    implementation ("com.google.firebase:firebase-storage:21.0.1")
+
+    implementation ("com.google.dagger:hilt-android:2.48")
+    kapt ("com.google.dagger:hilt-android-compiler:2.48")
+
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    //fancy toast
+    implementation(libs.fancytoast)
+    //custom toast
+    implementation (libs.android.custom.toast.message)
+
 
 }
