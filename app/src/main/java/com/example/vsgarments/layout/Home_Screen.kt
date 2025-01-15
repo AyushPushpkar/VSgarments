@@ -1,5 +1,6 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,9 +51,12 @@ import com.example.vsgarments.ui.theme.lightblack
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
 import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.ProductItem
 import com.example.vsgarments.dataStates.imageList
 import com.google.gson.Gson
 import java.net.URLEncoder
+import java.sql.Types.NULL
+import kotlin.jvm.internal.Ref.ShortRef
 
 @Composable
 fun HomeScreen(
@@ -66,10 +71,11 @@ fun HomeScreen(
     ) {
         Column {
 
-            val context = LocalContext.current
 
+            AppTopBar(
+                navController = navController, context = LocalContext.current
 
-            AppTopBar(navController = navController , context = context)
+            )
 
             LazyColumn(
                 modifier = Modifier
@@ -134,7 +140,7 @@ fun HomeScreen(
                                                 .offset(y = -(7).dp)
                                         )
                                     }
-                                    Heartcheckbox()
+                                    heartCheckbox1(context = LocalContext.current,imageitem.imageUrl)
                                 }
                             }
                         }
@@ -173,5 +179,47 @@ fun Heartcheckbox(modifier: Modifier = Modifier) {
     }
 
 }
+
+
+//Shared Preferences
+fun saveLikeButtonState(context: Context,isliked: Boolean,uid:String){
+    val sharedPreferences = context.getSharedPreferences("likeButtonPref",Context.MODE_PRIVATE)
+    sharedPreferences.edit()
+        .putBoolean("isLiked_$uid",isliked).apply()
+
+}
+fun getLikeButtonState(context: Context,uid: String):Boolean{
+    val sharedPreferences = context.getSharedPreferences("likeButtonPref",Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isLiked_$uid",false)
+}
+@Composable
+fun heartCheckbox1(context: Context,uid: String){
+    var isLiked by remember {
+        mutableStateOf(getLikeButtonState(context,uid))
+    }
+
+    val state by animateFloatAsState(
+        targetValue = if(isLiked) 1.2f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = ""
+    )
+
+    val color = if(isLiked) topbardarkblue else Color.Gray
+
+    Column(modifier = Modifier
+        .clickable { isLiked = !isLiked
+            saveLikeButtonState(context,isLiked,uid)
+        }
+        .scale(state)) {
+        Image(
+            painter = painterResource(R.drawable.heart),
+            contentDescription = "Heart",
+            colorFilter = ColorFilter.tint(color)
+        )
+    }
+}
+
+
+
 
 
