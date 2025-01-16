@@ -1,8 +1,13 @@
 package com.example.vsgarments.product
 
+import android.content.Context
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import com.example.vsgarments.dataStates.ProductItem
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import io.appwrite.Permission
 import io.appwrite.models.InputFile
 import io.appwrite.services.Storage
 import kotlinx.coroutines.tasks.await
@@ -19,31 +24,49 @@ class FirebaseProductRepository @Inject constructor(
 
     private val productsCollection = db.collection("products")
 
-    override suspend fun addProduct(product: ProductItem): String {
+    override suspend fun addProduct(product: ProductItem , context: Context): String {
 
         // Ensure the product has an image URI before proceeding
         val imageUri = product.localImageUri ?: throw IllegalArgumentException("Product image URI is required")
 
-        val path = Paths.get(imageUri.path)
+        // Log the URI for debugging
+        Log.d("ProductScreen", "Image URI: $imageUri")
 
-        // Upload the image to Firebase Storage
-        val file = appWriteStorage.createFile(
-            bucketId = "6783988f000b21f9f0da",
-            fileId = UUID.randomUUID().toString(),
-            file = InputFile.fromPath(path.toString())
-        )
+        // Resolve the content URI to a file path (if it's a content URI, like from the gallery or file picker)
+        val path = getRealPathFromURI(imageUri , context)
+            ?: throw IllegalArgumentException("Failed to resolve image URI to a file path")
 
-        // Construct the file URL for the uploaded image
-        val imageUrl = "https://cloud.appwrite.io/v1/storage/buckets/6783988f000b21f9f0da/files/${file.id}/view"
+        try {
+            // Upload the image to Appwrite Storage
+            val file = appWriteStorage.createFile(
+                bucketId = "6783988f000b21f9f0da",
+                fileId = product.id,
+                file = InputFile.fromPath(path),
+                permissions = listOf(
+                    Permission.read("any")
+                )
+            )
+            println(file.permissions)
 
-        // Update the product with the image URL
-        val productWithImageUrl = product.copy(remoteImageUrl = imageUrl, localImageUri = null)
+            // Construct the file URL for the uploaded image
+            val imageUrl = "https://cloud.appwrite.io/v1/storage/buckets/${file.bucketId}/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin"
 
-        // Save the product in Firestore
-        val docRef = productsCollection.document(productWithImageUrl.id)
-        docRef.set(productWithImageUrl).await()
+            // Update the product with the image URL
+            val productWithImageUrl = product.copy(remoteImageUrl = imageUrl, localImageUri = null)
 
-        return docRef.id
+            // Save the product in Firestore
+            val docRef = productsCollection.document(productWithImageUrl.id)
+            docRef.set(productWithImageUrl).await()
+
+            return docRef.id
+
+        } catch (e: Exception) {
+            Log.e(
+                "ProductUpload",
+                "Error uploading product image: ${e.message}"
+            )
+            throw e
+        }
 
     }
 
@@ -112,4 +135,14 @@ class FirebaseProductRepository @Inject constructor(
         // Adjust this logic based on your Appwrite URL structure
         return url.substringAfterLast("/")
     }
+}
+
+fun getRealPathFromURI(contentUri: Uri , context: Context): String? {
+    val proj = arrayOf(MediaStore.Images.Media.DATA)
+    val cursor = context.contentResolver.query(contentUri, proj, null, null, null)
+    cursor?.moveToFirst()
+    val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+    val path = cursor?.getString(columnIndex ?: -1)
+    cursor?.close()
+    return path
 }
