@@ -20,6 +20,7 @@ import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.layout.EmailVerificationScreen
 import com.example.vsgarments.layout.IntroductionScreen
 import com.example.vsgarments.layout.ProductScreen
+import com.example.vsgarments.layout.UpdateProductScreen
 import com.google.gson.Gson
 import java.net.URLDecoder
 
@@ -92,6 +93,16 @@ fun App_Navigation(modifier: Modifier ){
 
         composable(route = Screen.AddresScreen.route){
             ProductScreen(navController = navController , modifier = modifier)
+        }
+
+        composable(
+            route = "${Screen.UpdateProductScreen.route}/{productId}" ,
+            arguments = listOf(
+                navArgument("productId"){type = NavType.StringType}
+            )
+        ){
+            val productId = it.arguments?.getString("productId")
+            UpdateProductScreen(navController = navController , modifier = modifier , productId = productId)
         }
 
     }
