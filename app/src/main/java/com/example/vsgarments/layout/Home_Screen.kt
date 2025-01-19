@@ -31,13 +31,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -51,9 +61,11 @@ import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
 import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.dataStates.imageList
+import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontKalnia
+import com.example.vsgarments.ui.theme.topbarlightblue
 import com.google.gson.Gson
 import java.net.URLEncoder
-
 @Composable
 fun HomeScreen(
     modifier: Modifier,
@@ -106,7 +118,8 @@ fun HomeScreen(
 
                                 )
                                 Row {
-                                    Column {
+                                    Column(modifier = Modifier
+                                        .fillMaxSize(.85f)) {
                                         Text(
                                             text = imageitem.CompanyName,
                                             color = lightblack,
@@ -120,20 +133,89 @@ fun HomeScreen(
                                             fontSize = 14.sp,
                                             fontFamily = fontInter,
                                             maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier
-                                                .offset(y = -(5).dp)
+                                                .offset(y = -(3).dp)
                                         )
+                                        Row{
+                                            Text(
+                                                text = "₹${imageitem.ogprice}",
+                                                color = grey,
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Normal,
+                                                fontFamily = fontInter,
+                                                textDecoration = TextDecoration.LineThrough,
+                                                maxLines = 1,
+                                                modifier = Modifier
+                                                    .offset(y = -(5).dp)
+                                            )
+                                             Spacer(modifier = Modifier
+                                                 .width(5.dp))
+                                            Text(
+                                                text = "₹${imageitem.currprice}",
+                                                color = lightblack,
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                fontFamily = fontInter,
+                                                overflow = TextOverflow.Clip,
+                                                maxLines = 1,
+                                                modifier = Modifier
+                                                    .offset(y = -(5).dp)
+                                            )
+                                        }
+                                        Box(modifier = Modifier
+                                            .height(35.dp)
+                                            .padding(vertical = 3.dp)
+                                            .width(80.dp)
+                                            .offset(y = -(3.dp))
+                                            .clip(
+                                                object : Shape{
+                                                    override fun createOutline(
+                                                        size: Size,
+                                                        layoutDirection: LayoutDirection,
+                                                        density: Density
+                                                    ): Outline {
+                                                        val path = Path().apply {
+                                                            moveTo(
+                                                                x = 0f,
+                                                                y = 0f
+                                                            )
+                                                            lineTo(
+                                                                x = size.width,
+                                                                y = 0f
+                                                            )
+                                                            lineTo(
+                                                                x =( size.width * .9f),
+                                                                y = size.height
+                                                            )
+                                                            lineTo(
+                                                                x = 0f,
+                                                                y = size.height
+                                                            )
+                                                            lineTo(
+                                                                x = 0f,
+                                                                y = 0f
+                                                            )
+                                                            close()
+                                                        }
+                                                        return Outline.Generic(path)
+                                                    }
+                                                }
+                                            )
+                                            .background(topbarlightblue)){
+                                            val pl= percentLess(imageitem.ogprice , imageitem.currprice);
+                                            Text(
+                                                text = "${pl}% off",
+                                                color = Color.White,
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                overflow = TextOverflow.Clip,
+                                                maxLines = 1,
+                                                modifier = Modifier
+                                                    .padding(top = 2.dp, start = 5.dp)
 
-                                        Text(
-                                            text = "₹${imageitem.currprice}",
-                                            color = lightblack,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontFamily = fontInter,
-                                            maxLines = 1,
-                                            modifier = Modifier
-                                                .offset(y = -(7).dp)
-                                        )
+                                            )
+                                        }
                                     }
                                     HeartCheckBox(
                                         context = context,

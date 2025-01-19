@@ -129,66 +129,72 @@ fun Order_Screen(
 
              itemsIndexed(imageList.chunked(1)){_,single->
                  Row(modifier = Modifier
-                     .padding(top = 10.dp)){
+                     .padding(top = 20.dp)){
                     single.forEach{ imageitem->
                         Column(modifier = Modifier
                             .background(color = Color.White)
                             .fillMaxWidth()
-                            .padding(vertical = 5.dp, horizontal = 20.dp)) {
+                            .padding(vertical = 20.dp, horizontal = 20.dp)) {
                             Row {
                                 Text(
                                     text = "Order Date :",
                                     color = splashdarkblue,
+                                    fontWeight = FontWeight.SemiBold,
                                 )
                                 Text(
                                     text = "${imageitem.orderDate}",
                                     color = textcolorgrey
                                 )
                             }
-                            Spacer(modifier = Modifier
-                                .height(2.dp)
-                                .padding(bottom = 2.dp))
                             Divider(
                                 thickness = 1.dp,
                                 color = topbarlightblue,
                                 modifier = Modifier.fillMaxWidth()
+                                    .padding(vertical = 2.dp)
                             )
+                            Spacer(modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 3.dp))
                             Row {
                                 Text(
                                     text = "Order Id :",
                                     color = textcolorblue,
+                                    fontWeight = FontWeight.SemiBold,
                                 )
                                 Text(
                                     text = imageitem.orderId,
                                     color = textcolorgrey
                                 )
                             }
-                            Spacer(modifier = Modifier
-                                .height(2.dp)
-                                .padding(bottom = 2.dp))
                             Divider(
                                 thickness = 1.dp,
                                 color = topbarlightblue,
                                 modifier = Modifier.fillMaxWidth()
+                                    .padding(vertical = 2.dp)
                             )
+                            Spacer(modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 2.dp))
                             Row {
                                 Text(
                                     text = "Supplier :",
-                                    color = textcolorblue
+                                    color = textcolorblue,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
                                     text = imageitem.supplier,
                                     color = textcolorgrey
                                 )
                             }
-                            Spacer(modifier = Modifier
-                                .height(2.dp)
-                                .padding(bottom = 2.dp))
                             Divider(
                                 thickness = 1.dp,
                                 color = topbarlightblue,
                                 modifier = Modifier.fillMaxWidth()
+                                    .padding(vertical = 2.dp)
                             )
+                            Spacer(modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 2.dp))
 
                             Row(modifier = Modifier
                                 .padding(vertical = 10.dp)) {
@@ -238,7 +244,8 @@ fun Order_Screen(
                                 color = topbarlightblue,
                                 modifier = Modifier.fillMaxWidth()
                             )
-
+                            Spacer(modifier = Modifier
+                                .height(5.dp))
                             Text(
                                 text = "Feedback",
                                 color = splashdarkblue,
@@ -247,6 +254,9 @@ fun Order_Screen(
                                 modifier = Modifier
                                     .clickable {  }
                             )
+
+                            Spacer(modifier = Modifier
+                                .height(10.dp))
                         }
                     }
                  }
