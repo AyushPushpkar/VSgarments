@@ -80,9 +80,8 @@ fun Order_Screen(
     ) {
         Column {
 
-            val context = LocalContext.current
 
-            AppTopBar(navController = navController , context = context)
+            AppTopBar(navController = navController, context = LocalContext.current)
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
