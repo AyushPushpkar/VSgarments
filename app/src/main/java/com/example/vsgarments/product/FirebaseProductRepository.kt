@@ -75,29 +75,34 @@ class FirebaseProductRepository @Inject constructor(
         return snapshot.documents.mapNotNull { it.toObject(ProductItem::class.java) }
     }
 
-    override suspend fun updateProductById(id: String, updatedProduct: ProductItem) {
+    override suspend fun updateProductById(id: String, updatedProduct: ProductItem , context: Context) {
+
+        Log.d("UpdateProduct", "Updating product with ID: $id")
+
         val docRef = productsCollection.document(id)
 
         if (updatedProduct.localImageUri != null) {
 
-            // Check if the product has a previous image and delete it
-            updatedProduct.remoteImageUrl?.let { previousImageUrl ->
-
-                val fileId = extractFileIdFromUrl(previousImageUrl)
+            val product = docRef.get().await().toObject(ProductItem::class.java)
+            product?.remoteImageUrl?.let {
+                val fileId = product.id
                 appWriteStorage.deleteFile(bucketId = "6783988f000b21f9f0da", fileId = fileId)
             }
 
-            val path = Paths.get(updatedProduct.localImageUri.path)
+            val imageUri = updatedProduct.localImageUri ?: throw IllegalArgumentException("Product image URI is required")
+
+            val path = getRealPathFromURI(imageUri , context)
+                ?: throw IllegalArgumentException("Failed to resolve image URI to a file path")
 
             try {
                 val file = appWriteStorage.createFile(
                     bucketId = "6783988f000b21f9f0da",
-                    fileId = UUID.randomUUID().toString(),
+                    fileId = updatedProduct.id,
                     file = InputFile.fromPath(path.toString())
                 )
 
                 // Construct the file URL for the new image
-                val newImageUrl = "https://cloud.appwrite.io/v1/storage/buckets/6783988f000b21f9f0da/files/${file.id}/view"
+                val newImageUrl = "https://cloud.appwrite.io/v1/storage/buckets/6783988f000b21f9f0da/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin"
 
                 // Update the product with the new image URL and set localImageUri to null
                 val updatedProductWithNewImage = updatedProduct.copy(
@@ -115,20 +120,32 @@ class FirebaseProductRepository @Inject constructor(
 
         } else {
             // Update product without changing the image
-            docRef.set(updatedProduct).await()
+            try {
+                docRef.set(updatedProduct).await()
+                Log.d("UpdateProduct", "Firestore document updated successfully.")
+            } catch (e: Exception) {
+                Log.e("UpdateProduct", "Failed to update Firestore document: ${e.message}")
+            }
         }
     }
 
     override suspend fun deleteProductById(id: String) {
+
         val docRef = productsCollection.document(id)
 
         val product = docRef.get().await().toObject(ProductItem::class.java)
-        product?.remoteImageUrl?.let { imageUrl ->
-            val fileId = extractFileIdFromUrl(imageUrl)
+        product?.remoteImageUrl?.let {
+            val fileId = product.id
             appWriteStorage.deleteFile(bucketId = "6783988f000b21f9f0da", fileId = fileId)
         }
 
         docRef.delete().await()
+    }
+
+    override suspend fun getProductById(productId: String) : ProductItem? {
+        val docRef = productsCollection.document(productId)
+        val snapshot = docRef.get().await()
+        return snapshot.toObject(ProductItem::class.java)
     }
 
     private fun extractFileIdFromUrl(url: String): String {

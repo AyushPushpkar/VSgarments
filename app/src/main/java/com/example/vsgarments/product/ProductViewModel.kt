@@ -47,11 +47,11 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    fun updateProduct(product: ProductItem) {
+    fun updateProduct(productId: String , product: ProductItem) {
         viewModelScope.launch {
             _productState.value = Resource.Loading()
             try {
-                repository.updateProductById(product.id, product)
+                repository.updateProductById(productId, product)
                 loadProducts() // Refresh the list
             } catch (e: Exception) {
                 _productState.value = Resource.Error("Failed to update product: ${e.message}")
@@ -70,5 +70,18 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
+
+    fun fetchProductById(productId: String, onProductFetched: (ProductItem?) -> Unit) {
+        viewModelScope.launch {
+            _productState.value = Resource.Loading()
+            try {
+                val product = repository.getProductById(productId)
+                onProductFetched(product) // Return the fetched product via callback
+            } catch (e: Exception) {
+                _productState.value = Resource.Error("Failed to fetch product: ${e.message}")
+            }
+        }
+    }
+
 }
 
