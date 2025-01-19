@@ -1,8 +1,5 @@
 package com.example.vsgarments.layout
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -22,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +26,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,10 +33,10 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -49,23 +44,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.android.identity.documenttype.Icon
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.dataStates.ProductItem
@@ -74,17 +65,19 @@ import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.rateboxGreen
+import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.view_functions.customToast
-
-const val IMAGE_PICK_REQUEST_CODE = 1001
 
 @Composable
-fun ProductScreen(
+fun UpdateProductScreen(
     navController: NavController,
-    modifier: Modifier
+    modifier: Modifier ,
+    productId : String?
 ) {
+
+
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -100,13 +93,39 @@ fun ProductScreen(
     val maxQuantity = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     val inStock = remember { mutableStateOf(true) }
-    val imageUri = remember { mutableStateOf<Uri?>(null) }
 
-    // Use SnapshotStateMap instead of mutableMapOf
+    val remoteImageUrl = remember { mutableStateOf<String?>(null) }  // New remote image URL state
+    val localImageUri = remember { mutableStateOf<Uri?>(null) }  // New local image URI state
+
     val sizeToPriceMap = remember { mutableStateMapOf<String, SizePrice>() }
     val sizeToStockMap = remember { mutableStateMapOf<String, Boolean>() }
 
-    // Temporary state variables for adding size-specific details
+    var id = ""
+
+    LaunchedEffect(productId) {
+        productId?.let {
+            productViewModel.fetchProductById(it) { product ->
+                product?.let { item ->
+                    id = item.id
+                    productName.value = item.name
+                    companyName.value = item.CompanyName
+                    currPrice.value = item.currprice.toString()
+                    ogPrice.value = item.ogprice.toString()
+                    rating.value = item.rating.toString()
+                    minQuantity.value = item.minQuantity.toString()
+                    maxQuantity.value = item.maxQuantity.toString()
+                    description.value = item.description
+                    inStock.value = item.inStock
+                    remoteImageUrl.value = item.remoteImageUrl
+                    sizeToPriceMap.clear()
+                    sizeToPriceMap.putAll(item.sizeToPriceMap)
+                    sizeToStockMap.clear()
+                    sizeToStockMap.putAll(item.sizeToStockMap)
+                }
+            }
+        }
+    }
+
     val sizeInput = remember { mutableStateOf("") }
     val sizeCurrPrice = remember { mutableStateOf("") }
     val sizeOgPrice = remember { mutableStateOf("") }
@@ -115,7 +134,7 @@ fun ProductScreen(
     // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
-            imageUri.value = uri
+            localImageUri.value = uri
             Toast.makeText(context, "Image selected successfully", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "Image selection canceled", Toast.LENGTH_SHORT).show()
@@ -264,14 +283,72 @@ fun ProductScreen(
                 Text(text = "Add Size Details")
             }
 
+            Text(text = "Edit Size Details")
+
+            // Dynamically add editable components for each size
+            sizeToPriceMap.keys.forEach { size ->
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .background(tintGrey)
+                        .padding(8.dp)
+                ) {
+                    Text(text = "Size: $size")
+
+                    OutlinedTextField(
+                        value = sizeToPriceMap[size]?.currentPrice?.toString() ?: "",
+                        onValueChange = {
+                            val ogPrice = sizeToPriceMap[size]?.originalPrice ?: 0
+                            sizeToPriceMap[size] = SizePrice(it.toIntOrNull() ?: 0, ogPrice)
+                        },
+                        label = { Text("Current Price for $size") },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+
+                    OutlinedTextField(
+                        value = sizeToPriceMap[size]?.originalPrice?.toString() ?: "",
+                        onValueChange = {
+                            val currPrice = sizeToPriceMap[size]?.currentPrice ?: 0
+                            sizeToPriceMap[size] = SizePrice(currPrice, it.toIntOrNull() ?: 0)
+                        },
+                        label = { Text("Original Price for $size") },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = sizeToStockMap[size] ?: false,
+                            onCheckedChange = { sizeToStockMap[size] = it }
+                        )
+                        Text(text = "In Stock for $size")
+                    }
+
+                    IconButton(
+                        onClick = {
+                            sizeToPriceMap.remove(size)
+                            sizeToStockMap.remove(size)
+                            Toast.makeText(context, "Size removed", Toast.LENGTH_SHORT).show()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Remove Size"
+                        )
+                    }
+                }
+            }
+
             Button(
                 onClick = { imagePickerLauncher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Select Product Image")
+                Text(text = "" +
+                        "Update Product Image")
             }
 
-            imageUri.value?.let { uri ->
+            localImageUri.value?.let { uri ->
                 Text(text = "Image Selected: ${uri.lastPathSegment}")
             }
 
@@ -294,6 +371,7 @@ fun ProductScreen(
                     }
 
                     val productItem = ProductItem(
+                        id = id,
                         name = productName.value,
                         CompanyName = companyName.value,
                         currprice = currPrice.value.toIntOrNull() ?: 0,
@@ -305,16 +383,19 @@ fun ProductScreen(
                         inStock = inStock.value,
                         sizeToPriceMap = sizeToPriceMap,
                         sizeToStockMap = sizeToStockMap ,
-                        localImageUri = imageUri.value
+                        remoteImageUrl = remoteImageUrl.value,
+                        localImageUri = localImageUri.value
                     )
 
-                    productViewModel.addProduct(productItem , context)
+                    if (productId != null) {
+                        productViewModel.updateProduct(productId = productId , product = productItem)
+                    }
 
                     Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Add Product")
+                Text(text = "Update Product")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -342,11 +423,9 @@ fun ProductScreen(
                                     product = product ,
                                     onDeleteClick = {
                                         productViewModel.deleteProduct(product.id)
-                                        customToast(context, "Product deleted successfully!")
+                                        Toast.makeText(context, "Product deleted successfully!", Toast.LENGTH_SHORT).show()
                                     } ,
-                                    onUpdateClick = {
-                                        navController.navigate("${Screen.UpdateProductScreen.route}/${product.id}")
-                                    }
+                                    onUpdateClick = {}
                                 )
                             }
                         }
@@ -429,7 +508,7 @@ fun ProductScreen(
                     )
                     Spacer(modifier = Modifier.width(50.dp))
                     Text(
-                        text = "Product Details",
+                        text = "Update Product ",
                         fontSize = 23.sp,
                         color = Color.Black,
                         fontFamily = fontBaloo,
@@ -437,110 +516,6 @@ fun ProductScreen(
                     )
                 }
 
-            }
-        }
-    }
-}
-
-@Composable
-fun ProductItemCard(
-    product: ProductItem ,
-    onDeleteClick: (ProductItem) -> Unit,
-    onUpdateClick: (ProductItem) -> Unit
-) {
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                vertical = 8.dp,
-                horizontal = 16.dp
-            ),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(
-                    onClick = { onUpdateClick(product) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Update Product",
-                        tint = Color.Blue
-                    )
-                }
-
-                IconButton(
-                    onClick = { onDeleteClick(product) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Product",
-                        tint = Color.Red
-                    )
-                }
-            }
-
-            // Display the product image if available
-            // Load and display the image
-            product.remoteImageUrl?.let { imageUrl ->
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageUrl)
-                        .crossfade(true)
-                        .error(R.drawable.retail) // Add a placeholder image for errors
-                        .placeholder(R.drawable.custom) // Add a placeholder for loading
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp) // Adjust height as needed
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.LightGray),
-                    contentScale = ContentScale.Crop ,
-                    onError = { error ->
-                        Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
-                    }
-                )
-            } ?: Text(
-                text = "No image available",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(Color.LightGray)
-                    .wrapContentHeight(Alignment.CenterVertically),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = product.name,
-            )
-            Text(text = "Company: ${product.CompanyName}")
-            Text(text = "Price: \$${product.currprice} (Original: \$${product.ogprice})")
-            Text(text = "Rating: ${product.rating}")
-            Text(text = "Min Quantity: ${product.minQuantity}")
-            Text(text = "Max Quantity: ${product.maxQuantity}")
-            Text(text = "Description: ${product.description}")
-            Text(text = "In Stock: ${if (product.inStock) "Yes" else "No"}")
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Display Sizes and their prices/stock
-            Text(text = "Available Sizes:")
-            product.sizeToPriceMap.forEach { (size, price) ->
-                val (currPrice, ogPrice) = price
-                Text(text = "$size: Price - \$${currPrice} / \$${ogPrice}, In Stock: ${if (product.sizeToStockMap[size] == true) "Yes" else "No"}")
             }
         }
     }
