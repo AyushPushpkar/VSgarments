@@ -10,7 +10,8 @@ import javax.inject.Singleton
 interface ProductRepository {
     suspend fun addProduct(product: ProductItem , context: Context): String
     suspend fun getProducts(): List<ProductItem>
-    suspend fun updateProductById(id: String, updatedProduct: ProductItem)
+    suspend fun updateProductById(id: String, updatedProduct: ProductItem , context: Context)
     suspend fun deleteProductById(id: String)
+    suspend fun getProductById(productId: String) : ProductItem?
 }
 
