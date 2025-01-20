@@ -42,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -111,6 +112,10 @@ fun ProductScreen(
     val sizeCurrPrice = remember { mutableStateOf("") }
     val sizeOgPrice = remember { mutableStateOf("") }
     val sizeInStock = remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        productViewModel.loadProducts()
+    }
 
     // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -333,7 +338,8 @@ fun ProductScreen(
                     // Check if the list is not null and has items
                     if (!products.isNullOrEmpty()) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .height(600.dp)
                         ) {
                             items(products.size) { index ->
@@ -492,6 +498,7 @@ fun ProductItemCard(
 
             // Display the product image if available
             // Load and display the image
+
             product.remoteImageUrl?.let { imageUrl ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)

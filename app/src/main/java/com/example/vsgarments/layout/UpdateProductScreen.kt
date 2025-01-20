@@ -69,6 +69,8 @@ import com.example.vsgarments.ui.theme.rateboxGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.customToast
+import java.util.UUID
 
 @Composable
 fun UpdateProductScreen(
@@ -82,7 +84,7 @@ fun UpdateProductScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val productViewModel: ProductViewModel = hiltViewModel()
-    val productState by productViewModel.productState.collectAsState()
+    val productState by productViewModel.updateProductState.collectAsState()
 
     val productName = remember { mutableStateOf("") }
     val companyName = remember { mutableStateOf("") }
@@ -100,13 +102,10 @@ fun UpdateProductScreen(
     val sizeToPriceMap = remember { mutableStateMapOf<String, SizePrice>() }
     val sizeToStockMap = remember { mutableStateMapOf<String, Boolean>() }
 
-    var id = ""
-
-    LaunchedEffect(productId) {
+    LaunchedEffect(Unit) {
         productId?.let {
             productViewModel.fetchProductById(it) { product ->
                 product?.let { item ->
-                    id = item.id
                     productName.value = item.name
                     companyName.value = item.CompanyName
                     currPrice.value = item.currprice.toString()
@@ -371,7 +370,7 @@ fun UpdateProductScreen(
                     }
 
                     val productItem = ProductItem(
-                        id = id,
+                        id = productId ?: UUID.randomUUID().toString(),
                         name = productName.value,
                         CompanyName = companyName.value,
                         currprice = currPrice.value.toIntOrNull() ?: 0,
@@ -388,19 +387,15 @@ fun UpdateProductScreen(
                     )
 
                     if (productId != null) {
-                        productViewModel.updateProduct(productId = productId , product = productItem)
+                        productViewModel.updateProduct(productId = productId , product = productItem , context)
                     }
 
-                    Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Update Product")
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(text = "Product List")
 
             when (productState) {
                 is Resource.Loading -> {
@@ -408,36 +403,16 @@ fun UpdateProductScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
                 is Resource.Success -> {
-                    // Safely handle the products list, which could be null
-                    val products = (productState as Resource.Success<List<ProductItem>>).data
 
-                    // Check if the list is not null and has items
-                    if (!products.isNullOrEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxWidth()
-                                .height(600.dp)
-                        ) {
-                            items(products.size) { index ->
-                                val product = products[index]
-                                ProductItemCard(
-                                    product = product ,
-                                    onDeleteClick = {
-                                        productViewModel.deleteProduct(product.id)
-                                        Toast.makeText(context, "Product deleted successfully!", Toast.LENGTH_SHORT).show()
-                                    } ,
-                                    onUpdateClick = {}
-                                )
-                            }
-                        }
-                    } else {
-                        Text(
-                            text = "No products available",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
+                    Button(
+                        onClick = {navController.navigate(Screen.AddresScreen.route)}
+                    ) {
+                        Text(text = "Go Back" )
                     }
+
+                    customToast(context, "Product added successfully!" , cancelable = true)
                 }
                 is Resource.Error -> {
-                    // Show error message
                     Text(
                         text = (productState as Resource.Error).errorMassage ?: "Unknown error",
                         color = Color.Red,
@@ -446,11 +421,6 @@ fun UpdateProductScreen(
                     Log.e("ProductScreen", "Error loading products: ${productState.errorMassage}")
                 }
                 else -> {
-                    // Handle unspecified state or no data
-                    Text(
-                        text = "No products available",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
                 }
             }
 
@@ -503,7 +473,7 @@ fun UpdateProductScreen(
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
-                                navController.navigate(Screen.Profile_Screen.route)
+                                navController.navigate(Screen.AddresScreen.route)
                             }
                     )
                     Spacer(modifier = Modifier.width(50.dp))
