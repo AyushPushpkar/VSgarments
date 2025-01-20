@@ -19,11 +19,14 @@ class ProductViewModel @Inject constructor(
     private val _productState = MutableStateFlow<Resource<List<ProductItem>>>(Resource.Unspecified())
     val productState: StateFlow<Resource<List<ProductItem>>> = _productState
 
+    private val _updateProductState = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
+    val updateProductState: StateFlow<Resource<Unit>> = _updateProductState
+
     init {
         loadProducts()
     }
 
-    private fun loadProducts() {
+     fun loadProducts() {
         viewModelScope.launch {
             _productState.value = Resource.Loading()
             try {
@@ -47,17 +50,28 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    fun updateProduct(productId: String , product: ProductItem) {
+    fun updateProduct(productId: String , product: ProductItem , context: Context) {
         viewModelScope.launch {
-            _productState.value = Resource.Loading()
+            _updateProductState.value = Resource.Loading()
             try {
-                repository.updateProductById(productId, product)
-                loadProducts() // Refresh the list
+                repository.updateProductById(productId, product , context)
+                _updateProductState.value = Resource.Success(Unit)
             } catch (e: Exception) {
-                _productState.value = Resource.Error("Failed to update product: ${e.message}")
+                _updateProductState.value = Resource.Error("Failed to update product: ${e.message}")
             }
         }
     }
+//    fun updateProduct(productId: String , product: ProductItem , context: Context) {
+//        viewModelScope.launch {
+//            _productState.value = Resource.Loading()
+//            try {
+//                repository.updateProductById(productId, product , context)
+//                loadProducts()
+//            } catch (e: Exception) {
+//                _productState.value = Resource.Error("Failed to update product: ${e.message}")
+//            }
+//        }
+//    }
 
     fun deleteProduct(productId: String) {
         viewModelScope.launch {
