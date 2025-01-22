@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
@@ -78,8 +79,8 @@ fun Signup_Screen(
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val emailFocusRequester = remember { FocusRequester() }
-    val passwordFocusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     val viewModel: RegisterViewModel = hiltViewModel()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -93,6 +94,9 @@ fun Signup_Screen(
                     horizontal = 50.dp,
                     vertical = 30.dp
                 )
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(26.dp)
         ) {
@@ -106,9 +110,8 @@ fun Signup_Screen(
                 fontFamily = fontInter,
                 fontWeight = FontWeight.SemiBold
             )
-            char_editText(Modifier,"Username", fontInter, name){
-                name = it
-            }
+            char_editText(Modifier,"Username", fontInter, name , focusRequester = focusRequester , onTextChange = { name = it})
+
             char_editText(
                 modifier = Modifier ,
                 "Email ",
@@ -116,8 +119,8 @@ fun Signup_Screen(
                 email ,
                 onTextChange = {
                     email = it
-                }
-
+                },
+                focusRequester = focusRequester
             )
             char_editText(
                 modifier = Modifier ,
@@ -126,8 +129,8 @@ fun Signup_Screen(
                 _password ,
                 onTextChange = {
                     _password = it
-                }
-
+                },
+                focusRequester = focusRequester
             )
             char_editText(
                 modifier = Modifier,
@@ -136,8 +139,8 @@ fun Signup_Screen(
                 repeatPassword ,
                 onTextChange = {
                     repeatPassword = it
-                }
-
+                },
+                focusRequester
             )
             Spacer(
                 modifier = Modifier

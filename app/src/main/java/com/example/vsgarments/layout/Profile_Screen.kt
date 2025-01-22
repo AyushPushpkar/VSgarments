@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -55,6 +56,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -171,7 +173,12 @@ fun Profile_Screen(
                             color = topbarlightblue,
                             width = 3.dp
                         )
-                        .padding(start = 5.dp , end = if (userName.isNotEmpty()) 10.dp else 5.dp , top = 5.dp , bottom = 5.dp)
+                        .padding(
+                            start = 5.dp,
+                            end = if (userName.isNotEmpty()) 10.dp else 5.dp,
+                            top = 5.dp,
+                            bottom = 5.dp
+                        )
                         .clickable {
                             navController.navigate(Screen.EditProfile_Screen.route)
 
@@ -621,6 +628,13 @@ fun Login_dialog(
     onDismissRequest: () -> Unit,
 ) {
 
+    val focusManager = LocalFocusManager.current
+    val focusRequester = FocusRequester()
+
+    var number by remember {
+        mutableStateOf("")
+    }
+
     AnimatedVisibility(
         visible = initiallyOpened,
         enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
@@ -630,6 +644,9 @@ fun Login_dialog(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0x4DB6E9FF))
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
         ) {
             Box(
                 modifier = Modifier
@@ -693,7 +710,10 @@ fun Login_dialog(
                 number_editText(
                     hint = "Mobile Number",
                     char_no = 10,
-                    font_Family = fontInter
+                    font_Family = fontInter,
+                    focusRequester = focusRequester ,
+                    text = number ,
+                    onTextChange = {number = it}
                 )
 
                 Column {

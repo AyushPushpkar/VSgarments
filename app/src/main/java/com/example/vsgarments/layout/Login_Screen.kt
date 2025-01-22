@@ -36,10 +36,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
@@ -86,6 +88,9 @@ fun LoginScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
     Box (
         modifier = modifier
             .fillMaxSize()
@@ -101,6 +106,9 @@ fun LoginScreen(
                     horizontal = 50.dp,
                     vertical = 30.dp
                 )
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(26.dp)
         ) {
@@ -145,30 +153,12 @@ fun LoginScreen(
                     text = _email,
                     onTextChange = {
                         _email = it
-                    }
-
+                    },
+                    focusRequester = focusRequester
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
 
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 16.dp),
-//                    contentAlignment = Alignment.CenterEnd
-//                ) {
-//                    Text(
-//                        modifier = Modifier
-//                            .clickable {
-//                                isEmail = !isEmail
-//                            },
-//                        text = if (isEmail) "Use Mobile number" else "Use Email-id",
-//                        color = textcolorblue,
-//                        fontSize = 12.sp,
-//                        fontFamily = fontInter,
-//                        fontWeight = FontWeight.SemiBold,
-//                    )
-//                }
             }
 
             char_editText(
@@ -178,8 +168,8 @@ fun LoginScreen(
                 _password,
                 onTextChange = {
                     _password = it
-                }
-
+                } ,
+                focusRequester = focusRequester
             )
 
 
@@ -386,6 +376,9 @@ fun ForgotPasswordDialog(
 
     val loginViewModel : LoginViewModel = hiltViewModel()
 
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
     AnimatedVisibility(
         visible = initiallyOpened,
         enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
@@ -395,6 +388,9 @@ fun ForgotPasswordDialog(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0x4DB6E9FF))
+                .pointerInput(Unit) {
+                detectTapGestures(onTap = { focusManager.clearFocus() })
+            }
         ) {
             Box(
                 modifier = Modifier
@@ -459,10 +455,10 @@ fun ForgotPasswordDialog(
                     modifier = Modifier,
                     hint = "Email",
                     font_Family = fontInter,
-                    text = _email
-                ) {
-                    _email = it
-                }
+                    text = _email ,
+                    onTextChange = {_email = it},
+                    focusRequester = focusRequester
+                )
 
 
                 Spacer(
