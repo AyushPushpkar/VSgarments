@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,9 +47,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -65,11 +70,18 @@ import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.rateboxGreen
+import com.example.vsgarments.ui.theme.textcolorblue
+import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.CheckBoxWithText
+import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
+import com.example.vsgarments.view_functions.number_editText
 import java.util.UUID
 
 @Composable
@@ -140,6 +152,9 @@ fun UpdateProductScreen(
         }
     }
 
+    val focusManager = LocalFocusManager.current
+    val focusRequester = FocusRequester()
+
     Box (
         modifier = modifier
             .fillMaxSize()
@@ -152,115 +167,129 @@ fun UpdateProductScreen(
                 .background(Color.White)
                 .padding(
                     horizontal = 50.dp,
-                    vertical = 30.dp
                 )
                 .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
                 .verticalScroll(productScroll),
             verticalArrangement = Arrangement.spacedBy(26.dp)
         ) {
+            
+            Spacer(modifier = Modifier.height(80.dp))
 
             Text(
-                text = "Add New Product",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                text = "Update Product",
+                modifier = Modifier.align(Alignment.CenterHorizontally) ,
+                color = tintGrey
             )
 
             // Input Fields
-            OutlinedTextField(
-                value = productName.value,
-                onValueChange = { productName.value = it },
-                label = { Text("Product Name") },
-                modifier = Modifier.fillMaxWidth()
+            char_editText(
+                text = productName.value,
+                onTextChange = { productName.value = it },
+                hint = "Product Name",
+                modifier = Modifier.fillMaxWidth() ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = companyName.value,
-                onValueChange = { companyName.value = it },
-                label = { Text("Company Name") },
-                modifier = Modifier.fillMaxWidth()
+            char_editText(
+                text = companyName.value,
+                onTextChange = { companyName.value = it },
+                hint = "Company Name",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = currPrice.value,
-                onValueChange = { currPrice.value = it },
-                label = { Text("Current Price") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = currPrice.value,
+                onTextChange = { currPrice.value = it },
+                hint = "Current Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = ogPrice.value,
-                onValueChange = { ogPrice.value = it },
-                label = { Text("Original Price") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = ogPrice.value,
+                onTextChange = { ogPrice.value = it },
+                hint = "Original Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = minQuantity.value,
-                onValueChange = { minQuantity.value = it },
-                label = { Text("Minimum Quantity") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = minQuantity.value,
+                onTextChange = { minQuantity.value = it },
+                hint = "Minimum Quantity",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = maxQuantity.value,
-                onValueChange = { maxQuantity.value = it },
-                label = { Text("Maximum Quantity") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = maxQuantity.value,
+                onTextChange = { maxQuantity.value = it },
+                hint = "Maximum Quantity",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = description.value,
-                onValueChange = { description.value = it },
-                label = { Text("Description") },
-                modifier = Modifier.fillMaxWidth()
+            char_editText(
+                text = description.value ,
+                onTextChange = { description.value = it },
+                hint = "Description" ,
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            // In-stock Checkbox
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = inStock.value,
-                    onCheckedChange = { inStock.value = it }
-                )
-                Text(text = "In Stock")
-            }
-
-            Text(text = "Add Size Details")
-
-            OutlinedTextField(
-                value = sizeInput.value,
-                onValueChange = { sizeInput.value = it },
-                label = { Text("Size") },
-                modifier = Modifier.fillMaxWidth()
+            CheckBoxWithText(
+                isChecked = inStock.value,
+                onCheckedChange = {inStock.value = it} ,
+                text = "In Stock"
             )
 
-            OutlinedTextField(
-                value = sizeCurrPrice.value,
-                onValueChange = { sizeCurrPrice.value = it },
-                label = { Text("Current Price for Size") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            Text(text = "Add Size Details" , color = tintGrey)
+
+            char_editText(
+                text = sizeInput.value,
+                onTextChange = { sizeInput.value = it },
+                hint = "Size",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = sizeOgPrice.value,
-                onValueChange = { sizeOgPrice.value = it },
-                label = { Text("Original Price for Size") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = sizeCurrPrice.value,
+                onTextChange = { sizeCurrPrice.value = it },
+                hint = "Current Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = sizeInStock.value,
-                    onCheckedChange = { sizeInStock.value = it }
-                )
-                Text(text = "In Stock for Size")
-            }
+            number_editText(
+                text = sizeOgPrice.value,
+                onTextChange = { sizeOgPrice.value = it },
+                hint = "Original Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
+            )
 
-            Button(
+            CheckBoxWithText(
+                isChecked = sizeInStock.value,
+                onCheckedChange = {sizeInStock.value = it},
+                text = "In Stock for Size"
+            )
+
+            blue_Button(
                 onClick = {
                     val size = sizeInput.value
                     val currPriceVal = sizeCurrPrice.value.toIntOrNull()
@@ -277,52 +306,52 @@ fun UpdateProductScreen(
                         Toast.makeText(context, "Invalid size details", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Add Size Details")
-            }
+                width_fraction = 0.9f,
+                button_text = "Add Size Details",
+                font_Family = fontBaloo
+            )
 
-            Text(text = "Edit Size Details")
+            Text(
+                text = "Edit Size Details" ,
+                color = tintGrey
+            )
 
-            // Dynamically add editable components for each size
             sizeToPriceMap.keys.forEach { size ->
                 Column(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
-                        .background(tintGrey)
+                        .background(tintGreen)
                         .padding(8.dp)
                 ) {
-                    Text(text = "Size: $size")
+                    Text(text = "Size: $size", color = textcolorblue)
 
-                    OutlinedTextField(
-                        value = sizeToPriceMap[size]?.currentPrice?.toString() ?: "",
-                        onValueChange = {
+                    number_editText(
+                        text = sizeToPriceMap[size]?.currentPrice?.toString() ?: "",
+                        onTextChange = {
                             val ogPrice = sizeToPriceMap[size]?.originalPrice ?: 0
                             sizeToPriceMap[size] = SizePrice(it.toIntOrNull() ?: 0, ogPrice)
                         },
-                        label = { Text("Current Price for $size") },
-                        modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        hint = "Current Price for $size",
+                        focusRequester = focusRequester ,
+                        font_Family = fontInter
                     )
 
-                    OutlinedTextField(
-                        value = sizeToPriceMap[size]?.originalPrice?.toString() ?: "",
-                        onValueChange = {
+                    number_editText(
+                        text = sizeToPriceMap[size]?.originalPrice?.toString() ?: "",
+                        onTextChange = {
                             val currPrice = sizeToPriceMap[size]?.currentPrice ?: 0
                             sizeToPriceMap[size] = SizePrice(currPrice, it.toIntOrNull() ?: 0)
                         },
-                        label = { Text("Original Price for $size") },
-                        modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        hint = "Original Price for $size",
+                        focusRequester = focusRequester ,
+                        font_Family = fontInter
                     )
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = sizeToStockMap[size] ?: false,
-                            onCheckedChange = { sizeToStockMap[size] = it }
-                        )
-                        Text(text = "In Stock for $size")
-                    }
+                    CheckBoxWithText(
+                        isChecked = sizeToStockMap[size] ?: false,
+                        onCheckedChange = { sizeToStockMap[size] = it },
+                        text = "In Stock for $size"
+                    )
 
                     IconButton(
                         onClick = {
@@ -333,40 +362,41 @@ fun UpdateProductScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Remove Size"
+                            contentDescription = "Remove Size" ,
+                            tint = topbardarkblue
                         )
                     }
                 }
             }
 
-            Button(
-                onClick = { imagePickerLauncher.launch("image/*") },
-                modifier = Modifier.fillMaxWidth()
+            blue_Button(
+                width_fraction = 0.9f,
+                button_text = "Update Product Image",
+                font_Family = fontBaloo
             ) {
-                Text(text = "" +
-                        "Update Product Image")
+                imagePickerLauncher.launch("image/*")
             }
 
             localImageUri.value?.let { uri ->
                 Text(text = "Image Selected: ${uri.lastPathSegment}")
             }
 
-
-            // Add Product Button
-            Button(
+            blue_Button(
+                width_fraction = 0.9f,
+                button_text = "Update Product",
+                font_Family = fontBaloo,
                 onClick = {
-
                     if (productName.value.isBlank() || companyName.value.isBlank()) {
                         Toast.makeText(context, "Product name and company name are required", Toast.LENGTH_SHORT).show()
-                        return@Button
+                        return@blue_Button
                     }
                     if (currPrice.value.isBlank() || currPrice.value.toIntOrNull() == null) {
                         Toast.makeText(context, "Invalid current price", Toast.LENGTH_SHORT).show()
-                        return@Button
+                        return@blue_Button
                     }
                     if (ogPrice.value.isBlank() || ogPrice.value.toIntOrNull() == null) {
                         Toast.makeText(context, "Invalid original price", Toast.LENGTH_SHORT).show()
-                        return@Button
+                        return@blue_Button
                     }
 
                     val productItem = ProductItem(
@@ -389,13 +419,10 @@ fun UpdateProductScreen(
                     if (productId != null) {
                         productViewModel.updateProduct(productId = productId , product = productItem , context)
                     }
+                }
+            )
 
-
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Update Product")
-            }
+            Spacer(modifier = Modifier.height(30.dp))
 
             when (productState) {
                 is Resource.Loading -> {
