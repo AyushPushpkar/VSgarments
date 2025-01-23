@@ -44,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -154,6 +155,8 @@ fun UpdateProductScreen(
 
     val focusManager = LocalFocusManager.current
     val focusRequester = FocusRequester()
+
+    var buttontext by remember { mutableStateOf("Wait ✋") }
 
     Box (
         modifier = modifier
@@ -422,6 +425,19 @@ fun UpdateProductScreen(
                 }
             )
 
+            Row (
+                modifier = Modifier.fillMaxWidth() ,
+                horizontalArrangement = Arrangement.Center
+            ){
+                blue_Button(
+                    width_fraction = 0.7f,
+                    button_text = buttontext,
+                    font_Family = fontBaloo
+                ) {
+                    navController.navigate(Screen.AddresScreen.route)
+                }
+            }
+
             Spacer(modifier = Modifier.height(30.dp))
 
             when (productState) {
@@ -431,11 +447,7 @@ fun UpdateProductScreen(
                 }
                 is Resource.Success -> {
 
-                    Button(
-                        onClick = {navController.navigate(Screen.AddresScreen.route)}
-                    ) {
-                        Text(text = "Go Back" )
-                    }
+                    buttontext = "Go Back"
 
                     customToast(context, "Product added successfully!" , cancelable = true)
                 }
