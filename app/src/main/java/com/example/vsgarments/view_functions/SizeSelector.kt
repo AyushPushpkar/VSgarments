@@ -34,16 +34,18 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.ProductItem
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 
 @Composable
 fun SizeSelection(
-    imageItem: ImageItem,
-    onSizeUpdated: (ImageItem) -> Unit
+    imageItem: ProductItem,
+    onSizeUpdated: (ProductItem) -> Unit
 ) {
-    val availableSizes = imageItem.sizeToPriceMap.keys.toList()
+    val predefinedSizeOrder = listOf("XS", "S", "M", "L", "XL", "XXL" , "Free")
+    val availableSizes = imageItem.sizeToPriceMap.keys.sortedWith(compareBy { predefinedSizeOrder.indexOf(it) })
     var selectedSize by remember { mutableStateOf(imageItem.size ?: "S") }
 
     Column(
@@ -81,7 +83,7 @@ fun SizeSelection(
                         )
                 ) {
                     val price = imageItem.sizeToPriceMap[clothSize]
-                    val currPrice = price?.first
+                    val currPrice = price?.currentPrice
                     Column {
                         Text(text = clothSize)
 //                        Text(text = "₹$currPrice")
