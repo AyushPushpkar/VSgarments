@@ -45,6 +45,10 @@ data class ImageItem(
 
 }
 
+enum class Size {
+    XS, S, M, L, XL, XXL, Free
+}
+
 data class SizePrice(val currentPrice: Int, val originalPrice: Int){
 
     constructor() : this (
@@ -92,12 +96,29 @@ data class ProductItem(
         orderType = "Unknown",
         supplier = "Unknown",
         size = null,
-        sizeToPriceMap = emptyMap(),
+        sizeToPriceMap = mapOf(
+            "XS" to SizePrice(0, 0),
+            "S" to SizePrice(0, 0),
+            "M" to SizePrice(0, 0),
+            "L" to SizePrice(0, 0),
+            "XL" to SizePrice(0, 0),
+            "XXL" to SizePrice(0, 0),
+        ),
         inStock = true,
         sizeToStockMap = emptyMap(),
         productDetails = emptyMap(),
         description = "No description available"
     )
+
+    fun updatePriceBasedOnSize(defaultSize: String? = null) {
+        val selectedSize = size ?: defaultSize
+        selectedSize?.let {
+            sizeToPriceMap[it]?.let { (newCurrPrice, newOgPrice) ->
+                currprice = newCurrPrice
+                ogprice = newOgPrice
+            }
+        }
+    }
 
 }
 

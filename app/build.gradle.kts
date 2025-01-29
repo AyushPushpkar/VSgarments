@@ -118,5 +118,7 @@ dependencies {
     //appwrite
     implementation("io.appwrite:sdk-for-android:6.1.0")
 
+    //shimmer
+    implementation ("com.valentinilk.shimmer:compose-shimmer:1.0.5")
 
 }
