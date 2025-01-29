@@ -1,6 +1,7 @@
 package com.example.vsgarments.layout
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -17,12 +18,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +55,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,8 +63,12 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontInter
@@ -60,11 +77,19 @@ import com.example.vsgarments.ui.theme.lightblack
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
 import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.ProductItem
 import com.example.vsgarments.dataStates.imageList
+import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontKalnia
+import com.example.vsgarments.ui.theme.textcolorgrey
+import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.customToast
 import com.google.gson.Gson
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import java.net.URLEncoder
 @Composable
 fun HomeScreen(
@@ -80,158 +105,87 @@ fun HomeScreen(
         Column {
 
             val context = LocalContext.current
-
+            val productViewModel: ProductViewModel = hiltViewModel()
+            val productState by productViewModel.productState.collectAsState()
 
             AppTopBar(navController = navController , context = context)
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                itemsIndexed(imageList.chunked(2)) { _, pair ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        pair.forEach { imageitem ->
-                            val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
-                            Column(
-                                modifier = Modifier
-                                    .width(screenwidth / 2)
-                                    .padding(10.dp)
+            when (productState) {
+                is Resource.Loading -> {
+                    LazyColumn {
+                        val shimmerPlaceholders = List(8) { it }
+                        val chunkedPlaceholders = shimmerPlaceholders.chunked(2)
+
+                        items(chunkedPlaceholders.size) { chunkIndex ->
+                            val chunk = chunkedPlaceholders[chunkIndex]
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                val imageItemJson = Gson().toJson(imageitem)
-                                val encodedImageItem = URLEncoder.encode(imageItemJson, "UTF-8")
-
-                                Image(
-                                    painter = painterResource(id = imageitem.imageresId),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .align(alignment = Alignment.CenterHorizontally)
-                                        .fillMaxWidth()
-                                        .height(278.dp)
-                                        .clip(shape = RoundedCornerShape(10))
-                                        .clickable {
-                                            navController.navigate("${Screen.DisplayScreen.route}/$encodedImageItem")
-                                        }
-
-                                )
-                                Row {
-                                    Column(modifier = Modifier
-                                        .fillMaxSize(.85f)) {
-                                        Text(
-                                            text = imageitem.CompanyName,
-                                            color = lightblack,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontFamily = fontInter
-                                        )
-                                        Text(
-                                            text = imageitem.name,
-                                            color = grey,
-                                            fontSize = 14.sp,
-                                            fontFamily = fontInter,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier
-                                                .offset(y = -(3).dp)
-                                        )
-                                        Row{
-                                            Text(
-                                                text = "₹${imageitem.ogprice}",
-                                                color = grey,
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.Normal,
-                                                fontFamily = fontInter,
-                                                textDecoration = TextDecoration.LineThrough,
-                                                maxLines = 1,
-                                                modifier = Modifier
-                                                    .offset(y = -(5).dp)
-                                            )
-                                             Spacer(modifier = Modifier
-                                                 .width(5.dp))
-                                            Text(
-                                                text = "₹${imageitem.currprice}",
-                                                color = lightblack,
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.SemiBold,
-                                                fontFamily = fontInter,
-                                                overflow = TextOverflow.Clip,
-                                                maxLines = 1,
-                                                modifier = Modifier
-                                                    .offset(y = -(5).dp)
-                                            )
-                                        }
-                                        Box(modifier = Modifier
-                                            .height(35.dp)
-                                            .padding(vertical = 3.dp)
-                                            .width(80.dp)
-                                            .offset(y = -(3.dp))
-                                            .clip(
-                                                object : Shape{
-                                                    override fun createOutline(
-                                                        size: Size,
-                                                        layoutDirection: LayoutDirection,
-                                                        density: Density
-                                                    ): Outline {
-                                                        val path = Path().apply {
-                                                            moveTo(
-                                                                x = 0f,
-                                                                y = 0f
-                                                            )
-                                                            lineTo(
-                                                                x = size.width,
-                                                                y = 0f
-                                                            )
-                                                            lineTo(
-                                                                x =( size.width * .9f),
-                                                                y = size.height
-                                                            )
-                                                            lineTo(
-                                                                x = 0f,
-                                                                y = size.height
-                                                            )
-                                                            lineTo(
-                                                                x = 0f,
-                                                                y = 0f
-                                                            )
-                                                            close()
-                                                        }
-                                                        return Outline.Generic(path)
-                                                    }
-                                                }
-                                            )
-                                            .background(topbarlightblue)){
-                                            val pl= percentLess(imageitem.ogprice , imageitem.currprice);
-                                            Text(
-                                                text = "${pl}% off",
-                                                color = Color.White,
-                                                fontSize = 14.sp,
-                                                fontWeight = FontWeight.SemiBold,
-                                                overflow = TextOverflow.Clip,
-                                                maxLines = 1,
-                                                modifier = Modifier
-                                                    .padding(top = 2.dp, start = 5.dp)
-
-                                            )
-                                        }
-                                    }
-                                    HeartCheckBox(
-                                        context = context,
-                                        uid = imageitem.name
-                                    )
+                                chunk.forEach {
+                                    ShimmerLoadingEffect()
                                 }
                             }
                         }
                     }
 
                 }
+                is Resource.Success -> {
+                    val products = (productState as Resource.Success<List<ProductItem>>).data
 
-                item {
-                    Spacer(modifier = Modifier
-                        .height(75.dp)
-                        .background(appbackgroundcolor))
+                    if (!products.isNullOrEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+
+                            val productChunks = products.chunked(2)
+                            items(productChunks.size) { chunkIndex ->
+                                val chunk = productChunks[chunkIndex]
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    chunk.forEach { product ->
+                                        HomeItemCard(
+                                            product = product,
+                                            context = context ,
+                                            navController = navController
+                                        )
+                                    }
+                                }
+                            }
+
+                            item {
+                                Spacer(modifier = Modifier
+                                    .height(75.dp)
+                                    .background(appbackgroundcolor))
+                            }
+                        }
+                    } else {
+                        Text(
+                            text = "No products available",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    // Show error message
+                    Text(
+                        text = (productState as Resource.Error).errorMassage ?: "Unknown error",
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Log.e("ProductScreen", "Error loading products: ${productState.errorMassage}")
+                }
+                else -> {
+                    // Handle unspecified state or no data
+                    Text(
+                        text = "No products available",
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 }
             }
         }
@@ -283,5 +237,265 @@ fun HeartCheckBox(context: Context,uid: String){
         )
     }
 }
+
+@Composable
+fun HomeItemCard(
+    product: ProductItem ,
+    navController: NavController ,
+    context: Context
+) {
+
+    val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
+
+    val imageItemJson = Gson().toJson(product)
+    val encodedProductItem = URLEncoder.encode(imageItemJson, "UTF-8")
+
+    Column(
+            modifier = Modifier
+                .width(screenwidth / 2)
+                .padding(10.dp)
+        ) {
+
+            product.remoteImageUrl?.let { imageUrl ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .error(R.drawable.retail)
+                        .placeholder(R.drawable.custom)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(alignment = Alignment.CenterHorizontally)
+                        .fillMaxWidth()
+                        .height(278.dp)
+                        .clip(shape = RoundedCornerShape(10))
+                        .clickable {
+                            navController.navigate("${Screen.DisplayScreen.route}/$encodedProductItem")
+                        } ,
+                    contentScale = ContentScale.Crop ,
+                    onError = { error ->
+                        Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
+                    }
+                )
+            } ?: Text(
+                text = "No image available",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(Color.LightGray)
+                    .wrapContentHeight(Alignment.CenterVertically),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row {
+                Column(modifier = Modifier
+                    .fillMaxSize(.85f)) {
+                    Text(
+                        text = product.CompanyName,
+                        color = lightblack,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontInter
+                    )
+                    Text(
+                        text = product.name,
+                        color = grey,
+                        fontSize = 14.sp,
+                        fontFamily = fontInter,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .offset(y = -(3).dp)
+                    )
+                    Row{
+                        Text(
+                            text = "₹${product.ogprice}",
+                            color = grey,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            fontFamily = fontInter,
+                            textDecoration = TextDecoration.LineThrough,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .offset(y = -(5).dp)
+                        )
+                        Spacer(modifier = Modifier
+                            .width(5.dp))
+                        Text(
+                            text = "₹${product.currprice}",
+                            color = lightblack,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontInter,
+                            overflow = TextOverflow.Clip,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .offset(y = -(5).dp)
+                        )
+                    }
+                    Box(modifier = Modifier
+                        .height(35.dp)
+                        .padding(vertical = 3.dp)
+                        .width(80.dp)
+                        .offset(y = -(3.dp))
+                        .clip(
+                            object : Shape {
+                                override fun createOutline(
+                                    size: Size,
+                                    layoutDirection: LayoutDirection,
+                                    density: Density
+                                ): Outline {
+                                    val path = Path().apply {
+                                        moveTo(
+                                            x = 0f,
+                                            y = 0f
+                                        )
+                                        lineTo(
+                                            x = size.width,
+                                            y = 0f
+                                        )
+                                        lineTo(
+                                            x = (size.width * .9f),
+                                            y = size.height
+                                        )
+                                        lineTo(
+                                            x = 0f,
+                                            y = size.height
+                                        )
+                                        lineTo(
+                                            x = 0f,
+                                            y = 0f
+                                        )
+                                        close()
+                                    }
+                                    return Outline.Generic(path)
+                                }
+                            }
+                        )
+                        .background(topbarlightblue)){
+                        val pl= percentLess(product.ogprice , product.currprice);
+                        Text(
+                            text = "${pl}% off",
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            overflow = TextOverflow.Clip,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .padding(top = 2.dp, start = 5.dp)
+
+                        )
+                    }
+                }
+                HeartCheckBox(
+                    context = context,
+                    uid = product.id
+                )
+            }
+        }
+}
+
+@Composable
+fun ShimmerLoadingEffect() {
+
+    val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.View)
+
+    Column(
+        modifier = Modifier
+            .width(screenwidth / 2)
+            .padding(10.dp)
+            .shimmer(shimmerInstance)
+    ) {
+
+        Box(
+            modifier = Modifier
+                .height(278.dp)
+                .fillMaxWidth()
+                .background(
+                    tintGrey.copy(alpha = 0.5f),
+                    RoundedCornerShape(10.dp)
+                )
+                .clip(shape = RoundedCornerShape(10))
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(.85f)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(15.dp)
+                        .width(100.dp)
+                        .background(
+                            Color.Gray.copy(alpha = 0.3f),
+                            RoundedCornerShape(8.dp)
+                        )
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Box(
+                    modifier = Modifier
+                        .height(10.dp)
+                        .width(100.dp)
+                        .background(
+                            Color.Gray.copy(alpha = 0.3f),
+                            RoundedCornerShape(8.dp)
+                        )
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Row {
+                    Box(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(80.dp)
+                            .background(
+                                Color.Gray.copy(alpha = 0.3f),
+                                RoundedCornerShape(8.dp)
+                            )
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .width(5.dp)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(80.dp)
+                            .background(
+                                Color.Gray.copy(alpha = 0.3f),
+                                RoundedCornerShape(8.dp)
+                            )
+                    )
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Box(
+                    modifier = Modifier
+                        .height(30.dp)
+                        .width(80.dp)
+                        .background(
+                            Color.Gray.copy(alpha = 0.3f),
+                            RoundedCornerShape(8.dp)
+                        )
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(20.dp)
+                    .background(
+                        Color.Gray.copy(alpha = 0.3f),
+                        RoundedCornerShape(8.dp)
+                    )
+            )
+        }
+    }
+}
+
 
 

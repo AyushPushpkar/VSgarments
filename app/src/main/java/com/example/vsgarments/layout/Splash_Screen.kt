@@ -41,7 +41,7 @@ fun Splash_Screen(
 
     LaunchedEffect(Unit) {
         val auth = FirebaseAuth.getInstance()
-        delay(30) // delay for 3 seconds or as needed
+        delay(2000) // delay for 3 seconds or as needed
 
         if (auth.currentUser == null) {
             navController.navigate(Screen.IntroductionScreen.route) {
