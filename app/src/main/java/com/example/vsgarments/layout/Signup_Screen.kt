@@ -2,9 +2,7 @@ package com.example.vsgarments.layout
 
 import android.util.Log
 import android.util.Patterns
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,13 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -45,23 +40,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import com.emreesen.sntoast.SnToast
-import com.emreesen.sntoast.Type
-import com.example.vsgarments.R
 import com.example.vsgarments.authentication.RegisterViewModel
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.authentication.User
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
-import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URLEncoder
@@ -153,7 +143,7 @@ fun Signup_Screen(
             )
             {
 
-                blue_Button(
+                BlueButton(
                     modifier = Modifier,
                     width_fraction = 0.5f,
                     button_text = "Register",
@@ -162,25 +152,25 @@ fun Signup_Screen(
                         if (name.isBlank() || email.isBlank() || _password.isBlank() || repeatPassword.isBlank()) {
                             isLoading = false
                             errorMessage = "All fields are required."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                             isLoading = false
                             errorMessage = "Please enter a valid email address."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         if (_password.length < 6) {
                             isLoading = false
                             errorMessage = "Password must be at least 6 characters long."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         if (_password != repeatPassword) {
                             isLoading = false
                             errorMessage = "Passwords do not match."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         isLoading = true

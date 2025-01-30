@@ -51,7 +51,6 @@ import com.example.vsgarments.R
 import com.example.vsgarments.authentication.RegisterViewModel
 import com.example.vsgarments.authentication.User
 import com.example.vsgarments.authentication.util.Resource
-import com.example.vsgarments.dataStates.AddressInfo
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
@@ -59,7 +58,7 @@ import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_textField
 import com.example.vsgarments.view_functions.text_textField
@@ -361,7 +360,7 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                             .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        blue_Button(
+                        BlueButton(
                             modifier = Modifier,
                             width_fraction = 0.4f,
                             button_text = "Save",

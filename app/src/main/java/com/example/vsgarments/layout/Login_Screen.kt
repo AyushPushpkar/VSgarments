@@ -39,7 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -63,14 +62,11 @@ import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
-import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
-import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
-import com.example.vsgarments.view_functions.number_editText
 import kotlinx.coroutines.delay
 
 @Composable
@@ -204,7 +200,7 @@ fun LoginScreen(
                 contentAlignment = Alignment.Center
             )
             {
-                blue_Button(
+                BlueButton(
                     modifier = Modifier,
                     width_fraction = 0.5f,
                     button_text = "Login",
@@ -213,19 +209,19 @@ fun LoginScreen(
                         if (_email.isBlank() || _password.isBlank()) {
                             isLoading = false
                             errorMessage = "All fields are required."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         if (!Patterns.EMAIL_ADDRESS.matcher(_email).matches()) {
                             isLoading = false
                             errorMessage = "Please enter a valid email address."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         if (_password.length < 6) {
                             isLoading = false
                             errorMessage = "Password must be at least 6 characters long."
-                            return@blue_Button
+                            return@BlueButton
                         }
 
                         isLoading = true
@@ -471,7 +467,7 @@ fun ForgotPasswordDialog(
                     contentAlignment = Alignment.Center
                 )
                 {
-                    blue_Button(
+                    BlueButton(
                         modifier = Modifier,
                         width_fraction = 0.5f,
                         button_text = "Send",

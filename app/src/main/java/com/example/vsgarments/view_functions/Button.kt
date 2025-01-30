@@ -24,7 +24,7 @@ import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 
 @Composable
-fun blue_Button(
+fun BlueButton(
     modifier: Modifier = Modifier,
     width_fraction: Float ,
     button_text : String ,

@@ -258,7 +258,7 @@ fun HomeItemCard(
 
             product.remoteImageUrl?.let { imageUrl ->
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest.Builder(context)
                         .data(imageUrl)
                         .crossfade(true)
                         .error(R.drawable.retail)
@@ -273,7 +273,7 @@ fun HomeItemCard(
                         .clickable {
                             navController.navigate("${Screen.DisplayScreen.route}/$encodedProductItem")
                         } ,
-                    contentScale = ContentScale.Crop ,
+                    contentScale = ContentScale.FillBounds ,
                     onError = { error ->
                         Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
                     }

@@ -1,7 +1,6 @@
 package com.example.vsgarments.layout
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -66,22 +65,18 @@ import androidx.navigation.NavController
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.LogoutViewModel
 import com.example.vsgarments.authentication.RegisterViewModel
-import com.example.vsgarments.authentication.User
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.appbackgroundcolor
-import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.view_functions.blue_Button
-import com.example.vsgarments.view_functions.char_editText
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_editText
-import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun Profile_Screen(
@@ -767,7 +762,7 @@ fun Login_dialog(
                     contentAlignment = Alignment.Center
                 )
                 {
-                    blue_Button(
+                    BlueButton(
                         modifier = Modifier,
                         width_fraction = 0.5f,
                         button_text = "Continue",

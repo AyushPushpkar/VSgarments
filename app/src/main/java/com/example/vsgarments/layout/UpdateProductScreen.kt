@@ -20,22 +20,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,13 +50,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import com.android.identity.documenttype.Icon
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.dataStates.ProductItem
@@ -72,14 +64,13 @@ import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
-import com.example.vsgarments.ui.theme.rateboxGreen
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.CheckBoxWithText
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_editText
@@ -292,7 +283,7 @@ fun UpdateProductScreen(
                 text = "In Stock for Size"
             )
 
-            blue_Button(
+            BlueButton(
                 onClick = {
                     val size = sizeInput.value
                     val currPriceVal = sizeCurrPrice.value.toIntOrNull()
@@ -372,7 +363,7 @@ fun UpdateProductScreen(
                 }
             }
 
-            blue_Button(
+            BlueButton(
                 width_fraction = 0.9f,
                 button_text = "Update Product Image",
                 font_Family = fontBaloo
@@ -384,22 +375,22 @@ fun UpdateProductScreen(
                 Text(text = "Image Selected: ${uri.lastPathSegment}")
             }
 
-            blue_Button(
+            BlueButton(
                 width_fraction = 0.9f,
                 button_text = "Update Product",
                 font_Family = fontBaloo,
                 onClick = {
                     if (productName.value.isBlank() || companyName.value.isBlank()) {
                         Toast.makeText(context, "Product name and company name are required", Toast.LENGTH_SHORT).show()
-                        return@blue_Button
+                        return@BlueButton
                     }
                     if (currPrice.value.isBlank() || currPrice.value.toIntOrNull() == null) {
                         Toast.makeText(context, "Invalid current price", Toast.LENGTH_SHORT).show()
-                        return@blue_Button
+                        return@BlueButton
                     }
                     if (ogPrice.value.isBlank() || ogPrice.value.toIntOrNull() == null) {
                         Toast.makeText(context, "Invalid original price", Toast.LENGTH_SHORT).show()
-                        return@blue_Button
+                        return@BlueButton
                     }
 
                     val productItem = ProductItem(
@@ -429,7 +420,7 @@ fun UpdateProductScreen(
                 modifier = Modifier.fillMaxWidth() ,
                 horizontalArrangement = Arrangement.Center
             ){
-                blue_Button(
+                BlueButton(
                     width_fraction = 0.7f,
                     button_text = buttontext,
                     font_Family = fontBaloo

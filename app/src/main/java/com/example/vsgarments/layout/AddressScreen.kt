@@ -1,8 +1,5 @@
 package com.example.vsgarments.layout
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -27,20 +24,15 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,7 +54,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,12 +72,11 @@ import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.textcolorgrey
-import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.CheckBoxWithText
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_editText
@@ -273,7 +263,7 @@ fun ProductScreen(
                 text = "In Stock for Size"
             )
 
-            blue_Button(
+            BlueButton(
                 onClick = {
                     val size = sizeInput.value
                     val currPriceVal = sizeCurrPrice.value.toIntOrNull()
@@ -295,7 +285,7 @@ fun ProductScreen(
                 font_Family = fontBaloo
             )
 
-            blue_Button(
+            BlueButton(
                 width_fraction = 0.9f,
                 button_text = "Update Product Image",
                 font_Family = fontBaloo
@@ -308,22 +298,22 @@ fun ProductScreen(
             }
 
 
-            blue_Button(
+            BlueButton(
                 width_fraction = 0.9f,
                 button_text = "Add Product",
                 font_Family = fontBaloo
             ) {
                 if (productName.value.isBlank() || companyName.value.isBlank()) {
                     Toast.makeText(context, "Product name and company name are required", Toast.LENGTH_SHORT).show()
-                    return@blue_Button
+                    return@BlueButton
                 }
                 if (currPrice.value.isBlank() || currPrice.value.toIntOrNull() == null) {
                     Toast.makeText(context, "Invalid current price", Toast.LENGTH_SHORT).show()
-                    return@blue_Button
+                    return@BlueButton
                 }
                 if (ogPrice.value.isBlank() || ogPrice.value.toIntOrNull() == null) {
                     Toast.makeText(context, "Invalid original price", Toast.LENGTH_SHORT).show()
-                    return@blue_Button
+                    return@BlueButton
                 }
 
                 val productItem = ProductItem(

@@ -80,7 +80,7 @@ import com.example.vsgarments.dataStates.generateRandomSizeToStockMap
 import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -719,7 +719,7 @@ fun CartScreen(
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.CenterEnd
                         ) {
-                            blue_Button(
+                            BlueButton(
                                 width_fraction = 0.5f,
                                 button_text = "Place Order",
                                 font_Family = fontBaloo

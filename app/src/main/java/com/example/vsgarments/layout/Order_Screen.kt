@@ -12,10 +12,8 @@ import androidx.navigation.NavController
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -33,9 +30,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
-import androidx.compose.material3.SearchBar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,26 +41,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vsgarments.dataStates.imageList
-import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
-import com.example.vsgarments.ui.theme.fontInter
-import com.example.vsgarments.ui.theme.fontKalnia
 import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.ui.theme.splashdarkblue
-import com.example.vsgarments.ui.theme.splashlightblue
 import com.example.vsgarments.ui.theme.textcolorblue
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
-import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.AppTopBar
-import com.example.vsgarments.view_functions.blue_Button
 
 @Composable
 fun Order_Screen(

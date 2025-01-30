@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.fontBaloo
 
-import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.BlueButton
 
 
 @Composable
@@ -40,7 +40,7 @@ fun IntroductionScreen(
 
             Spacer(modifier = Modifier.height(100.dp))
 
-            blue_Button(
+            BlueButton(
                 width_fraction = 1f,
                 button_text = "Login",
                 font_Family = fontBaloo
@@ -49,7 +49,7 @@ fun IntroductionScreen(
                     popUpTo(Screen.IntroductionScreen.route){ inclusive = true}
                 }
             }
-            blue_Button(
+            BlueButton(
                 width_fraction = 1f,
                 button_text = "SignUP",
                 font_Family = fontBaloo
