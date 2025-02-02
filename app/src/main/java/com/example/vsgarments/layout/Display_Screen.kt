@@ -42,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,6 +71,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
+import com.example.vsgarments.cart.DetailsViewModel
+import com.example.vsgarments.dataStates.CartIItem
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
@@ -87,6 +90,7 @@ import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.ui.theme.lightblack
 import com.example.vsgarments.view_functions.ExpandableText3
 import com.example.vsgarments.view_functions.SizeSelection
+import com.example.vsgarments.view_functions.customToast
 import com.google.gson.Gson
 import java.net.URLEncoder
 
@@ -103,6 +107,30 @@ fun DisplayScreen(
     val productViewModel: ProductViewModel = hiltViewModel()
     val productState by productViewModel.productState.collectAsState()
 
+    val detailsViewModel : DetailsViewModel = hiltViewModel()
+    val cartState by detailsViewModel.addToCart.collectAsState()
+
+    var isAddingToCart by remember { mutableStateOf(false) }
+
+
+    when (cartState) {
+        is Resource.Loading -> {
+        }
+        is Resource.Success -> {
+            if (isAddingToCart) {
+                customToast(context = context , "Added to Cart" , cancelable = true)
+                isAddingToCart = false  // Reset flag after showing toast
+            }
+
+        }
+        is Resource.Error -> {
+
+            customToast(context = context , (cartState as Resource.Error).errorMassage ?: "Unknown error")
+        }
+        else -> Unit
+    }
+
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -115,8 +143,9 @@ fun DisplayScreen(
                 .fillMaxSize()
                 .verticalScroll(displayScrollview)
         ) {
+
             updatedImageItem.value?.let { item ->
-                val selectedSize = remember { mutableStateOf(item.size ?: "") }
+                val selectedSize = remember { mutableStateOf(item.size ?: "S") }
                 val currentPrice = remember { mutableIntStateOf(item.currprice) }
                 val originalPrice = remember { mutableIntStateOf(item.ogprice) }
 
@@ -354,9 +383,27 @@ fun DisplayScreen(
                             currentPrice.intValue = it.currprice
                             originalPrice.intValue = it.ogprice
                             selectedSize.value = it.size ?: ""
+                            Log.d("SizeSelection", "Selected size: ${it.size}")
                         }
                     )
                     Spacer(modifier = Modifier.height(25.dp))
+
+                    val product by remember(selectedSize.value) {
+                        derivedStateOf {
+                            updatedImageItem
+                        }
+                    }
+                    Log.d("SizeSelection", "Selected product size: ${selectedSize.value}")
+
+                    val cartProductItem by remember(selectedSize.value) {
+                        derivedStateOf {
+                            CartIItem(
+                                productItem = updatedImageItem.value!!,
+                                quantity = 1,
+                                selectedSize = selectedSize.value
+                            )
+                        }
+                    }
 
                     Row(
                         modifier = Modifier
@@ -373,7 +420,15 @@ fun DisplayScreen(
                             modifier = Modifier
                                 .weight(1f),
                             onClick = {
-                                navController.navigate(Screen.Wishlist.route)
+                                isAddingToCart = true
+                                Log.d("CartProductItem", "Cart Product Details: $cartProductItem")
+                                Log.d("CartProductItem", "Product Name: ${cartProductItem.productItem.name}")
+                                Log.d("CartProductItem", "Product Size: ${cartProductItem.selectedSize}")
+                                Log.d("CartProductItem", "Product Quantity: ${cartProductItem.quantity}")
+                                Log.d("CartProductItem", "Product Current Price: ${cartProductItem.productItem.currprice}")
+                                Log.d("CartProductItem", "Product Original Price: ${cartProductItem.productItem.ogprice}")
+                                Log.d("CartProductItem", "Product Image URL: ${cartProductItem.productItem.remoteImageUrl}")
+                                detailsViewModel.addUpdateProductInCart(cartProductItem)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent
@@ -383,7 +438,6 @@ fun DisplayScreen(
                                 width = 2.dp,
                                 color = Color(0x66676767)
                             ),
-
                             contentPadding = PaddingValues()
                         ) {
                             Row(
@@ -411,7 +465,7 @@ fun DisplayScreen(
                                 ) {
                                     Image(
                                         painter = painterResource(id = R.drawable.edit_pen),
-                                        contentDescription = "wishlist icon"
+                                        contentDescription = "cart icon"
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
@@ -425,6 +479,7 @@ fun DisplayScreen(
                             }
 
                         }
+
                         Spacer(modifier = Modifier.width(20.dp))
                         Button(
                             modifier = Modifier
