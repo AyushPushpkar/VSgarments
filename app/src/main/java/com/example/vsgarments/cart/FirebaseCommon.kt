@@ -2,10 +2,8 @@ package com.example.vsgarments.cart
 
 import com.example.vsgarments.authentication.util.Constants.CART_COLLECTION
 import com.example.vsgarments.authentication.util.Constants.USER_COLLECTION
-import com.example.vsgarments.dataStates.CartIItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import javax.inject.Inject
 
 class FirebaseCommon(
     private val firestore: FirebaseFirestore,
