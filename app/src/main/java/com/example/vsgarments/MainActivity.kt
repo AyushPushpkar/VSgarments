@@ -1,5 +1,6 @@
 package com.example.vsgarments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,7 +27,10 @@ import com.example.vsgarments.navigation.Bottom_Nav_item
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.VSgarmentsTheme
 import com.example.vsgarments.ui.theme.textcolorgrey
+//import com.razorpay.Checkout
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONException
+import org.json.JSONObject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -46,6 +50,30 @@ class MainActivity : ComponentActivity() {
         }
         window.statusBarColor = textcolorgrey.hashCode()
     }
+
+
+//    fun startPayment(context: Context, amount: Float) {
+//        val activity = context as MainActivity
+//        val checkout = Checkout()
+//        checkout.setKeyID("Enter your key here")
+//
+//        val amt = Math.round(amount * 100)
+//
+//        val obj = JSONObject()
+//        try {
+//            obj.put("name", "Geeks for Geeks")
+//            obj.put("description", "Test payment")
+//            obj.put("theme.color", "#3399cc")
+//            obj.put("currency", "INR")
+//            obj.put("amount", amt)
+//            obj.put("prefill.contact", "9284064503")
+//            obj.put("prefill.email", "chaitanyamunje@gmail.com")
+//
+//            checkout.open(activity, obj)
+//        } catch (e: JSONException) {
+//            e.printStackTrace()
+//        }
+//    }
 }
 
 

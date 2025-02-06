@@ -29,9 +29,11 @@ fun blue_Button(
     width_fraction: Float ,
     button_text : String ,
     font_Family: FontFamily ,
+    enabled : Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
+        enabled = enabled ,
         modifier = Modifier
             .fillMaxWidth(width_fraction)
             .padding(

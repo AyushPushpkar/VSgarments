@@ -1,6 +1,8 @@
 package com.example.vsgarments.layout
 
+import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -32,9 +34,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +63,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
 import com.example.vsgarments.dataStates.AddressInfo
@@ -77,10 +82,13 @@ import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.dataStates.generateRandomAttributes
 import com.example.vsgarments.dataStates.generateRandomSizeToPriceMap
 import com.example.vsgarments.dataStates.generateRandomSizeToStockMap
+import com.example.vsgarments.payment_methods.PaymentState
+import com.example.vsgarments.payment_methods.PaymentViewModel
 import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
 import com.example.vsgarments.view_functions.blue_Button
+import com.example.vsgarments.view_functions.customToast
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -91,6 +99,9 @@ fun CartScreen(
     navController: NavController,
 ) {
     val context = LocalContext.current
+    val paymentViewModel :  PaymentViewModel = hiltViewModel()
+    val paymentState by paymentViewModel.paymentStatus.collectAsState()
+
 
     Box(
         modifier = modifier
@@ -722,9 +733,37 @@ fun CartScreen(
                             blue_Button(
                                 width_fraction = 0.5f,
                                 button_text = "Place Order",
-                                font_Family = fontBaloo
-                            ) {
+                                font_Family = fontBaloo,
+                                enabled = paymentState !is PaymentState.Processing ,
+                                onClick = {
+                                    if(totalCurrentPrice != 0.0 && totalCurrentPrice.toFloat() > 0){
+                                        paymentViewModel.initiatePayment(context as Activity, totalCurrentPrice.toString())
+                                    }
+                                    else{
+                                       customToast(context,"Please enter a valid amount",true)
+                                    }
+                                }
+                            )
+                            LaunchedEffect(paymentState) {
+                                when(paymentState){
+                                    is PaymentState.Failure ->{
+                                        paymentViewModel.resetPaymentState()
+                                    }
+                                    is PaymentState.Success ->{
+                                        paymentViewModel.resetPaymentState()
+                                    }
+                                    else->{}
+                                }
+                            }
+                            Text(if (paymentState is PaymentState.Processing) "" else "")
+                            when(paymentState){
+                                is PaymentState.Failure ->  customToast(context,"Payment Failed: ${(paymentState as PaymentState.Failure).errorMessage}",true)
+                                PaymentState.Idle -> {
+                                    // No status to show initially
+                                }
 
+                                is PaymentState.Success ->  customToast(context,"Payment Successful: ${(paymentState as PaymentState.Success).paymentId}",true)
+                                else -> {}
                             }
                         }
                     }

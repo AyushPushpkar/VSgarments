@@ -24,15 +24,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import com.android.identity.documenttype.Icon
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.dataStates.ProductItem
@@ -65,8 +60,6 @@ import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
-import com.example.vsgarments.ui.theme.rateboxGreen
-import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 
@@ -93,20 +86,12 @@ fun UpdateProductScreen(
     val maxQuantity = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     val inStock = remember { mutableStateOf(true) }
-
-    val remoteImageUrl = remember { mutableStateOf<String?>(null) }  // New remote image URL state
-    val localImageUri = remember { mutableStateOf<Uri?>(null) }  // New local image URI state
-
-    val sizeToPriceMap = remember { mutableStateMapOf<String, SizePrice>() }
-    val sizeToStockMap = remember { mutableStateMapOf<String, Boolean>() }
-
-    var id = ""
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(productId) {
         productId?.let {
             productViewModel.fetchProductById(it) { product ->
                 product?.let { item ->
-                    id = item.id
                     productName.value = item.name
                     companyName.value = item.CompanyName
                     currPrice.value = item.currprice.toString()
@@ -116,16 +101,19 @@ fun UpdateProductScreen(
                     maxQuantity.value = item.maxQuantity.toString()
                     description.value = item.description
                     inStock.value = item.inStock
-                    remoteImageUrl.value = item.remoteImageUrl
-                    sizeToPriceMap.clear()
-                    sizeToPriceMap.putAll(item.sizeToPriceMap)
-                    sizeToStockMap.clear()
-                    sizeToStockMap.putAll(item.sizeToStockMap)
+                    imageUri.value = Uri.parse(item.remoteImageUrl)
                 }
             }
         }
     }
 
+
+
+    // Use SnapshotStateMap instead of mutableMapOf
+    val sizeToPriceMap = remember { mutableStateMapOf<String, SizePrice>() }
+    val sizeToStockMap = remember { mutableStateMapOf<String, Boolean>() }
+
+    // Temporary state variables for adding size-specific details
     val sizeInput = remember { mutableStateOf("") }
     val sizeCurrPrice = remember { mutableStateOf("") }
     val sizeOgPrice = remember { mutableStateOf("") }
@@ -134,7 +122,7 @@ fun UpdateProductScreen(
     // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
-            localImageUri.value = uri
+            imageUri.value = uri
             Toast.makeText(context, "Image selected successfully", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "Image selection canceled", Toast.LENGTH_SHORT).show()
@@ -283,63 +271,6 @@ fun UpdateProductScreen(
                 Text(text = "Add Size Details")
             }
 
-            Text(text = "Edit Size Details")
-
-            // Dynamically add editable components for each size
-            sizeToPriceMap.keys.forEach { size ->
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                        .background(tintGrey)
-                        .padding(8.dp)
-                ) {
-                    Text(text = "Size: $size")
-
-                    OutlinedTextField(
-                        value = sizeToPriceMap[size]?.currentPrice?.toString() ?: "",
-                        onValueChange = {
-                            val ogPrice = sizeToPriceMap[size]?.originalPrice ?: 0
-                            sizeToPriceMap[size] = SizePrice(it.toIntOrNull() ?: 0, ogPrice)
-                        },
-                        label = { Text("Current Price for $size") },
-                        modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-
-                    OutlinedTextField(
-                        value = sizeToPriceMap[size]?.originalPrice?.toString() ?: "",
-                        onValueChange = {
-                            val currPrice = sizeToPriceMap[size]?.currentPrice ?: 0
-                            sizeToPriceMap[size] = SizePrice(currPrice, it.toIntOrNull() ?: 0)
-                        },
-                        label = { Text("Original Price for $size") },
-                        modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = sizeToStockMap[size] ?: false,
-                            onCheckedChange = { sizeToStockMap[size] = it }
-                        )
-                        Text(text = "In Stock for $size")
-                    }
-
-                    IconButton(
-                        onClick = {
-                            sizeToPriceMap.remove(size)
-                            sizeToStockMap.remove(size)
-                            Toast.makeText(context, "Size removed", Toast.LENGTH_SHORT).show()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Remove Size"
-                        )
-                    }
-                }
-            }
-
             Button(
                 onClick = { imagePickerLauncher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth()
@@ -348,7 +279,7 @@ fun UpdateProductScreen(
                         "Update Product Image")
             }
 
-            localImageUri.value?.let { uri ->
+            imageUri.value?.let { uri ->
                 Text(text = "Image Selected: ${uri.lastPathSegment}")
             }
 
@@ -371,7 +302,6 @@ fun UpdateProductScreen(
                     }
 
                     val productItem = ProductItem(
-                        id = id,
                         name = productName.value,
                         CompanyName = companyName.value,
                         currprice = currPrice.value.toIntOrNull() ?: 0,
@@ -383,13 +313,10 @@ fun UpdateProductScreen(
                         inStock = inStock.value,
                         sizeToPriceMap = sizeToPriceMap,
                         sizeToStockMap = sizeToStockMap ,
-                        remoteImageUrl = remoteImageUrl.value,
-                        localImageUri = localImageUri.value
+                        localImageUri = imageUri.value
                     )
 
-                    if (productId != null) {
-                        productViewModel.updateProduct(productId = productId , product = productItem)
-                    }
+                    productViewModel.addProduct(productItem , context)
 
                     Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
                 },

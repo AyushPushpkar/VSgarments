@@ -1,11 +1,14 @@
 package com.example.vsgarments.product
 
 import android.content.Context
+import androidx.annotation.Nullable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.dataStates.ProductItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -51,7 +54,10 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch {
             _productState.value = Resource.Loading()
             try {
-                repository.updateProductById(productId, product)
+                repository.updateProductById(
+                    productId, product,
+                    context = TODO()
+                )
                 loadProducts() // Refresh the list
             } catch (e: Exception) {
                 _productState.value = Resource.Error("Failed to update product: ${e.message}")

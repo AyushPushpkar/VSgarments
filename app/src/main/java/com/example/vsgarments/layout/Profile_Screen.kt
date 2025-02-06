@@ -374,6 +374,15 @@ fun Profile_Screen(
                     navController.navigate(Screen.Settings_Screen.route)
                 }
             )
+            Spacer(modifier = Modifier.height(2.dp))
+            Help_address(
+                icon = painterResource(id = R.drawable.edit_pen),
+                icon_des = "Settings icon",
+                text = "Payment Method" ,
+                onClick = {
+                   navController.navigate(Screen.Payment_Screen.route)
+                }
+            )
             Spacer(modifier = Modifier.height(7.dp))
 
             Column(

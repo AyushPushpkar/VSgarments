@@ -6,7 +6,8 @@ data class AddressInfo(
     val pincode: String = "" ,
     val city: String = "" ,
     val state: String = "" ,
-    val kindOfPlace: PlaceType = PlaceType.OTHER
+    val kindOfPlace: PlaceType = PlaceType.OTHER,
+
 ){
     constructor() : this(
         address = "",
@@ -14,7 +15,7 @@ data class AddressInfo(
         pincode = "",
         city = "",
         state = "",
-        kindOfPlace = PlaceType.OTHER
+        kindOfPlace = PlaceType.OTHER,
     )
 }
 
