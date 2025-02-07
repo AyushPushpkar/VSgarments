@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.example.vsgarments.dataStates.ImageItem
 import com.example.vsgarments.dataStates.ProductItem
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.tintGreen
@@ -46,7 +45,11 @@ fun SizeSelection(
 ) {
     val predefinedSizeOrder = listOf("XS", "S", "M", "L", "XL", "XXL" , "Free")
     val availableSizes = imageItem.sizeToPriceMap.keys.sortedWith(compareBy { predefinedSizeOrder.indexOf(it) })
-    var selectedSize by remember { mutableStateOf(imageItem.size ?: "S") }
+    val calSize =  imageItem.size ?: imageItem.sizeToPriceMap
+        .entries
+        .find { it.value.currentPrice == imageItem.currprice }
+        ?.key ?: "S"
+    var selectedSize by remember { mutableStateOf(calSize) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),

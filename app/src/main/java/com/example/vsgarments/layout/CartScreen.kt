@@ -1,5 +1,6 @@
 package com.example.vsgarments.layout
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -41,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -75,10 +77,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.vsgarments.Payment.PaymentState
+import com.example.vsgarments.Payment.PaymentViewModel
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.cart.CartIItem
 import com.example.vsgarments.cart.CartViewModel
+import com.example.vsgarments.cart.FirebaseCommon
 import com.example.vsgarments.dataStates.AddressInfo
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
@@ -99,6 +104,7 @@ import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
 import com.example.vsgarments.view_functions.BlueButton
+import com.example.vsgarments.view_functions.customToast
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -131,11 +137,14 @@ fun CartScreen(
         val cartViewModel: CartViewModel = hiltViewModel()
         val cartState by cartViewModel.cartProducts.collectAsState()
 
+        val paymentViewModel : PaymentViewModel = hiltViewModel()
+        val paymentState by paymentViewModel.paymentStatus.collectAsState()
+
         val products = (cartState as? Resource.Success<List<CartIItem>>)?.data
 
         LaunchedEffect(products) {
             products?.forEachIndexed { index, item ->
-                selectedQuantities[index] = item.productItem.minQuantity
+                selectedQuantities[index] = item.quantity
             }
             if (!products.isNullOrEmpty()) {
                 val (newTotalCurrent, newTotalOg) = recalculateTotal(products, selectedQuantities)
@@ -151,24 +160,6 @@ fun CartScreen(
 
             when (cartState) {
                 is Resource.Loading -> {
-                    LazyColumn {
-                        val shimmerPlaceholders = List(8) { it }
-                        val chunkedPlaceholders = shimmerPlaceholders.chunked(2)
-
-                        items(chunkedPlaceholders.size) { chunkIndex ->
-                            val chunk = chunkedPlaceholders[chunkIndex]
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                chunk.forEach {
-                                    ShimmerLoadingEffect()
-                                }
-                            }
-                        }
-                    }
-
                 }
                 is Resource.Success -> {
 
@@ -214,7 +205,7 @@ fun CartScreen(
                                         ) {
 
                                             Text(
-                                                text = if (!pincode.isNullOrEmpty()) "$name , $pincode" else name ?: "Name",
+                                                text = if (pincode.isNotEmpty()) "$name , $pincode" else name ?: "Name",
                                                 color = Color(0xFF6188A0),
                                                 fontFamily = fontInter,
                                                 fontWeight = FontWeight.Medium,
@@ -284,12 +275,18 @@ fun CartScreen(
                                             context = context ,
                                             navController = navController ,
                                             selectedQuantities = selectedQuantities,
-                                            onQuantityChanged = {
-                                                selectedQuantities[index] = it
+                                            onQuantityChanged = {newQuantity ->
+                                                val oldQuantity = selectedQuantities[index] ?: product.productItem.minQuantity
+                                                selectedQuantities[index] = newQuantity
                                                 val (newTotalCurrent, newTotalOg) = recalculateTotal(products, selectedQuantities)
                                                 totalCurrentPrice = newTotalCurrent
                                                 totalOgPrice = newTotalOg
-                                            }
+
+                                                if (newQuantity != oldQuantity) {
+                                                    cartViewModel.changeQuantity(product, newQuantity)
+                                                }
+                                            } ,
+                                            onRemoveClicked = { cartViewModel.removeFromCart(product) }
                                         )
                             }
 
@@ -314,7 +311,6 @@ fun CartScreen(
                     }
                 }
                 is Resource.Error -> {
-                    // Show error message
                     Text(
                         text = (cartState as Resource.Error).errorMassage ?: "Unknown error",
                         color = Color.Red,
@@ -323,7 +319,6 @@ fun CartScreen(
                     Log.e("CartScreen", "Error loading products: ${cartState.errorMassage}")
                 }
                 else -> {
-                    // Handle unspecified state or no data
                     Text(
                         text = "No products available",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -411,9 +406,55 @@ fun CartScreen(
                             BlueButton(
                                 width_fraction = 1f,
                                 button_text = "Place Order",
-                                font_Family = fontBaloo
-                            ) {
+                                font_Family = fontBaloo,
+                                enabled = paymentState !is PaymentState.Processing,
+                                onClick = {
+                                    if (totalCurrentPrice != 0.0 && totalCurrentPrice.toFloat() > 0) {
+                                        paymentViewModel.initiatePayment(
+                                            context as Activity,
+                                            totalCurrentPrice.toString()
+                                        )
+                                    } else {
+                                        customToast(
+                                            context,
+                                            "Please enter a valid amount",
+                                            true
+                                        )
+                                    }
+                                }
+                            )
+                            LaunchedEffect(paymentState) {
+                                when (paymentState) {
+                                    is PaymentState.Failure -> {
+                                        paymentViewModel.resetPaymentState()
+                                    }
 
+                                    is PaymentState.Success -> {
+                                        paymentViewModel.resetPaymentState()
+                                    }
+
+                                    else -> {}
+                                }
+                            }
+                            Text(if (paymentState is PaymentState.Processing) "" else "")
+                            when (paymentState) {
+                                is PaymentState.Failure -> customToast(
+                                    context,
+                                    "Payment Failed: ${(paymentState as PaymentState.Failure).errorMessage}",
+                                    true
+                                )
+
+                                PaymentState.Idle -> {
+                                    // No status to show initially
+                                }
+
+                                is PaymentState.Success -> customToast(
+                                    context,
+                                    "Payment Successful: ${(paymentState as PaymentState.Success).paymentId}",
+                                    true
+                                )
+
+                                else -> {}
                             }
                         }
                     }
@@ -474,7 +515,7 @@ fun CartScreen(
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
-                                navController.navigate(Screen.Profile_Screen.route)
+                                navController.popBackStack()
                             }
                     )
                     Spacer(modifier = Modifier.width(50.dp))
@@ -517,7 +558,8 @@ fun CartItemCard(
     navController: NavController,
     context: Context ,
     selectedQuantities: MutableMap<Int, Int>,
-    onQuantityChanged: (Int) -> Unit
+    onQuantityChanged: (Int) -> Unit ,
+    onRemoveClicked: () -> Unit
 ) {
 
     val imageItemJson = Gson().toJson(cartIItem.productItem)
@@ -586,11 +628,10 @@ fun CartItemCard(
 
                     val quantity = (minQty..maxQty).map { it.toString() }
 
-                    var selectedqty by rememberSaveable { mutableStateOf(selectedQuantities[index]?.toString() ?: "$minQty") }
+                    val qty = if(minQty > cartIItem.quantity)minQty else cartIItem.quantity
 
-//                    var selectedqty by rememberSaveable {
-//                        mutableStateOf("$minQty")
-//                    }
+                    var selectedqty by rememberSaveable { mutableStateOf(qty.toString() ) }
+
                     Spinner(
                         modifier = Modifier,
                         itemList = quantity,
@@ -636,12 +677,21 @@ fun CartItemCard(
                             color = rateboxGreen
                         )
                         Spacer(modifier = Modifier.width(4.dp))
+
+                        val ogPrice by remember(cartIItem.quantity, item.ogprice, minQty) {
+                            mutableIntStateOf(if (cartIItem.quantity > minQty) item.ogprice * cartIItem.quantity else item.ogprice * minQty)
+                        }
+
+                        val currPrice by remember(cartIItem.quantity, item.currprice, minQty) {
+                            mutableIntStateOf(if (cartIItem.quantity > minQty) item.currprice * cartIItem.quantity else item.currprice * minQty)
+                        }
+
                         Text(
                             modifier = Modifier.padding(
                                 horizontal = 5.dp,
                                 vertical = 2.dp
                             ),
-                            text = "₹${item.ogprice}",
+                            text = "₹$ogPrice",
                             color = tintGrey,
                             textDecoration = TextDecoration.LineThrough
                         )
@@ -651,10 +701,28 @@ fun CartItemCard(
                                 horizontal = 5.dp,
                                 vertical = 2.dp
                             ),
-                            text = "₹${item.currprice}",
+                            text = "₹$currPrice",
                             color = textcolorblue
                         )
                     }
+
+                    val size = item.size ?: item.sizeToPriceMap
+                        .entries
+                        .find { it.value.currentPrice == item.currprice }
+                        ?.key ?: "S"
+
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                horizontal = 5.dp,
+                                vertical = 2.dp
+                            ),
+                        text = "Size : $size",
+                        color = tintGrey,
+                        maxLines = 1
+                    )
+                    
+
                     Spacer(modifier = Modifier.height(10.dp))
                     Box(
                         modifier = Modifier
@@ -809,7 +877,10 @@ fun CartItemCard(
                 contentAlignment = Alignment.Center
             ) {
                 Row(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .clickable {
+                            onRemoveClicked() ;
+                        },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {

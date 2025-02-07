@@ -1,5 +1,6 @@
 package com.example.vsgarments.cart
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vsgarments.authentication.util.Constants.CART_COLLECTION
@@ -12,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,7 +60,23 @@ class CartViewModel @Inject constructor(
 
     }
 
-    fun changeQuantity(cartProduct: CartIItem, quantityChanging: FirebaseCommon.QuantityChanging){
+    fun changeQuantity(cartProduct: CartIItem , quantity : Int){
+        val index = cartProducts.value.data?.indexOf(cartProduct)
+
+        if (index != null && index != -1) {
+            val documentId = cartProductDoc[index].id
+            firebaseCommon.changeQuantity(quantity, documentId) { result, exception ->
+                if (exception != null)
+                    viewModelScope.launch { _cartState.emit(Resource.Error(exception.message.toString())) }
+            }
+
+        }else {
+            Log.e("CartViewModel", "Error: Product index not found in the cart!")
+        }
+
+    }
+
+    fun incDecQuantity(cartProduct: CartIItem, quantityChanging: FirebaseCommon.QuantityChanging){
 
         val index = cartProducts.value.data?.indexOf(cartProduct)
 
@@ -79,6 +97,8 @@ class CartViewModel @Inject constructor(
                     decreaseQuantity(documentId)
                 }
             }
+        }else {
+            Log.e("CartViewModel", "Error: Product index not found in the cart!")
         }
     }
 
@@ -96,4 +116,32 @@ class CartViewModel @Inject constructor(
         }
 
     }
+
+    fun removeFromCart(cartProduct: CartIItem) {
+        viewModelScope.launch {
+            try {
+                val index = cartProducts.value.data?.indexOf(cartProduct)
+
+                if (index != null && index != -1) {
+                    val documentId = cartProductDoc[index].id
+
+                    firestore.collection(USER_COLLECTION)
+                        .document(auth.uid!!)
+                        .collection(CART_COLLECTION)
+                        .document(documentId)
+                        .delete()
+
+                    Log.d("CartViewModel", "Product removed successfully!")
+
+                } else {
+                    Log.e("CartViewModel", "Error: Product index not found in the cart!")
+                }
+
+            } catch (e: Exception) {
+                Log.e("CartViewModel", "Error removing product: ${e.message}")
+            }
+        }
+    }
+
+
 }

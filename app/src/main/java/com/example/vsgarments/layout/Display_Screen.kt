@@ -85,6 +85,8 @@ import com.example.vsgarments.view_functions.SizeSelection
 import com.example.vsgarments.view_functions.customToast
 import com.google.gson.Gson
 import java.net.URLEncoder
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun DisplayScreen(
@@ -103,6 +105,8 @@ fun DisplayScreen(
     val cartState by detailsViewModel.addToCart.collectAsState()
 
     var isAddingToCart by remember { mutableStateOf(false) }
+
+    val numberFormat = NumberFormat.getInstance(Locale("en", "IN"))
 
 
     when (cartState) {
@@ -254,97 +258,201 @@ fun DisplayScreen(
                             }
                         }
                     }
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(vertical = 2.dp),
-                                text = "MRP ",
-                                color = tintGrey,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                modifier = Modifier.padding(vertical = 2.dp),
-                                text = "₹${originalPrice.intValue}",
-                                color = tintGrey,
-                                textDecoration = TextDecoration.LineThrough
-                            )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(
-                                modifier = Modifier.padding(
-                                    horizontal = 5.dp,
-                                    vertical = 2.dp
-                                ),
-                                text = "₹${currentPrice.intValue}",
-                                color = topbardarkblue,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 21.sp
-                            )
-                            Spacer(modifier = Modifier.width(20.dp))
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 200.dp),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    .clip(
-                                        object : Shape {
-                                            override fun createOutline(
-                                                size: Size,
-                                                layoutDirection: LayoutDirection,
-                                                density: Density,
-                                            ): Outline {
-                                                val path = Path().apply {
-                                                    moveTo(
-                                                        0f,
-                                                        0f
-                                                    )
-                                                    lineTo(
-                                                        0f,
-                                                        size.height
-                                                    )
-                                                    lineTo(
-                                                        size.width * 0.9f,
-                                                        size.height
-                                                    )
-                                                    lineTo(
-                                                        size.width,
-                                                        0f
-                                                    )
-                                                    close()
-                                                }
-                                                return Outline.Generic(path)
-                                            }
-                                        }
-                                    )
-                                    .background(
-                                        brush = Brush.horizontalGradient(
-                                            colors = listOf(
-                                                topbardarkblue,
-                                                topbarlightblue
-                                            )
-                                        ),
-                                    )
-                                    .padding(
-                                        start = 10.dp,
-                                        end = 15.dp,
-                                        top = 2.dp,
-                                        bottom = 2.dp
-                                    ),
-                                contentAlignment = Alignment.Center
+
+                    if (item.currprice < 100000 && item.ogprice < 100000){
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "${percentLess}% off!",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold
+                                    modifier = Modifier.padding(vertical = 2.dp),
+                                    text = "MRP ",
+                                    color = tintGrey,
+                                    fontWeight = FontWeight.Medium
                                 )
+                                Text(
+                                    modifier = Modifier.padding(vertical = 2.dp),
+                                    text = "₹${numberFormat.format(originalPrice.intValue)}\"",
+                                    color = tintGrey,
+                                    textDecoration = TextDecoration.LineThrough
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    modifier = Modifier.padding(
+                                        horizontal = 5.dp,
+                                        vertical = 2.dp
+                                    ),
+                                    text = "₹${numberFormat.format(currentPrice.intValue)}" ,
+                                    color = topbardarkblue,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 21.sp
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
                             }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 230.dp),
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .clip(
+                                            object : Shape {
+                                                override fun createOutline(
+                                                    size: Size,
+                                                    layoutDirection: LayoutDirection,
+                                                    density: Density,
+                                                ): Outline {
+                                                    val path = Path().apply {
+                                                        moveTo(
+                                                            0f,
+                                                            0f
+                                                        )
+                                                        lineTo(
+                                                            0f,
+                                                            size.height
+                                                        )
+                                                        lineTo(
+                                                            size.width * 0.9f,
+                                                            size.height
+                                                        )
+                                                        lineTo(
+                                                            size.width,
+                                                            0f
+                                                        )
+                                                        close()
+                                                    }
+                                                    return Outline.Generic(path)
+                                                }
+                                            }
+                                        )
+                                        .background(
+                                            brush = Brush.horizontalGradient(
+                                                colors = listOf(
+                                                    topbardarkblue,
+                                                    topbarlightblue
+                                                )
+                                            ),
+                                        )
+                                        .padding(
+                                            start = 10.dp,
+                                            end = 15.dp,
+                                            top = 2.dp,
+                                            bottom = 2.dp
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "${percentLess}% off!",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }else{
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Column {
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        modifier = Modifier.padding(vertical = 2.dp),
+                                        text = "MRP ",
+                                        color = tintGrey,
+                                        fontWeight = FontWeight.Medium ,
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(vertical = 2.dp),
+                                        text = "₹${numberFormat.format(originalPrice.intValue)}\"",
+                                        color = tintGrey,
+                                        textDecoration = TextDecoration.LineThrough
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Column {
+                                        Text(
+                                            modifier = Modifier.padding(
+                                                horizontal = 5.dp,
+                                                vertical = 2.dp
+                                            ),
+                                            text = "₹${numberFormat.format(currentPrice.intValue)}" ,
+                                            color = topbardarkblue,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 21.sp
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.width(20.dp))
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .wrapContentSize()
+                                            .clip(
+                                                object : Shape {
+                                                    override fun createOutline(
+                                                        size: Size,
+                                                        layoutDirection: LayoutDirection,
+                                                        density: Density,
+                                                    ): Outline {
+                                                        val path = Path().apply {
+                                                            moveTo(
+                                                                0f,
+                                                                0f
+                                                            )
+                                                            lineTo(
+                                                                0f,
+                                                                size.height
+                                                            )
+                                                            lineTo(
+                                                                size.width * 0.9f,
+                                                                size.height
+                                                            )
+                                                            lineTo(
+                                                                size.width,
+                                                                0f
+                                                            )
+                                                            close()
+                                                        }
+                                                        return Outline.Generic(path)
+                                                    }
+                                                }
+                                            )
+                                            .background(
+                                                brush = Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        topbardarkblue,
+                                                        topbarlightblue
+                                                    )
+                                                ),
+                                            )
+                                            .padding(
+                                                start = 10.dp,
+                                                end = 15.dp,
+                                                top = 2.dp,
+                                                bottom = 2.dp
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "${percentLess}% off!",
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+
+
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
@@ -353,6 +461,13 @@ fun DisplayScreen(
                     ) {
                         Text(
                             text = "Out of Stock !",
+                            color = topbarlightblue,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    else if (item.minQuantity > 1){
+                        Text(
+                            text = "Minimum Quantity : ${item.minQuantity}",
                             color = topbarlightblue,
                             fontWeight = FontWeight.Bold
                         )
@@ -378,7 +493,7 @@ fun DisplayScreen(
                             Log.d("SizeSelection", "Selected size: ${it.size}")
                         }
                     )
-                    Spacer(modifier = Modifier.height(25.dp))
+                    Spacer(modifier = Modifier.height(15.dp))
 
                     val product by remember(selectedSize.value) {
                         derivedStateOf {
@@ -387,11 +502,13 @@ fun DisplayScreen(
                     }
                     Log.d("SizeSelection", "Selected product size: ${selectedSize.value}")
 
+                    val qty = if( item.minQuantity > 1 ) item.minQuantity else 1
+
                     val cartProductItem by remember(selectedSize.value) {
                         derivedStateOf {
                             CartIItem(
                                 productItem = updatedImageItem.value!!,
-                                quantity = 1,
+                                quantity = qty,
                                 selectedSize = selectedSize.value
                             )
                         }
@@ -413,13 +530,6 @@ fun DisplayScreen(
                                 .weight(1f),
                             onClick = {
                                 isAddingToCart = true
-                                Log.d("CartProductItem", "Cart Product Details: $cartProductItem")
-                                Log.d("CartProductItem", "Product Name: ${cartProductItem.productItem.name}")
-                                Log.d("CartProductItem", "Product Size: ${cartProductItem.selectedSize}")
-                                Log.d("CartProductItem", "Product Quantity: ${cartProductItem.quantity}")
-                                Log.d("CartProductItem", "Product Current Price: ${cartProductItem.productItem.currprice}")
-                                Log.d("CartProductItem", "Product Original Price: ${cartProductItem.productItem.ogprice}")
-                                Log.d("CartProductItem", "Product Image URL: ${cartProductItem.productItem.remoteImageUrl}")
                                 detailsViewModel.addUpdateProductInCart(cartProductItem)
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -836,7 +946,7 @@ fun DisplayScreen(
                     modifier = Modifier
                         .size(28.dp)
                         .clickable {
-                            navController.navigate(Screen.Profile_Screen.route)
+                            navController.popBackStack()
                         }
                 )
                 Spacer(modifier = Modifier.width(30.dp))

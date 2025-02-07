@@ -26,12 +26,14 @@ import com.example.vsgarments.ui.theme.topbarlightblue
 @Composable
 fun BlueButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     width_fraction: Float ,
     button_text : String ,
     font_Family: FontFamily ,
     onClick: () -> Unit
 ) {
     Button(
+        enabled = enabled ,
         modifier = Modifier
             .fillMaxWidth(width_fraction)
             .padding(
