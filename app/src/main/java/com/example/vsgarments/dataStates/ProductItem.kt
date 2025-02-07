@@ -4,45 +4,8 @@ import android.net.Uri
 import com.example.vsgarments.R
 import java.util.UUID
 
-data class ImageItem(
-    val imageresId: Int,
-    val imageUrl: String = "" ,
-    var currprice: Int,
-    var ogprice: Int,
-    var name: String,
-    var CompanyName: String,
-    var rating: Float,
-    val minQuantity: Int,
-    val maxQuantity: Int,
-    val orderDate:String,
-    val orderId: String,
-    val orderType: String,
-    val supplier: String,
-    var size: String? = null,
-    val sizeToPriceMap: Map<String, Pair<Int, Int>>,
-    var inStock: Boolean = true,
-    val sizeToStockMap: Map<String, Boolean>,
-    val productDetails: Map<String , String>,
-    var description: String,
-) {
-    fun updatePriceBasedOnSize(defaultSize: String? = null) {
-        val selectedSize = size ?: defaultSize
-        selectedSize?.let {
-            sizeToPriceMap[it]?.let { (newCurrPrice, newOgPrice) ->
-                currprice = newCurrPrice
-                ogprice = newOgPrice
-            }
-        }
-    }
-    fun updateStockBasedOnSize(defaultSize: String? = null) {
-        val selectedSize = size ?: defaultSize
-        selectedSize?.let {
-            sizeToStockMap[it]?.let { isInStock ->
-                inStock = isInStock
-            }
-        }
-    }
-
+enum class Size {
+    XS, S, M, L, XL, XXL, Free
 }
 
 data class SizePrice(val currentPrice: Int, val originalPrice: Int){
@@ -92,12 +55,29 @@ data class ProductItem(
         orderType = "Unknown",
         supplier = "Unknown",
         size = null,
-        sizeToPriceMap = emptyMap(),
+        sizeToPriceMap = mapOf(
+            "XS" to SizePrice(0, 0),
+            "S" to SizePrice(0, 0),
+            "M" to SizePrice(0, 0),
+            "L" to SizePrice(0, 0),
+            "XL" to SizePrice(0, 0),
+            "XXL" to SizePrice(0, 0),
+        ),
         inStock = true,
         sizeToStockMap = emptyMap(),
         productDetails = emptyMap(),
         description = "No description available"
     )
+
+    fun updatePriceBasedOnSize(defaultSize: String? = null) {
+        val selectedSize = size ?: defaultSize
+        selectedSize?.let {
+            sizeToPriceMap[it]?.let { (newCurrPrice, newOgPrice) ->
+                currprice = newCurrPrice
+                ogprice = newOgPrice
+            }
+        }
+    }
 
 }
 

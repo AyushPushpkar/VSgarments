@@ -6,13 +6,10 @@ import android.provider.MediaStore
 import android.util.Log
 import com.example.vsgarments.dataStates.ProductItem
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import io.appwrite.Permission
 import io.appwrite.models.InputFile
 import io.appwrite.services.Storage
 import kotlinx.coroutines.tasks.await
-import java.nio.file.Paths
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,8 +45,11 @@ class FirebaseProductRepository @Inject constructor(
             )
             println(file.permissions)
 
+            val timestamp = System.currentTimeMillis()
+            val imageUrl = "https://cloud.appwrite.io/v1/storage/buckets/${file.bucketId}/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin&ts=$timestamp"
+
             // Construct the file URL for the uploaded image
-            val imageUrl = "https://cloud.appwrite.io/v1/storage/buckets/${file.bucketId}/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin"
+            //val imageUrl = "https://cloud.appwrite.io/v1/storage/buckets/${file.bucketId}/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin"
 
             // Update the product with the image URL
             val productWithImageUrl = product.copy(remoteImageUrl = imageUrl, localImageUri = null)
@@ -79,30 +79,38 @@ class FirebaseProductRepository @Inject constructor(
 
         Log.d("UpdateProduct", "Updating product with ID: $id")
 
-        val docRef = productsCollection.document(id)
+        val prevDocRef = productsCollection.document(id)
 
         if (updatedProduct.localImageUri != null) {
 
-            val product = docRef.get().await().toObject(ProductItem::class.java)
+            val product = prevDocRef.get().await().toObject(ProductItem::class.java)
             product?.remoteImageUrl?.let {
                 val fileId = product.id
-                appWriteStorage.deleteFile(bucketId = "6783988f000b21f9f0da", fileId = fileId)
+                appWriteStorage.deleteFile(
+                    bucketId = "6783988f000b21f9f0da",
+                    fileId = fileId
+                )
             }
 
-            val imageUri = updatedProduct.localImageUri ?: throw IllegalArgumentException("Product image URI is required")
+            prevDocRef.delete().await()
+
+            val imageUri = updatedProduct.localImageUri
 
             val path = getRealPathFromURI(imageUri , context)
                 ?: throw IllegalArgumentException("Failed to resolve image URI to a file path")
 
             try {
                 val file = appWriteStorage.createFile(
-                    bucketId = "6783988f000b21f9f0da",
-                    fileId = updatedProduct.id,
-                    file = InputFile.fromPath(path.toString())
-                )
+                        bucketId = "6783988f000b21f9f0da",
+                        fileId = updatedProduct.id,
+                        file = InputFile.fromPath(path),
+                        permissions = listOf(Permission.read("any"))
+                    )
 
+                val timestamp = System.currentTimeMillis()
+                val newImageUrl = "https://cloud.appwrite.io/v1/storage/buckets/${file.bucketId}/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin&ts=$timestamp"
                 // Construct the file URL for the new image
-                val newImageUrl = "https://cloud.appwrite.io/v1/storage/buckets/6783988f000b21f9f0da/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin"
+                //val newImageUrl = "https://cloud.appwrite.io/v1/storage/buckets/${file.bucketId}/files/${file.id}/view?project=67838c5c0028311de936&project=67838c5c0028311de936&mode=admin"
 
                 // Update the product with the new image URL and set localImageUri to null
                 val updatedProductWithNewImage = updatedProduct.copy(
@@ -110,7 +118,7 @@ class FirebaseProductRepository @Inject constructor(
                     localImageUri = null
                 )
 
-                // Save the updated product in Firestore
+                val docRef = productsCollection.document(updatedProductWithNewImage.id)
                 docRef.set(updatedProductWithNewImage).await()
 
             } catch (e: Exception) {
@@ -121,6 +129,9 @@ class FirebaseProductRepository @Inject constructor(
         } else {
             // Update product without changing the image
             try {
+                prevDocRef.delete().await()
+
+                val docRef = productsCollection.document(updatedProduct.id)
                 docRef.set(updatedProduct).await()
                 Log.d("UpdateProduct", "Firestore document updated successfully.")
             } catch (e: Exception) {

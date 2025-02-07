@@ -1,12 +1,9 @@
 package com.example.vsgarments.layout
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,14 +89,14 @@ import com.example.vsgarments.ui.theme.tintGreen
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.dataStates.ProductItem
-import com.example.vsgarments.product.ProductViewModel
-import com.example.vsgarments.ui.theme.grey
-import com.example.vsgarments.ui.theme.lightblack
+
+import com.example.vsgarments.payment_methods.PaymentState
+import com.example.vsgarments.payment_methods.PaymentViewModel
+import com.example.vsgarments.view_functions.BlueButton
 import com.example.vsgarments.view_functions.RadioButtons
 import com.example.vsgarments.view_functions.Spinner
 import com.example.vsgarments.view_functions.ToggleableInfo
-import com.example.vsgarments.view_functions.BlueButton
+import com.example.vsgarments.view_functions.customToast
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -106,11 +104,14 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun CartScreen(
+fun TmpScreen(
     modifier: Modifier,
     navController: NavController,
 ) {
     val context = LocalContext.current
+    val paymentViewModel :  PaymentViewModel = hiltViewModel()
+    val paymentState by paymentViewModel.paymentStatus.collectAsState()
+
 
     val numberFormat = NumberFormat.getInstance(Locale("en", "IN"))
 
@@ -278,19 +279,19 @@ fun CartScreen(
                             items(products.size) { index ->
                                 val product = products[index]
 
-                                        CartItemCard(
-                                            index = index ,
-                                            cartIItem = product,
-                                            context = context ,
-                                            navController = navController ,
-                                            selectedQuantities = selectedQuantities,
-                                            onQuantityChanged = {
-                                                selectedQuantities[index] = it
-                                                val (newTotalCurrent, newTotalOg) = recalculateTotal(products, selectedQuantities)
-                                                totalCurrentPrice = newTotalCurrent
-                                                totalOgPrice = newTotalOg
-                                            }
-                                        )
+                                CartItemCard(
+                                    index = index ,
+                                    cartIItem = product,
+                                    context = context ,
+                                    navController = navController ,
+                                    selectedQuantities = selectedQuantities,
+                                    onQuantityChanged = {
+                                        selectedQuantities[index] = it
+                                        val (newTotalCurrent, newTotalOg) = recalculateTotal(products, selectedQuantities)
+                                        totalCurrentPrice = newTotalCurrent
+                                        totalOgPrice = newTotalOg
+                                    }
+                                )
                             }
 
                             item {
@@ -411,9 +412,37 @@ fun CartScreen(
                             BlueButton(
                                 width_fraction = 1f,
                                 button_text = "Place Order",
-                                font_Family = fontBaloo
-                            ) {
+                                font_Family = fontBaloo,
+                                enabled = paymentState !is PaymentState.Processing ,
+                                onClick = {
+                                    if(totalCurrentPrice != 0.0 && totalCurrentPrice.toFloat() > 0){
+                                        paymentViewModel.initiatePayment(context as Activity, totalCurrentPrice.toString())
+                                    }
+                                    else{
+                                        customToast(context,"Please enter a valid amount",true)
+                                    }
+                                }
+                            )
+                            LaunchedEffect(paymentState) {
+                                when(paymentState){
+                                    is PaymentState.Failure ->{
+                                        paymentViewModel.resetPaymentState()
+                                    }
+                                    is PaymentState.Success ->{
+                                        paymentViewModel.resetPaymentState()
+                                    }
+                                    else->{}
+                                }
+                            }
+                            Text(if (paymentState is PaymentState.Processing) "" else "")
+                            when(paymentState){
+                                is PaymentState.Failure ->  customToast(context,"Payment Failed: ${(paymentState as PaymentState.Failure).errorMessage}",true)
+                                PaymentState.Idle -> {
+                                    // No status to show initially
+                                }
 
+                                is PaymentState.Success ->  customToast(context,"Payment Successful: ${(paymentState as PaymentState.Success).paymentId}",true)
+                                else -> {}
                             }
                         }
                     }
@@ -492,7 +521,7 @@ fun CartScreen(
     }
 }
 
-fun recalculateTotal(
+fun recalculateTotal2(
     cartList: List<CartIItem>,
     selectedQuantities: Map<Int, Int>
 ): Pair<Double, Double> {
@@ -511,7 +540,7 @@ fun recalculateTotal(
 }
 
 @Composable
-fun CartItemCard(
+fun CartItemCard2(
     index : Int,
     cartIItem: CartIItem,
     navController: NavController,
@@ -927,131 +956,3 @@ fun CartItemCard(
         )
     }
 }
-
-@Composable
-fun Address_dialog(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    initiallyOpened: Boolean,
-    onDismissRequest: () -> Unit,
-    context: Context
-) {
-
-    AnimatedVisibility(
-        visible = initiallyOpened,
-        enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-        exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0x4DB6E9FF))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(213.dp)
-                    .background(Color.Transparent)
-                    .clickable { onDismissRequest() }
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(
-                        shape = RoundedCornerShape(
-                            topStart = 30.dp,
-                            topEnd = 30.dp
-                        )
-                    )
-                    .background(Color.White)
-                    .padding(35.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures {}  // Consume taps
-                    }
-                    .pointerInput(Unit) {
-                        detectDragGestures { _, _ -> /* Consume drag gestures */ }
-                    },
-                verticalArrangement = Arrangement.spacedBy(25.dp)
-            ) {
-                Spacer(
-                    modifier = Modifier
-                        .height(0.dp)
-                )
-
-                Row {
-                    Text(
-                        modifier = Modifier.weight(9f),
-                        text = "Select Delivery Address ",
-                        color = textcolorgrey,
-                        fontSize = 20.sp,
-                        fontFamily = fontInter,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Image(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable {
-                                onDismissRequest()
-                            },
-                        painter = painterResource(id = R.drawable.edit_pen),
-                        contentDescription = "cross icon"
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                val options = listOf(
-                    ToggleableInfo(false, "Option 1" , "fjba b w wvwqiv twv w4j jt 34j joov  ", "800054"),
-                    ToggleableInfo(false, "Option 2" , "gvrvnwc uy wrrg uurg g3412t3fvhrhrq ug 2ug httw t" , "844545"),
-                    ToggleableInfo(false, "Option 3" , "ayushs khhrv wtt hti hyi jt jyoyu" , "235224")
-                )
-
-                val savedOption = getSavedAddressOption(context)
-                val defaultOption = options.find {
-                    it.addresstext == savedOption.address &&
-                            it.nametext == savedOption.name &&
-                            it.pincode == savedOption.pincode
-                } ?: options.firstOrNull()
-
-                var selectedOption by remember { mutableStateOf(defaultOption) }
-
-
-                RadioButtons(
-                    options = options,
-                    selectedOption = selectedOption,
-                    onOptionSelected = { selected ->
-                        selectedOption = selected
-                        saveAddressOption(
-                            context,
-                            selected.addresstext,
-                            selected.nametext,
-                            selected.pincode
-                        )
-                        onDismissRequest()
-                    }
-                )
-
-
-            }
-        }
-    }
-}
-
-fun saveAddressOption(context: Context, addressText: String , nameText : String , pincode : String) {
-    val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
-    with(sharedPreferences.edit()) {
-        putString("AddressOption", addressText)
-        putString("NameOption", nameText)
-        putString("PincodeOption", pincode)
-        apply()
-    }
-}
-
-fun getSavedAddressOption(context: Context): AddressInfo {
-    val sharedPreferences = context.getSharedPreferences("AddressPrefs", Context.MODE_PRIVATE)
-    val address = sharedPreferences.getString("AddressOption", null) ?: ""
-    val name = sharedPreferences.getString("NameOption", null) ?: "Address : "
-    val pincode = sharedPreferences.getString("PincodeOption", null) ?: ""
-    return AddressInfo(address, name, pincode)
-}
-

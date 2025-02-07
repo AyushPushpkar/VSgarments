@@ -11,6 +11,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -21,18 +23,25 @@ import com.example.vsgarments.ui.theme.textcolorgrey
 
 @Composable
 fun number_editText(
+    modifier: Modifier = Modifier,
     hint : String ,
-    char_no : Int ,
+    char_no : Int = Int.MAX_VALUE ,
     font_Family: FontFamily ,
+    text: String ,
+    enabled : Boolean = true ,
+    onTextChange: (String) -> Unit ,
+    focusRequester: FocusRequester
 ){
-    var text by remember { mutableStateOf("") }
 
     OutlinedTextField(
+        enabled = enabled,
         value = text ,
         onValueChange = {
-            text = it.filter {char ->
-                char.isDigit()
-            }.take(char_no)
+            onTextChange(
+                it.filter {char ->
+                    char.isDigit()
+                }.take(char_no)
+            )
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
@@ -53,8 +62,9 @@ fun number_editText(
             fontWeight = FontWeight.Normal,
             color = textcolorblue
         ) },
-        modifier = Modifier.
-        fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester)
     )
 }
 
@@ -64,10 +74,13 @@ fun char_editText(
     hint : String ,
     font_Family: FontFamily ,
     text : String,
-    onTextChange: (String) -> Unit
+    onTextChange: (String) -> Unit ,
+    focusRequester: FocusRequester ,
+    enabled: Boolean = true
 ){
 
     OutlinedTextField(
+        enabled = enabled,
         value = text ,
         onValueChange = {
             onTextChange(it)
@@ -90,6 +103,6 @@ fun char_editText(
         ) },
         modifier = modifier
             .fillMaxWidth()
-
+            .focusRequester(focusRequester)
     )
 }

@@ -1,8 +1,5 @@
 package com.example.vsgarments.layout
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -11,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,22 +24,18 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -51,13 +45,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,9 +70,16 @@ import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.fontInter
+import com.example.vsgarments.ui.theme.textcolorgrey
+import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.CheckBoxWithText
+import com.example.vsgarments.view_functions.BlueButton
+import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
+import com.example.vsgarments.view_functions.number_editText
 
 const val IMAGE_PICK_REQUEST_CODE = 1001
 
@@ -112,6 +115,10 @@ fun ProductScreen(
     val sizeOgPrice = remember { mutableStateOf("") }
     val sizeInStock = remember { mutableStateOf(true) }
 
+    LaunchedEffect(Unit) {
+        productViewModel.loadProducts()
+    }
+
     // Image picker launcher
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
@@ -121,6 +128,9 @@ fun ProductScreen(
             Toast.makeText(context, "Image selection canceled", Toast.LENGTH_SHORT).show()
         }
     }
+
+    val focusManager = LocalFocusManager.current
+    val focusRequester = FocusRequester()
 
     Box (
         modifier = modifier
@@ -137,6 +147,9 @@ fun ProductScreen(
                     vertical = 30.dp
                 )
                 .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
                 .verticalScroll(productScroll),
             verticalArrangement = Arrangement.spacedBy(26.dp)
         ) {
@@ -146,103 +159,111 @@ fun ProductScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            // Input Fields
-            OutlinedTextField(
-                value = productName.value,
-                onValueChange = { productName.value = it },
-                label = { Text("Product Name") },
-                modifier = Modifier.fillMaxWidth()
+            char_editText(
+                text = productName.value,
+                onTextChange = { productName.value = it },
+                hint = "Product Name",
+                modifier = Modifier.fillMaxWidth() ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = companyName.value,
-                onValueChange = { companyName.value = it },
-                label = { Text("Company Name") },
-                modifier = Modifier.fillMaxWidth()
+            char_editText(
+                text = companyName.value,
+                onTextChange = { companyName.value = it },
+                hint = "Company Name",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = currPrice.value,
-                onValueChange = { currPrice.value = it },
-                label = { Text("Current Price") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = currPrice.value,
+                onTextChange = { currPrice.value = it },
+                hint = "Current Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = ogPrice.value,
-                onValueChange = { ogPrice.value = it },
-                label = { Text("Original Price") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = ogPrice.value,
+                onTextChange = { ogPrice.value = it },
+                hint = "Original Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = minQuantity.value,
-                onValueChange = { minQuantity.value = it },
-                label = { Text("Minimum Quantity") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = minQuantity.value,
+                onTextChange = { minQuantity.value = it },
+                hint = "Minimum Quantity",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = maxQuantity.value,
-                onValueChange = { maxQuantity.value = it },
-                label = { Text("Maximum Quantity") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = maxQuantity.value,
+                onTextChange = { maxQuantity.value = it },
+                hint = "Maximum Quantity",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = description.value,
-                onValueChange = { description.value = it },
-                label = { Text("Description") },
-                modifier = Modifier.fillMaxWidth()
+            char_editText(
+                text = description.value ,
+                onTextChange = { description.value = it },
+                hint = "Description" ,
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            // In-stock Checkbox
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = inStock.value,
-                    onCheckedChange = { inStock.value = it }
-                )
-                Text(text = "In Stock")
-            }
-
-            Text(text = "Add Size Details")
-
-            OutlinedTextField(
-                value = sizeInput.value,
-                onValueChange = { sizeInput.value = it },
-                label = { Text("Size") },
-                modifier = Modifier.fillMaxWidth()
+            CheckBoxWithText(
+                isChecked = inStock.value,
+                onCheckedChange = {inStock.value = it} ,
+                text = "In Stock"
             )
 
-            OutlinedTextField(
-                value = sizeCurrPrice.value,
-                onValueChange = { sizeCurrPrice.value = it },
-                label = { Text("Current Price for Size") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            Text(text = "Add Size Details" , color = tintGrey)
+
+            char_editText(
+                text = sizeInput.value,
+                onTextChange = { sizeInput.value = it },
+                hint = "Size",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            OutlinedTextField(
-                value = sizeOgPrice.value,
-                onValueChange = { sizeOgPrice.value = it },
-                label = { Text("Original Price for Size") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            number_editText(
+                text = sizeCurrPrice.value,
+                onTextChange = { sizeCurrPrice.value = it },
+                hint = "Current Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = sizeInStock.value,
-                    onCheckedChange = { sizeInStock.value = it }
-                )
-                Text(text = "In Stock for Size")
-            }
+            number_editText(
+                text = sizeOgPrice.value,
+                onTextChange = { sizeOgPrice.value = it },
+                hint = "Original Price",
+                modifier = Modifier.fillMaxWidth()  ,
+                font_Family = fontInter ,
+                focusRequester = focusRequester
+            )
 
-            Button(
+            CheckBoxWithText(
+                isChecked = sizeInStock.value,
+                onCheckedChange = {sizeInStock.value = it},
+                text = "In Stock for Size"
+            )
+
+            BlueButton(
                 onClick = {
                     val size = sizeInput.value
                     val currPriceVal = sizeCurrPrice.value.toIntOrNull()
@@ -259,16 +280,17 @@ fun ProductScreen(
                         Toast.makeText(context, "Invalid size details", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Add Size Details")
-            }
+                width_fraction = 0.9f,
+                button_text = "Add Size Details",
+                font_Family = fontBaloo
+            )
 
-            Button(
-                onClick = { imagePickerLauncher.launch("image/*") },
-                modifier = Modifier.fillMaxWidth()
+            BlueButton(
+                width_fraction = 0.9f,
+                button_text = "Update Product Image",
+                font_Family = fontBaloo
             ) {
-                Text(text = "Select Product Image")
+                imagePickerLauncher.launch("image/*")
             }
 
             imageUri.value?.let { uri ->
@@ -276,50 +298,47 @@ fun ProductScreen(
             }
 
 
-            // Add Product Button
-            Button(
-                onClick = {
-
-                    if (productName.value.isBlank() || companyName.value.isBlank()) {
-                        Toast.makeText(context, "Product name and company name are required", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    if (currPrice.value.isBlank() || currPrice.value.toIntOrNull() == null) {
-                        Toast.makeText(context, "Invalid current price", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    if (ogPrice.value.isBlank() || ogPrice.value.toIntOrNull() == null) {
-                        Toast.makeText(context, "Invalid original price", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-
-                    val productItem = ProductItem(
-                        name = productName.value,
-                        CompanyName = companyName.value,
-                        currprice = currPrice.value.toIntOrNull() ?: 0,
-                        ogprice = ogPrice.value.toIntOrNull() ?: 0,
-                        rating = rating.value.toFloatOrNull() ?: 0.0f,
-                        minQuantity = minQuantity.value.toIntOrNull() ?: 1,
-                        maxQuantity = maxQuantity.value.toIntOrNull() ?: 500,
-                        description = description.value,
-                        inStock = inStock.value,
-                        sizeToPriceMap = sizeToPriceMap,
-                        sizeToStockMap = sizeToStockMap ,
-                        localImageUri = imageUri.value
-                    )
-
-                    productViewModel.addProduct(productItem , context)
-
-                    Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier.fillMaxWidth()
+            BlueButton(
+                width_fraction = 0.9f,
+                button_text = "Add Product",
+                font_Family = fontBaloo
             ) {
-                Text(text = "Add Product")
+                if (productName.value.isBlank() || companyName.value.isBlank()) {
+                    Toast.makeText(context, "Product name and company name are required", Toast.LENGTH_SHORT).show()
+                    return@BlueButton
+                }
+                if (currPrice.value.isBlank() || currPrice.value.toIntOrNull() == null) {
+                    Toast.makeText(context, "Invalid current price", Toast.LENGTH_SHORT).show()
+                    return@BlueButton
+                }
+                if (ogPrice.value.isBlank() || ogPrice.value.toIntOrNull() == null) {
+                    Toast.makeText(context, "Invalid original price", Toast.LENGTH_SHORT).show()
+                    return@BlueButton
+                }
+
+                val productItem = ProductItem(
+                    name = productName.value,
+                    CompanyName = companyName.value,
+                    currprice = currPrice.value.toIntOrNull() ?: 0,
+                    ogprice = ogPrice.value.toIntOrNull() ?: 0,
+                    rating = rating.value.toFloatOrNull() ?: 0.0f,
+                    minQuantity = minQuantity.value.toIntOrNull() ?: 1,
+                    maxQuantity = maxQuantity.value.toIntOrNull() ?: 500,
+                    description = description.value,
+                    inStock = inStock.value,
+                    sizeToPriceMap = sizeToPriceMap,
+                    sizeToStockMap = sizeToStockMap ,
+                    localImageUri = imageUri.value
+                )
+
+                productViewModel.addProduct(productItem , context)
+
+                Toast.makeText(context, "Product added successfully!", Toast.LENGTH_SHORT).show()
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Product List")
+            Text(text = "Product List" , color = tintGrey)
 
             when (productState) {
                 is Resource.Loading -> {
@@ -333,7 +352,8 @@ fun ProductScreen(
                     // Check if the list is not null and has items
                     if (!products.isNullOrEmpty()) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .height(600.dp)
                         ) {
                             items(products.size) { index ->
@@ -454,12 +474,12 @@ fun ProductItemCard(
             .fillMaxWidth()
             .padding(
                 vertical = 8.dp,
-                horizontal = 16.dp
             ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
+                .background(textcolorgrey)
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
@@ -475,7 +495,7 @@ fun ProductItemCard(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Update Product",
-                        tint = Color.Blue
+                        tint = topbardarkblue
                     )
                 }
 
@@ -485,13 +505,14 @@ fun ProductItemCard(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete Product",
-                        tint = Color.Red
+                        tint = topbardarkblue
                     )
                 }
             }
 
             // Display the product image if available
             // Load and display the image
+
             product.remoteImageUrl?.let { imageUrl ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -527,7 +548,7 @@ fun ProductItemCard(
                 text = product.name,
             )
             Text(text = "Company: ${product.CompanyName}")
-            Text(text = "Price: \$${product.currprice} (Original: \$${product.ogprice})")
+            Text(text = "Price: ₹${product.currprice} (Original: ₹${product.ogprice})")
             Text(text = "Rating: ${product.rating}")
             Text(text = "Min Quantity: ${product.minQuantity}")
             Text(text = "Max Quantity: ${product.maxQuantity}")
@@ -540,7 +561,7 @@ fun ProductItemCard(
             Text(text = "Available Sizes:")
             product.sizeToPriceMap.forEach { (size, price) ->
                 val (currPrice, ogPrice) = price
-                Text(text = "$size: Price - \$${currPrice} / \$${ogPrice}, In Stock: ${if (product.sizeToStockMap[size] == true) "Yes" else "No"}")
+                Text(text = "$size: Price - ₹${currPrice} / ₹${ogPrice}, In Stock: ${if (product.sizeToStockMap[size] == true) "Yes" else "No"}")
             }
         }
     }

@@ -17,7 +17,7 @@ import com.example.vsgarments.layout.Settings_Screen
 import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
-import com.example.vsgarments.dataStates.ImageItem
+import com.example.vsgarments.dataStates.ProductItem
 import com.example.vsgarments.layout.EmailVerificationScreen
 import com.example.vsgarments.layout.IntroductionScreen
 import com.example.vsgarments.layout.ProductScreen
@@ -70,12 +70,12 @@ fun App_Navigation(modifier: Modifier ){
 
             // Deserialize the JSON strings to objects
             val imageItem = imageItemJson?.let { jsonString ->
-                Gson().fromJson(URLDecoder.decode(jsonString, "UTF-8"), ImageItem::class.java)
+                Gson().fromJson(URLDecoder.decode(jsonString, "UTF-8"), ProductItem::class.java)
             }
             DisplayScreen(
                 modifier = modifier,
                 navController = navController,
-                imageItem = imageItem
+                productItem = imageItem
             )
         }
 

@@ -1,5 +1,7 @@
 package com.example.vsgarments.layout
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,13 +30,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,16 +51,25 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.vsgarments.R
+import com.example.vsgarments.authentication.util.Resource
+import com.example.vsgarments.cart.DetailsViewModel
+import com.example.vsgarments.cart.CartIItem
 import com.example.vsgarments.navigation.Screen
 import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontBaloo
@@ -65,19 +78,50 @@ import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
-import com.example.vsgarments.dataStates.ImageItem
-import com.example.vsgarments.dataStates.imageList
+import com.example.vsgarments.dataStates.ProductItem
+import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.view_functions.ExpandableText3
 import com.example.vsgarments.view_functions.SizeSelection
+import com.example.vsgarments.view_functions.customToast
+import com.google.gson.Gson
+import java.net.URLEncoder
 
 @Composable
 fun DisplayScreen(
     modifier: Modifier,
     navController: NavController,
-    imageItem: ImageItem?,
+    productItem: ProductItem?
 ) {
 
-    val updatedImageItem = remember { mutableStateOf(imageItem) }
+    val updatedImageItem = remember { mutableStateOf(productItem) }
+
+    val context = LocalContext.current
+    val productViewModel: ProductViewModel = hiltViewModel()
+    val productState by productViewModel.productState.collectAsState()
+
+    val detailsViewModel : DetailsViewModel = hiltViewModel()
+    val cartState by detailsViewModel.addToCart.collectAsState()
+
+    var isAddingToCart by remember { mutableStateOf(false) }
+
+
+    when (cartState) {
+        is Resource.Loading -> {
+        }
+        is Resource.Success -> {
+            if (isAddingToCart) {
+                customToast(context = context , "Added to Cart" , cancelable = true)
+                isAddingToCart = false  // Reset flag after showing toast
+            }
+
+        }
+        is Resource.Error -> {
+
+            customToast(context = context , (cartState as Resource.Error).errorMassage ?: "Unknown error")
+        }
+        else -> Unit
+    }
+
 
     Box(
         modifier = modifier
@@ -91,8 +135,9 @@ fun DisplayScreen(
                 .fillMaxSize()
                 .verticalScroll(displayScrollview)
         ) {
+
             updatedImageItem.value?.let { item ->
-                val selectedSize = remember { mutableStateOf(item.size ?: "") }
+                val selectedSize = remember { mutableStateOf(item.size ?: "S") }
                 val currentPrice = remember { mutableIntStateOf(item.currprice) }
                 val originalPrice = remember { mutableIntStateOf(item.ogprice) }
 
@@ -130,24 +175,33 @@ fun DisplayScreen(
                                     end = 4.dp
                                 ),
                         ) {
-                            Image(
-                                painter = painterResource(id = item.imageresId),
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .align(alignment = Alignment.CenterHorizontally)
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                                    .clip(
-                                        shape = RoundedCornerShape(
-                                            topStart = 0.dp,
-                                            topEnd = 0.dp,
-                                            bottomStart = 25.dp,
-                                            bottomEnd = 25.dp
-                                        )
-                                    )
-
-                            )
+                            productItem?.remoteImageUrl?.let { imageUrl ->
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(imageUrl)
+                                        .crossfade(true)
+                                        .error(R.drawable.retail)
+                                        .placeholder(R.drawable.custom)
+                                        .build(),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .align(alignment = Alignment.CenterHorizontally)
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                        .clip(
+                                            shape = RoundedCornerShape(
+                                                topStart = 0.dp,
+                                                topEnd = 0.dp,
+                                                bottomStart = 25.dp,
+                                                bottomEnd = 25.dp
+                                            )
+                                        ),
+                                    contentScale = ContentScale.Crop ,
+                                    onError = { error ->
+                                        Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
+                                    }
+                                )
+                            }
 
                         }
                         Box(
@@ -321,9 +375,27 @@ fun DisplayScreen(
                             currentPrice.intValue = it.currprice
                             originalPrice.intValue = it.ogprice
                             selectedSize.value = it.size ?: ""
+                            Log.d("SizeSelection", "Selected size: ${it.size}")
                         }
                     )
                     Spacer(modifier = Modifier.height(25.dp))
+
+                    val product by remember(selectedSize.value) {
+                        derivedStateOf {
+                            updatedImageItem
+                        }
+                    }
+                    Log.d("SizeSelection", "Selected product size: ${selectedSize.value}")
+
+                    val cartProductItem by remember(selectedSize.value) {
+                        derivedStateOf {
+                            CartIItem(
+                                productItem = updatedImageItem.value!!,
+                                quantity = 1,
+                                selectedSize = selectedSize.value
+                            )
+                        }
+                    }
 
                     Row(
                         modifier = Modifier
@@ -340,7 +412,15 @@ fun DisplayScreen(
                             modifier = Modifier
                                 .weight(1f),
                             onClick = {
-                                navController.navigate(Screen.Wishlist.route)
+                                isAddingToCart = true
+                                Log.d("CartProductItem", "Cart Product Details: $cartProductItem")
+                                Log.d("CartProductItem", "Product Name: ${cartProductItem.productItem.name}")
+                                Log.d("CartProductItem", "Product Size: ${cartProductItem.selectedSize}")
+                                Log.d("CartProductItem", "Product Quantity: ${cartProductItem.quantity}")
+                                Log.d("CartProductItem", "Product Current Price: ${cartProductItem.productItem.currprice}")
+                                Log.d("CartProductItem", "Product Original Price: ${cartProductItem.productItem.ogprice}")
+                                Log.d("CartProductItem", "Product Image URL: ${cartProductItem.productItem.remoteImageUrl}")
+                                detailsViewModel.addUpdateProductInCart(cartProductItem)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent
@@ -350,7 +430,6 @@ fun DisplayScreen(
                                 width = 2.dp,
                                 color = Color(0x66676767)
                             ),
-
                             contentPadding = PaddingValues()
                         ) {
                             Row(
@@ -378,7 +457,7 @@ fun DisplayScreen(
                                 ) {
                                     Image(
                                         painter = painterResource(id = R.drawable.edit_pen),
-                                        contentDescription = "wishlist icon"
+                                        contentDescription = "cart icon"
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
@@ -392,6 +471,7 @@ fun DisplayScreen(
                             }
 
                         }
+
                         Spacer(modifier = Modifier.width(20.dp))
                         Button(
                             modifier = Modifier
@@ -532,122 +612,72 @@ fun DisplayScreen(
                     ),
                     elevation = CardDefaults.cardElevation(10.dp),
                 ) {
-                    LazyRow(
-                        modifier = Modifier
-                            .clip(
-                                RoundedCornerShape(5.dp)
-                            )
-                            .background(Color.White)
-                            .padding(horizontal = 8.dp)
-                    ) {
-                        itemsIndexed(imageList) { index, imageItem ->
-                            Column(
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .width(160.dp)
-                                    .fillMaxHeight()
-                                    .padding(
-                                        horizontal = 6.dp,
-                                        vertical = 8.dp
-                                    )
-                            ) {
-                                Image(
-                                    painter = painterResource(id = imageItem.imageresId),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(230.dp)
-                                        .clip(
-                                            RoundedCornerShape(10.dp)
-                                        )
-                                        .clickable {
 
-                                        },
-                                    contentScale = ContentScale.Crop
-                                )
+                    when (productState) {
+                        is Resource.Loading -> {
+                            // Show a loading indicator
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                        }
 
-                                Spacer(modifier = Modifier.height(8.dp))
+                        is Resource.Success -> {
+                            val products =
+                                (productState as Resource.Success<List<ProductItem>>).data
 
-                                Text(
-                                    modifier = Modifier
-                                        .padding(
-                                            horizontal = 5.dp,
-                                            vertical = 2.dp
-                                        ),
-                                    text = imageItem.name,
-                                    color = textcolorgrey,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
+                            if (!products.isNullOrEmpty()) {
 
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-
-                                    Text(
-                                        modifier = Modifier.padding(
-                                            horizontal = 5.dp,
-                                            vertical = 1.dp
-                                        ),
-                                        text = "₹${imageItem.ogprice}",
-                                        color = tintGrey,
-                                        textDecoration = TextDecoration.LineThrough,
-                                        fontSize = 12.sp
-                                    )
-                                    Text(
-                                        modifier = Modifier.padding(
-                                            horizontal = 5.dp,
-                                            vertical = 1.dp
-                                        ),
-                                        text = "₹${imageItem.currprice}",
-                                        color = textcolorblue,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(5.dp))
-                                val percentless = percentLess(
-                                    imageItem.ogprice,
-                                    imageItem.currprice
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .clip(
-                                            RoundedCornerShape(
-                                                topEnd = 5.dp,
-                                                bottomEnd = 5.dp
-                                            )
-                                        )
-                                        .background(
-                                            brush = Brush.horizontalGradient(
-                                                colors = listOf(
-                                                    Color(0xFFF9FFFB),
-                                                    topbarlightblue
-                                                )
-                                            )
-                                        )
-                                        .padding(
-                                            start = 60.dp,
-                                            end = 20.dp
-                                        )
-                                ) {
-                                    Text(
+                                    LazyRow(
                                         modifier = Modifier
-                                            .padding(
-                                                horizontal = 5.dp,
-                                                vertical = 1.dp
-                                            ),
-                                        text = "${percentless}% off",
-                                        color = Color.White,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(10.dp))
+                                            .fillMaxSize()
+                                            .clip(
+                                                RoundedCornerShape(5.dp)
+                                            )
+                                            .background(Color.White)
+                                            .padding(horizontal = 8.dp)
+                                    ) {
+                                        items(products.size) {index->
+                                            val product = products[index]
+                                            DisplayItemCard(
+                                                product = product,
+                                                context = context,
+                                                navController = navController
+                                            )
+                                        }
+                                        item {
+                                            Spacer(
+                                                modifier = Modifier
+                                                    .height(75.dp)
+                                                    .background(appbackgroundcolor)
+                                            )
+                                        }
+                                    }
+                            } else {
+                                Text(
+                                    text = "No products available",
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
                             }
+                        }
+
+                        is Resource.Error -> {
+                            // Show error message
+                            Text(
+                                text = (productState as Resource.Error).errorMassage
+                                    ?: "Unknown error",
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            Log.e(
+                                "ProductScreen",
+                                "Error loading products: ${productState.errorMassage}"
+                            )
+                        }
+
+                        else -> {
+                            // Handle unspecified state or no data
+                            Text(
+                                text = "No products available",
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
                         }
                     }
                 }
@@ -674,123 +704,71 @@ fun DisplayScreen(
                     ),
                     elevation = CardDefaults.cardElevation(10.dp),
                 ) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(
-                                RoundedCornerShape(5.dp)
-                            )
-                            .background(Color.White)
-                            .padding(horizontal = 8.dp)
-                    ) {
-                        itemsIndexed(imageList) { index, imageItem ->
-                            Column(
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .width(160.dp)
-                                    .fillMaxHeight()
-                                    .padding(
-                                        horizontal = 6.dp,
-                                        vertical = 8.dp
-                                    )
-                            ) {
-                                Image(
-                                    painter = painterResource(id = imageItem.imageresId),
-                                    contentDescription = null,
+                    when (productState) {
+                        is Resource.Loading -> {
+                            // Show a loading indicator
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                        }
+
+                        is Resource.Success -> {
+                            val products =
+                                (productState as Resource.Success<List<ProductItem>>).data
+
+                            if (!products.isNullOrEmpty()) {
+
+                                LazyRow(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(230.dp)
+                                        .fillMaxSize()
                                         .clip(
-                                            RoundedCornerShape(10.dp)
+                                            RoundedCornerShape(5.dp)
                                         )
-                                        .clickable {
-
-                                        },
-                                    contentScale = ContentScale.Crop
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
+                                        .background(Color.White)
+                                        .padding(horizontal = 8.dp)
+                                ) {
+                                    items(products.size) { index ->
+                                        val product = products[index]
+                                        DisplayItemCard(
+                                            product = product,
+                                            context = context,
+                                            navController = navController
+                                        )
+                                    }
+                                    item {
+                                        Spacer(
+                                            modifier = Modifier
+                                                .height(75.dp)
+                                                .background(appbackgroundcolor)
+                                        )
+                                    }
+                                }
+                            } else {
                                 Text(
-                                    modifier = Modifier
-                                        .padding(
-                                            horizontal = 5.dp,
-                                            vertical = 2.dp
-                                        ),
-                                    text = imageItem.name,
-                                    color = textcolorgrey,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium
+                                    text = "No products available",
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
-
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-
-                                    Text(
-                                        modifier = Modifier.padding(
-                                            horizontal = 5.dp,
-                                            vertical = 1.dp
-                                        ),
-                                        text = "₹${imageItem.ogprice}",
-                                        color = tintGrey,
-                                        textDecoration = TextDecoration.LineThrough,
-                                        fontSize = 12.sp
-                                    )
-                                    Text(
-                                        modifier = Modifier.padding(
-                                            horizontal = 5.dp,
-                                            vertical = 1.dp
-                                        ),
-                                        text = "₹${imageItem.currprice}",
-                                        color = textcolorblue,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(5.dp))
-                                val percentless = percentLess(
-                                    imageItem.ogprice,
-                                    imageItem.currprice
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .clip(
-                                            RoundedCornerShape(
-                                                topEnd = 5.dp,
-                                                bottomEnd = 5.dp
-                                            )
-                                        )
-                                        .background(
-                                            brush = Brush.horizontalGradient(
-                                                colors = listOf(
-                                                    Color(0xFFF9FFFB),
-                                                    Color(0xFF36BFF5)
-                                                )
-                                            )
-                                        )
-                                        .padding(
-                                            start = 60.dp,
-                                            end = 20.dp
-                                        )
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .padding(
-                                                horizontal = 5.dp,
-                                                vertical = 1.dp
-                                            ),
-                                        text = "${percentless}% off",
-                                        color = Color.White,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(10.dp))
                             }
+                        }
+
+                        is Resource.Error -> {
+                            // Show error message
+                            Text(
+                                text = (productState as Resource.Error).errorMassage
+                                    ?: "Unknown error",
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            Log.e(
+                                "ProductScreen",
+                                "Error loading products: ${productState.errorMassage}"
+                            )
+                        }
+
+                        else -> {
+                            // Handle unspecified state or no data
+                            Text(
+                                text = "No products available",
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
                         }
                     }
                 }
@@ -862,14 +840,14 @@ fun DisplayScreen(
                         }
                 )
                 Spacer(modifier = Modifier.width(30.dp))
-                if (imageItem != null) {
+                if (productItem != null) {
                     Box(
                         modifier = Modifier
                             .width(200.dp)
                     ) {
                         Text(
                             modifier = Modifier,
-                            text = imageItem.CompanyName,
+                            text = productItem.CompanyName,
                             fontSize = 21.sp,
                             color = Color.Black,
                             fontFamily = fontBaloo,
@@ -951,4 +929,145 @@ fun DisplayScreen(
 
         }
     }
+}
+
+@Composable
+fun DisplayItemCard(
+    product: ProductItem ,
+    navController: NavController ,
+    context: Context
+) {
+
+    val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
+
+    val imageItemJson = Gson().toJson(product)
+    val encodedProductItem = URLEncoder.encode(imageItemJson, "UTF-8")
+
+
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+            .width(160.dp)
+            .fillMaxHeight()
+            .padding(
+                horizontal = 6.dp,
+                vertical = 8.dp
+            )
+    ) {
+        product.remoteImageUrl?.let { imageUrl ->
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .error(R.drawable.retail)
+                    .placeholder(R.drawable.custom)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(230.dp)
+                    .clip(
+                        RoundedCornerShape(10.dp)
+                    )
+                    .clickable {
+                        navController.navigate("${Screen.DisplayScreen.route}/$encodedProductItem")
+                    } ,
+                contentScale = ContentScale.Crop ,
+                onError = { error ->
+                    Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
+                }
+            )
+        } ?: Text(
+            text = "No image available",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .background(Color.LightGray)
+                .wrapContentHeight(Alignment.CenterVertically),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            modifier = Modifier
+                .padding(
+                    horizontal = 5.dp,
+                    vertical = 2.dp
+                ),
+            text = product.name,
+            color = textcolorgrey,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text(
+                modifier = Modifier.padding(
+                    horizontal = 5.dp,
+                    vertical = 1.dp
+                ),
+                text = "₹${product.ogprice}",
+                color = tintGrey,
+                textDecoration = TextDecoration.LineThrough,
+                fontSize = 12.sp
+            )
+            Text(
+                modifier = Modifier.padding(
+                    horizontal = 5.dp,
+                    vertical = 1.dp
+                ),
+                text = "₹${product.currprice}",
+                color = textcolorblue,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        val percentless = percentLess(
+            product.ogprice,
+            product.currprice
+        )
+        Box(
+            modifier = Modifier
+                .clip(
+                    RoundedCornerShape(
+                        topEnd = 5.dp,
+                        bottomEnd = 5.dp
+                    )
+                )
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFF9FFFB),
+                            topbarlightblue
+                        )
+                    )
+                )
+                .padding(
+                    start = 60.dp,
+                    end = 20.dp
+                )
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 5.dp,
+                        vertical = 1.dp
+                    ),
+                text = "${percentless}% off",
+                color = Color.White,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+    }
+
 }
