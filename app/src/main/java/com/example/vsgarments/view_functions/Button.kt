@@ -30,6 +30,7 @@ fun BlueButton(
     width_fraction: Float ,
     button_text : String ,
     font_Family: FontFamily ,
+    enabled : Boolean = true,
     onClick: () -> Unit
 ) {
     Button(

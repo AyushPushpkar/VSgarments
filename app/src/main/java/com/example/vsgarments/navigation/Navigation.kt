@@ -1,4 +1,5 @@
 package com.example.vsgarments.navigation
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -21,6 +22,7 @@ import com.example.vsgarments.layout.EmailVerificationScreen
 import com.example.vsgarments.layout.IntroductionScreen
 import com.example.vsgarments.layout.ProductScreen
 import com.example.vsgarments.layout.UpdateProductScreen
+import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
 import java.net.URLDecoder
 

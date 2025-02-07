@@ -44,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
 
     packaging {
@@ -79,6 +79,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+   // implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
+
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx.v170)
@@ -102,10 +104,10 @@ dependencies {
     implementation ("com.google.firebase:firebase-database:21.0.0")
     implementation ("com.google.firebase:firebase-storage:21.0.1")
 
-    implementation ("com.google.dagger:hilt-android:2.48")
-    kapt ("com.google.dagger:hilt-android-compiler:2.48")
+    implementation ("com.google.dagger:hilt-android:+")
+    kapt ("com.google.dagger:hilt-android-compiler:+")
 
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:+")
 
     //fancy toast
     implementation(libs.fancytoast)
@@ -113,12 +115,12 @@ dependencies {
     implementation (libs.android.custom.toast.message)
 
     //image show
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:+")
 
     //appwrite
-    implementation("io.appwrite:sdk-for-android:6.1.0")
+    implementation("io.appwrite:sdk-for-android:+")
 
     //shimmer
-    implementation ("com.valentinilk.shimmer:compose-shimmer:1.0.5")
+    implementation ("com.valentinilk.shimmer:compose-shimmer:+")
 
 }
