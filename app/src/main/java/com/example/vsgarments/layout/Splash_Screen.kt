@@ -23,9 +23,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.vsgarments.R
 import com.example.vsgarments.navigation.Screen
+import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.fontKalnia
 import com.example.vsgarments.ui.theme.splashdarkblue
 import com.example.vsgarments.ui.theme.splashlightblue
@@ -39,18 +41,19 @@ fun Splash_Screen(
     navController: NavController
 ){
 
-    LaunchedEffect(Unit) {
-        val auth = FirebaseAuth.getInstance()
-        delay(2000) // delay for 3 seconds or as needed
+    val auth = FirebaseAuth.getInstance()
 
-        if (auth.currentUser == null) {
-            navController.navigate(Screen.IntroductionScreen.route) {
-                popUpTo(Screen.Splash_Screen.route) { inclusive = true }
-            }
+    LaunchedEffect(Unit) {
+        delay(2000) // Splash screen delay
+
+        val destination = if (auth.currentUser == null) {
+            Screen.IntroductionScreen.route
         } else {
-            navController.navigate(Screen.MainScreen.route) {
-                popUpTo(Screen.Splash_Screen.route) { inclusive = true }
-            }
+            Screen.MainScreen.route
+        }
+
+        navController.navigate(destination) {
+            popUpTo(Screen.Splash_Screen.route) { inclusive = true }
         }
     }
 

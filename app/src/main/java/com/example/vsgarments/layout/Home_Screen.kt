@@ -250,8 +250,8 @@ fun HomeItemCard(
                     model = ImageRequest.Builder(context)
                         .data(imageUrl)
                         .crossfade(true)
-                        .error(R.drawable.retail)
-                        .placeholder(R.drawable.custom)
+                        .error(R.drawable.white_back)
+                        .placeholder(R.drawable.blue_back)
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
@@ -405,7 +405,7 @@ fun ShimmerLoadingEffect() {
                 .height(278.dp)
                 .fillMaxWidth()
                 .background(
-                    tintGrey.copy(alpha = 0.5f),
+                    tintGrey.copy(alpha = 0.7f),
                     RoundedCornerShape(10.dp)
                 )
                 .clip(shape = RoundedCornerShape(10))
@@ -422,7 +422,7 @@ fun ShimmerLoadingEffect() {
                         .height(15.dp)
                         .width(100.dp)
                         .background(
-                            Color.Gray.copy(alpha = 0.3f),
+                            tintGrey.copy(alpha = 0.5f),
                             RoundedCornerShape(8.dp)
                         )
                 )
@@ -433,7 +433,7 @@ fun ShimmerLoadingEffect() {
                         .height(10.dp)
                         .width(100.dp)
                         .background(
-                            Color.Gray.copy(alpha = 0.3f),
+                            tintGrey.copy(alpha = 0.5f),
                             RoundedCornerShape(8.dp)
                         )
                 )
@@ -445,7 +445,7 @@ fun ShimmerLoadingEffect() {
                             .height(20.dp)
                             .width(80.dp)
                             .background(
-                                Color.Gray.copy(alpha = 0.3f),
+                                tintGrey.copy(alpha = 0.5f),
                                 RoundedCornerShape(8.dp)
                             )
                     )
@@ -458,7 +458,7 @@ fun ShimmerLoadingEffect() {
                             .height(20.dp)
                             .width(80.dp)
                             .background(
-                                Color.Gray.copy(alpha = 0.3f),
+                                tintGrey.copy(alpha = 0.5f),
                                 RoundedCornerShape(8.dp)
                             )
                     )
@@ -469,7 +469,7 @@ fun ShimmerLoadingEffect() {
                         .height(30.dp)
                         .width(80.dp)
                         .background(
-                            Color.Gray.copy(alpha = 0.3f),
+                            tintGrey.copy(alpha = 0.5f),
                             RoundedCornerShape(8.dp)
                         )
                 )
@@ -478,7 +478,7 @@ fun ShimmerLoadingEffect() {
                 modifier = Modifier
                     .size(20.dp)
                     .background(
-                        Color.Gray.copy(alpha = 0.3f),
+                        tintGrey.copy(alpha = 0.5f),
                         RoundedCornerShape(8.dp)
                     )
             )

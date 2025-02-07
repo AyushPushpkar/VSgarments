@@ -125,7 +125,7 @@ fun Wishlist(
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
-                                navController.navigate(Screen.Profile_Screen.route)
+                                navController.popBackStack()
                             }
                     )
                     Spacer(modifier = Modifier.width(50.dp))

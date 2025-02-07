@@ -1,6 +1,7 @@
 package com.example.vsgarments.product
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vsgarments.authentication.util.Resource
@@ -22,11 +23,20 @@ class ProductViewModel @Inject constructor(
     private val _updateProductState = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val updateProductState: StateFlow<Resource<Unit>> = _updateProductState
 
-    init {
-        loadProducts()
-    }
+    private var isLoaded = false
 
-     fun loadProducts() {
+    init {
+        if (!isLoaded) {
+            loadProducts()
+            isLoaded = true
+        }
+    }
+//    init {
+//        loadProducts()
+//    }
+
+
+    fun loadProducts() {
         viewModelScope.launch {
             _productState.value = Resource.Loading()
             try {
