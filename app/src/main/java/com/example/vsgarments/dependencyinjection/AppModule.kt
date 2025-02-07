@@ -1,6 +1,7 @@
 package com.example.vsgarments.dependencyinjection
 
 import android.content.Context
+import com.example.vsgarments.cart.FirebaseCommon
 import com.example.vsgarments.product.FirebaseProductRepository
 import com.example.vsgarments.product.ProductRepository
 import com.google.firebase.Firebase
@@ -55,4 +56,11 @@ object AppModule {
     ): ProductRepository {
         return FirebaseProductRepository(db , appwriteStorage )
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseCommon(
+        firebaseFirestore: FirebaseFirestore ,
+        firebaseAuth: FirebaseAuth
+    ) = FirebaseCommon(firebaseFirestore , firebaseAuth)
 }
