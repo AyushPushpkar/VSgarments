@@ -279,19 +279,19 @@ fun TmpScreen(
                             items(products.size) { index ->
                                 val product = products[index]
 
-                                CartItemCard(
-                                    index = index ,
-                                    cartIItem = product,
-                                    context = context ,
-                                    navController = navController ,
-                                    selectedQuantities = selectedQuantities,
-                                    onQuantityChanged = {
-                                        selectedQuantities[index] = it
-                                        val (newTotalCurrent, newTotalOg) = recalculateTotal(products, selectedQuantities)
-                                        totalCurrentPrice = newTotalCurrent
-                                        totalOgPrice = newTotalOg
-                                    }
-                                )
+//                                CartItemCard(
+//                                    index = index ,
+//                                    cartIItem = product,
+//                                    context = context ,
+//                                    navController = navController ,
+//                                    selectedQuantities = selectedQuantities,
+//                                    onQuantityChanged = {
+//                                        selectedQuantities[index] = it
+//                                        val (newTotalCurrent, newTotalOg) = recalculateTotal(products, selectedQuantities)
+//                                        totalCurrentPrice = newTotalCurrent
+//                                        totalOgPrice = newTotalOg
+//                                    }
+//                                )
                             }
 
                             item {

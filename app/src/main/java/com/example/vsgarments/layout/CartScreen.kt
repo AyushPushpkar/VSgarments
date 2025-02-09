@@ -77,8 +77,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.vsgarments.Payment.PaymentState
-import com.example.vsgarments.Payment.PaymentViewModel
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.cart.CartIItem
@@ -97,6 +95,8 @@ import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.dataStates.ProductItem
+import com.example.vsgarments.payment_methods.PaymentState
+import com.example.vsgarments.payment_methods.PaymentViewModel
 import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.grey
 import com.example.vsgarments.ui.theme.lightblack
@@ -454,8 +454,7 @@ fun CartScreen(
                                     true
                                 )
 
-                                else -> {}
-                            }
+                                else -> {}                            }
                         }
                     }
 
