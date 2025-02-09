@@ -44,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
 
     packaging {
@@ -52,6 +52,7 @@ android {
             excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
         }
     }
+
 }
 
 dependencies {
@@ -86,8 +87,7 @@ dependencies {
     implementation(libs.androidx.core.ktx.v170)
     implementation(libs.coil.compose)
 
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.core:core-ktx:1.7.0")
 
     //navigation
@@ -104,10 +104,10 @@ dependencies {
     implementation ("com.google.firebase:firebase-database:21.0.0")
     implementation ("com.google.firebase:firebase-storage:21.0.1")
 
-    implementation ("com.google.dagger:hilt-android:+")
-    kapt ("com.google.dagger:hilt-android-compiler:+")
+    implementation ("com.google.dagger:hilt-android:2.48")
+    kapt ("com.google.dagger:hilt-android-compiler:2.48")
 
-    implementation ("androidx.hilt:hilt-navigation-compose:+")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     //fancy toast
     implementation(libs.fancytoast)
@@ -115,12 +115,16 @@ dependencies {
     implementation (libs.android.custom.toast.message)
 
     //image show
-    implementation("io.coil-kt:coil-compose:+")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     //appwrite
-    implementation("io.appwrite:sdk-for-android:+")
+    implementation("io.appwrite:sdk-for-android:6.1.0")
 
     //shimmer
-    implementation ("com.valentinilk.shimmer:compose-shimmer:+")
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
+
+    //razorpay
+    implementation("com.razorpay:checkout:1.6.26")
+
 
 }
