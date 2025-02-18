@@ -167,6 +167,7 @@ fun CartScreen(
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .background(Color.White)
                         ) {
 
                             item {
@@ -286,7 +287,19 @@ fun CartScreen(
                                                     cartViewModel.changeQuantity(product, newQuantity)
                                                 }
                                             } ,
-                                            onRemoveClicked = { cartViewModel.removeFromCart(product) }
+                                            onRemoveClicked = {
+                                                cartViewModel.removeFromCart(product)
+                                                selectedQuantities.remove(index)
+
+                                                if (products.size == 1) { // If the last item is removed
+                                                    totalCurrentPrice = 0.0
+                                                    totalOgPrice = 0.0
+                                                } else {
+                                                    val (newTotalCurrent, newTotalOg) = recalculateTotal(products.filter { it != product }, selectedQuantities)
+                                                    totalCurrentPrice = newTotalCurrent
+                                                    totalOgPrice = newTotalOg
+                                                }
+                                            }
                                         )
                             }
 
@@ -565,6 +578,8 @@ fun CartItemCard(
     val encodedProductItem = URLEncoder.encode(imageItemJson, "UTF-8")
 
     val item = cartIItem.productItem
+
+    val numberFormat = NumberFormat.getInstance(Locale("en", "IN"))
 
     Column(
         modifier = Modifier
