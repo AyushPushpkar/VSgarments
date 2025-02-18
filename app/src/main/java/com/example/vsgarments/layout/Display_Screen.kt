@@ -83,6 +83,8 @@ import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.view_functions.ExpandableText3
 import com.example.vsgarments.view_functions.SizeSelection
 import com.example.vsgarments.view_functions.customToast
+import com.example.vsgarments.wishlist.LikeViewModel
+import com.example.vsgarments.wishlist.WishlistItem
 import com.google.gson.Gson
 import java.net.URLEncoder
 import java.text.NumberFormat
@@ -104,7 +106,11 @@ fun DisplayScreen(
     val detailsViewModel : DetailsViewModel = hiltViewModel()
     val cartState by detailsViewModel.addToCart.collectAsState()
 
+    val likeViewModel : LikeViewModel = hiltViewModel()
+    val wishlistState by likeViewModel.addToWishlist.collectAsState()
+
     var isAddingToCart by remember { mutableStateOf(false) }
+    var isAddingToWishlist by remember { mutableStateOf(false) }
 
     val numberFormat = NumberFormat.getInstance(Locale("en", "IN"))
 
@@ -122,6 +128,23 @@ fun DisplayScreen(
         is Resource.Error -> {
 
             customToast(context = context , (cartState as Resource.Error).errorMassage ?: "Unknown error")
+        }
+        else -> Unit
+    }
+
+    when (wishlistState) {
+        is Resource.Loading -> {
+        }
+
+        is Resource.Success -> {
+            if (isAddingToWishlist) {
+                customToast(context = context , "Added to Wishlist" , cancelable = true)
+                isAddingToWishlist = false
+            }
+
+        }
+        is Resource.Error -> {
+            customToast(context = context , (wishlistState as Resource.Error).errorMassage ?: "Unknown error")
         }
         else -> Unit
     }
@@ -583,11 +606,20 @@ fun DisplayScreen(
                         }
 
                         Spacer(modifier = Modifier.width(20.dp))
+
+                        val wishlistItem by remember {
+                            derivedStateOf {
+                                WishlistItem(
+                                    productItem = updatedImageItem.value!!,
+                                )
+                            }
+                        }
                         Button(
                             modifier = Modifier
                                 .weight(1f),
                             onClick = {
-                                navController.navigate(Screen.Wishlist.route)
+                                isAddingToWishlist = true
+                                likeViewModel.addProductInWishlist(wishlistItem)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent

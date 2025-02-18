@@ -26,7 +26,7 @@ class LikeViewModel @Inject constructor(
     private val _addToWishlist = MutableStateFlow<Resource<WishlistItem>>(Resource.Unspecified())
     val addToWishlist: MutableStateFlow<Resource<WishlistItem>> = _addToWishlist
 
-    fun addUpdateProductInWishlist(wishlistItem: WishlistItem){
+    fun addProductInWishlist(wishlistItem: WishlistItem){
         viewModelScope.launch {
             _addToWishlist.emit(Resource.Loading())
             try {
@@ -40,7 +40,7 @@ class LikeViewModel @Inject constructor(
                     val existingProduct = document.toObject(WishlistItem::class.java)
 
                     if (existingProduct != null && existingProduct == wishlistItem) {
-                        _addToWishlist.emit(Resource.Success(wishlistItem))
+                        _addToWishlist.emit(Resource.Error("Item already in Wishlist"))
                     } else {
                         addNewProduct(wishlistItem)
                     }

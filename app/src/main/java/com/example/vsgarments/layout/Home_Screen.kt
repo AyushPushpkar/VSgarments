@@ -28,9 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,6 +75,9 @@ import com.example.vsgarments.product.ProductViewModel
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbarlightblue
 import com.example.vsgarments.view_functions.customToast
+import com.example.vsgarments.wishlist.LikeViewModel
+import com.example.vsgarments.wishlist.WishlistItem
+import com.example.vsgarments.wishlist.WishlistViewModel
 import com.google.gson.Gson
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -181,25 +185,20 @@ fun HomeScreen(
     }
 }
 
-//Shared Preferences
-fun saveLikeButtonState(context: Context,isLiked: Boolean,uid:String){
-    val sharedPreferences = context.getSharedPreferences("likeButtonPref",Context.MODE_PRIVATE)
-    sharedPreferences.edit()
-        .putBoolean("isLiked_$uid",isLiked).apply()
-}
-
-fun getLikeButtonState(context: Context,uid: String):Boolean{
-    val sharedPreferences = context.getSharedPreferences("likeButtonPref",Context.MODE_PRIVATE)
-    return sharedPreferences.getBoolean("isLiked_$uid",false)
-}
-
 @Composable
-fun HeartCheckBox(context: Context,uid: String){
+fun HeartCheckBox(context: Context,uid: String , wishlistItem: WishlistItem){
     var isLiked by remember {
         mutableStateOf(false)
     }
 
-    isLiked = getLikeButtonState(context,uid)
+    val wishlistViewModel: WishlistViewModel = hiltViewModel()
+    val likeViewModel : LikeViewModel = hiltViewModel()
+
+    val wishlistResource by wishlistViewModel.wishlistProducts.collectAsState()
+
+    val wishlist = (wishlistResource as? Resource.Success)?.data ?: emptyList()
+
+    isLiked = wishlist.contains(wishlistItem)
 
     val state by animateFloatAsState(
         targetValue = if(isLiked) 1.2f else 1f,
@@ -211,12 +210,14 @@ fun HeartCheckBox(context: Context,uid: String){
 
     Column(modifier = Modifier
         .clickable {
+            if (!isLiked){
+                likeViewModel.addProductInWishlist(wishlistItem)
+                customToast(context , "Added to Wishlist", cancelable = true)
+            }else{
+                wishlistViewModel.removeFromWishlist(wishlistItem)
+                customToast(context , "Removed from Wishlist" , cancelable = true)
+            }
             isLiked = !isLiked
-            saveLikeButtonState(
-                context,
-                isLiked,
-                uid
-            )
         }
         .scale(state)) {
         Image(
@@ -238,6 +239,8 @@ fun HomeItemCard(
 
     val imageItemJson = Gson().toJson(product)
     val encodedProductItem = URLEncoder.encode(imageItemJson, "UTF-8")
+
+    val wishlistViewModel: WishlistViewModel = hiltViewModel()
 
     Column(
             modifier = Modifier
@@ -379,9 +382,18 @@ fun HomeItemCard(
                         )
                     }
                 }
+
+                val wishlistItem by remember {
+                    derivedStateOf {
+                        WishlistItem(
+                            productItem = product
+                        )
+                    }
+                }
                 HeartCheckBox(
                     context = context,
-                    uid = product.id
+                    uid = product.id ,
+                    wishlistItem = wishlistItem
                 )
             }
         }
