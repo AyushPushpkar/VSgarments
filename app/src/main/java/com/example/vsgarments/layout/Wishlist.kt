@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -11,16 +12,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Switch
@@ -35,6 +42,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -49,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.android.identity.documenttype.Icon
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.dataStates.ProductItem
@@ -67,6 +76,10 @@ import com.example.vsgarments.view_functions.BlueButton
 import com.google.gson.Gson
 import java.net.URLEncoder
 import com.example.vsgarments.product.ProductViewModel
+import com.example.vsgarments.wishlist.WishlistItem
+import com.example.vsgarments.wishlist.WishlistViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun Wishlist(
@@ -78,6 +91,8 @@ fun Wishlist(
         modifier = modifier
             .background(appbackgroundcolor)
     ) {
+
+        val context = LocalContext.current
 
         Card(
             modifier = Modifier
@@ -141,11 +156,10 @@ fun Wishlist(
             }
         }
 
-        val context = LocalContext.current
-        val productViewModel: ProductViewModel = hiltViewModel()
-        val productState by productViewModel.productState.collectAsState()
+        val wishlistViewModel: WishlistViewModel = hiltViewModel()
+        val wishlistState by wishlistViewModel.wishlistProducts.collectAsState()
 
-        when (productState) {
+        when (wishlistState) {
             is Resource.Loading -> {
                 LazyColumn {
                     val shimmerPlaceholders = List(8) { it }
@@ -167,12 +181,13 @@ fun Wishlist(
 
             }
             is Resource.Success -> {
-                val products = (productState as Resource.Success<List<ProductItem>>).data
+                val products = (wishlistState as Resource.Success<List<WishlistItem>>).data
 
                 if (!products.isNullOrEmpty()) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .fillMaxHeight()
                     ) {
 
                         item {
@@ -229,22 +244,47 @@ fun Wishlist(
                             Spacer(modifier = Modifier.height(2.dp))
                         }
 
-                        val productChunks = products.chunked(2)
+                        val productChunks = products.dropLast(if (products.size % 2 != 0) 1 else 0).chunked(2)
+                        val lastItem = if (products.size % 2 != 0) products.last() else null
+
                         items(productChunks.size) { chunkIndex ->
                             val chunk = productChunks[chunkIndex]
+
+                            val isLastSingleItem = chunkIndex == productChunks.lastIndex && chunk.size == 1
+
 
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(appbackgroundcolor)
                                     .padding(vertical = 1.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 chunk.forEach { product ->
                                     WishlistItemCard(
-                                        product = product,
+                                        wishlistItem = product,
                                         context = context ,
-                                        navController = navController
+                                        navController = navController ,
+                                        onRemoveClicked = { wishlistViewModel.removeFromWishlist(product) } ,
+                                    )
+                                }
+                            }
+                        }
+
+                        lastItem?.let { item ->
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(appbackgroundcolor)
+                                        .padding(vertical = 1.dp , horizontal = 2.dp),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    WishlistItemCard(
+                                        wishlistItem = item,
+                                        context = context,
+                                        navController = navController,
+                                        onRemoveClicked = { wishlistViewModel.removeFromWishlist(item) },
                                     )
                                 }
                             }
@@ -252,19 +292,21 @@ fun Wishlist(
                     }
                 } else {
                     Text(
-                        text = "No products available",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        text = "No products in wishlist",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxHeight()
                     )
                 }
             }
             is Resource.Error -> {
                 // Show error message
                 Text(
-                    text = (productState as Resource.Error).errorMassage ?: "Unknown error",
+                    text = (wishlistState as Resource.Error).errorMassage ?: "Unknown error",
                     color = Color.Red,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Log.e("ProductScreen", "Error loading products: ${productState.errorMassage}")
+                Log.e("ProductScreen", "Error loading products: ${wishlistState.errorMassage}")
             }
             else -> {
                 // Handle unspecified state or no data
@@ -287,56 +329,121 @@ fun percentLess(
 
 @Composable
 fun WishlistItemCard(
-    product: ProductItem ,
+    modifier: Modifier = Modifier,
+    wishlistItem: WishlistItem ,
     navController: NavController ,
-    context: Context
+    context: Context ,
+    onRemoveClicked: () -> Unit
 ) {
 
-    val screenwidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
+    val numberFormat = NumberFormat.getInstance(Locale("en", "IN"))
 
-    val imageItemJson = Gson().toJson(product)
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp - 6.dp
+
+    val imageItemJson = Gson().toJson(wishlistItem.productItem)
     val encodedProductItem = URLEncoder.encode(imageItemJson, "UTF-8")
 
+    val product = wishlistItem.productItem
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
-            .width(screenwidth / 2)
+            .width(screenWidth / 2)
             .padding(10.dp)
     ) {
 
         product.remoteImageUrl?.let { imageUrl ->
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .error(R.drawable.retail)
-                    .placeholder(R.drawable.custom)
-                    .build(),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth()
-                    .height(250.dp)
-                    .clip(
-                        RoundedCornerShape(10.dp)
+
+            Box {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            .error(R.drawable.retail)
+                            .placeholder(R.drawable.custom)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .clip(
+                                RoundedCornerShape(10.dp)
+                            )
+                            .clickable {
+                                navController.navigate("${Screen.DisplayScreen.route}/$encodedProductItem")
+                            },
+                        contentScale = ContentScale.FillBounds,
+                        onError = { error ->
+                            Log.e(
+                                "AsyncImage",
+                                "Error loading image: ${error.result.throwable}"
+                            )
+                        }
                     )
-                    .clickable {
-                        navController.navigate("${Screen.DisplayScreen.route}/$encodedProductItem")
-                    } ,
-                contentScale = ContentScale.FillBounds ,
-                onError = { error ->
-                    Log.e("AsyncImage", "Error loading image: ${error.result.throwable}")
+
+                Box (
+                    modifier = Modifier
+                        .align(alignment = Alignment.TopEnd)
+                        .padding(
+                            end = 10.dp,
+                            top = 10.dp
+                        )
+                        .size(25.dp)
+                        .clip(shape = CircleShape)
+                        .background(Color.White)
+                        .border(
+                            width = 1.5.dp,
+                            shape = CircleShape,
+                            color = topbarlightblue
+                        )
+                        .clickable {
+                            onRemoveClicked()
+                        }
+                ){
+                    Image(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "remove" ,
+                        colorFilter = ColorFilter.tint(topbarlightblue)
+                    )
                 }
-            )
-        } ?: Text(
-            text = "No image available",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(Color.LightGray)
-                .wrapContentHeight(Alignment.CenterVertically),
-            textAlign = TextAlign.Center
-        )
+
+                Box(
+                    modifier = Modifier
+                        .align(alignment = Alignment.BottomStart)
+                        .padding(
+                            start = 10.dp,
+                            bottom = 10.dp
+                        )
+                        .width(65.dp)
+                        .height(25.dp)
+                        .clip(
+                            RoundedCornerShape(15.dp)
+                        )
+                        .background(topbarlightblue) ,
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row (
+                        modifier = Modifier
+                            .padding(horizontal = 7.dp) ,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(
+                            text = product.rating.toString(),
+                            color = Color.White,
+                            fontFamily = fontBaloo,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 15.sp
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Image(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            painter = painterResource(id = R.drawable.rounded_star_half_24),
+                            contentDescription = "",
+                        )
+                    }
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -357,73 +464,41 @@ fun WishlistItemCard(
         ){
             Text(
                 modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
-                text = "₹${product.ogprice}",
+                text = "₹${numberFormat.format(product.ogprice)}",
                 color = tintGrey ,
                 textDecoration = TextDecoration.LineThrough ,
                 fontSize = 15.sp
             )
             Spacer(modifier = Modifier.width(2.dp))
-            Text(
-                modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
-                text = "₹${product.currprice}",
-                color = textcolorblue ,
-                fontWeight = FontWeight.Medium ,
-                fontSize = 16.sp
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        
-        Row(
-            modifier = Modifier ,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(65.dp)
-                    .height(25.dp)
-                    .padding(horizontal = 5.dp)
-                    .clip(
-                        RoundedCornerShape(15.dp)
-                    )
-                    .background(rateboxGreen) ,
-                contentAlignment = Alignment.Center
+
+            Row(
+                modifier = Modifier ,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row (
-                    modifier = Modifier
-                        .padding(horizontal = 7.dp) ,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(
-                        text = product.rating.toString(),
-                        color = Color.White,
-                        fontFamily = fontBaloo,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp
-                    )
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Image(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        painter = painterResource(id = R.drawable.rounded_star_half_24),
-                        contentDescription = "",
-                    )
-                }
+                Image(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    painter = painterResource(id = R.drawable.rounded_arrow_downward_24),
+                    contentDescription = ""
+                )
+                Spacer(modifier = Modifier.width(1.dp))
+                val percentless = percentLess(product.ogprice , product.currprice)
+                Text(
+                    modifier = Modifier.padding( vertical = 2.dp),
+                    text = "${percentless}%",
+                    color = rateboxGreen ,
+                    fontWeight = FontWeight.Medium
+                )
             }
-            
-            Spacer(modifier = Modifier.width(5.dp))
-            Image(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                painter = painterResource(id = R.drawable.rounded_arrow_downward_24),
-                contentDescription = ""
-            )
-            Spacer(modifier = Modifier.width(1.dp))
-            val percentless = percentLess(product.ogprice , product.currprice)
-            Text(
-                modifier = Modifier.padding( vertical = 2.dp),
-                text = "${percentless}%",
-                color = rateboxGreen ,
-                fontWeight = FontWeight.Medium
-            )
+
         }
+
+        Text(
+            modifier = Modifier.padding(horizontal = 5.dp , vertical = 2.dp),
+            text = "₹${numberFormat.format(product.currprice)}",
+            color = textcolorblue ,
+            fontWeight = FontWeight.Medium ,
+            fontSize = 17.sp
+        )
 
         Box (
             modifier = Modifier
