@@ -14,10 +14,8 @@ sealed class Screen(val route: String) {
     data object DisplayScreen : Screen("display_screen")
     data object IntroductionScreen : Screen("introduction_screen")
     data object EmailVerificationScreen : Screen("email_verification_screen")
-    data object AddresScreen : Screen("addres_screen")
+    data object AddressScreen : Screen("address_screen")
     data object UpdateProductScreen : Screen("update_product_screen")
     data object Payment_Screen:Screen(route = "payment_screen")
-    data object UPI_Screen:Screen(route = "upi_screen")
-    data object Debit_Card_Screen:Screen(route = "debit_card_screen")
-    data object Net_Banking_Screen:Screen(route = "net_banking_screen")
+    data object AddProductScreen:Screen(route = "add_product_screen")
 }

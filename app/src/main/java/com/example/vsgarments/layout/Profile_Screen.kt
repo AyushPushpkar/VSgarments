@@ -363,7 +363,17 @@ fun Profile_Screen(
                 icon_des = "address icon",
                 text = "Address"  ,
                 onClick = {
-                    navController.navigate(Screen.AddresScreen.route)
+                    navController.navigate(Screen.AddressScreen.route)
+                }
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Help_address(
+                icon = painterResource(id = R.drawable.edit_pen),
+                icon_des = "address icon",
+                text = "Add Product"  ,
+                onClick = {
+                    navController.navigate(Screen.AddProductScreen.route)
                 }
             )
             Spacer(modifier = Modifier.height(2.dp))
@@ -377,15 +387,6 @@ fun Profile_Screen(
                 }
             )
             Spacer(modifier = Modifier.height(2.dp))
-            Help_address(
-                icon = painterResource(id = R.drawable.edit_pen),
-                icon_des = "Settings icon",
-                text = "Payment Method" ,
-                onClick = {
-                   navController.navigate(Screen.Payment_Screen.route)
-                }
-            )
-            Spacer(modifier = Modifier.height(7.dp))
 
             Column(
                 modifier = Modifier

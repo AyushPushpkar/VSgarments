@@ -44,7 +44,7 @@ fun Splash_Screen(
     val auth = FirebaseAuth.getInstance()
 
     LaunchedEffect(Unit) {
-        delay(2000) // Splash screen delay
+        delay(20) // Splash screen delay
 
         val destination = if (auth.currentUser == null) {
             Screen.IntroductionScreen.route

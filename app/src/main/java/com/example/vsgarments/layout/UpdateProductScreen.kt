@@ -425,7 +425,7 @@ fun UpdateProductScreen(
                     button_text = buttontext,
                     font_Family = fontBaloo
                 ) {
-                    navController.navigate(Screen.AddresScreen.route)
+                    navController.navigate(Screen.AddProductScreen.route)
                 }
             }
 
@@ -503,7 +503,7 @@ fun UpdateProductScreen(
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
-                                navController.navigate(Screen.AddresScreen.route)
+                                navController.navigate(Screen.AddProductScreen.route)
                             }
                     )
                     Spacer(modifier = Modifier.width(50.dp))

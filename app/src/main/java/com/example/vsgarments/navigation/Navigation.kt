@@ -18,6 +18,7 @@ import com.example.vsgarments.layout.Signup_Screen
 import com.example.vsgarments.layout.Splash_Screen
 import com.example.vsgarments.layout.Wishlist
 import com.example.vsgarments.dataStates.ProductItem
+import com.example.vsgarments.layout.AddressScreen
 import com.example.vsgarments.layout.EmailVerificationScreen
 import com.example.vsgarments.layout.IntroductionScreen
 import com.example.vsgarments.layout.ProductScreen
@@ -93,8 +94,8 @@ fun App_Navigation(modifier: Modifier ){
             IntroductionScreen(navController = navController , modifier = modifier)
         }
 
-        composable(route = Screen.AddresScreen.route){
-            ProductScreen(navController = navController , modifier = modifier)
+        composable(route = Screen.AddressScreen.route){
+            AddressScreen(navController = navController , modifier = modifier)
         }
 
         composable(
@@ -105,6 +106,10 @@ fun App_Navigation(modifier: Modifier ){
         ){
             val productId = it.arguments?.getString("productId")
             UpdateProductScreen(navController = navController , modifier = modifier , productId = productId)
+        }
+
+        composable(route = Screen.AddProductScreen.route){
+            ProductScreen(navController = navController , modifier = modifier)
         }
 
     }
