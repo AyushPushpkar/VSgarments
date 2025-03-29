@@ -24,6 +24,9 @@ class ProductViewModel @Inject constructor(
     private val _updateProductState = MutableStateFlow<Resource<Unit>>(Resource.Unspecified())
     val updateProductState: StateFlow<Resource<Unit>> = _updateProductState
 
+    private val _filteredProductState = MutableStateFlow<Resource<List<ProductItem>>>(Resource.Unspecified())
+    val filteredProductState: StateFlow<Resource<List<ProductItem>>> = _filteredProductState
+
     private var isLoaded = false
 
     init {
@@ -106,6 +109,40 @@ class ProductViewModel @Inject constructor(
                 _productState.value = Resource.Error("Failed to fetch product: ${e.message}")
             }
         }
+    }
+
+    fun filterBestDeals() {
+        viewModelScope.launch {
+            _filteredProductState.value = Resource.Loading()
+            try {
+                val products = (productState.value as? Resource.Success)?.data ?: emptyList()
+                val bestDeals = products.filter { it.discountPercentage >= 20 } //  filter products with 20% or more discount
+                _filteredProductState.value = Resource.Success(bestDeals)
+            } catch (e: Exception) {
+                _filteredProductState.value = Resource.Error("Failed to filter best deals: ${e.message}")
+            }
+        }
+    }
+
+    fun searchProducts(keyword: String) {
+        viewModelScope.launch {
+            _filteredProductState.value = Resource.Loading()
+            try {
+                val products = (productState.value as? Resource.Success)?.data ?: emptyList()
+                val filteredList = products.filter { product ->
+                    product.name.contains(keyword, ignoreCase = true) ||
+                            product.description.contains(keyword, ignoreCase = true) ||
+                            product.productDetails.values.any { it.contains(keyword, ignoreCase = true) }
+                }
+                _filteredProductState.value = Resource.Success(filteredList)
+            } catch (e: Exception) {
+                _filteredProductState.value = Resource.Error("Failed to search products: ${e.message}")
+            }
+        }
+    }
+
+    fun clearSearch() {
+        _filteredProductState.value = Resource.Success(emptyList()) // Reset filtering
     }
 
 }

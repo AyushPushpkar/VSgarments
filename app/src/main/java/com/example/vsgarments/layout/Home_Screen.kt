@@ -7,7 +7,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,8 +25,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,11 +45,15 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -44,11 +61,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.Vertices
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,6 +84,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.android.identity.documenttype.Icon
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
@@ -72,9 +96,15 @@ import com.example.vsgarments.ui.theme.topbardarkblue
 import com.example.vsgarments.view_functions.AppTopBar
 import com.example.vsgarments.dataStates.ProductItem
 import com.example.vsgarments.product.ProductViewModel
+import com.example.vsgarments.ui.theme.fontBaloo
+import com.example.vsgarments.ui.theme.textcolorblue
+import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGrey
 import com.example.vsgarments.ui.theme.topbarlightblue
+import com.example.vsgarments.view_functions.SearchBar
+import com.example.vsgarments.view_functions.char_editText
 import com.example.vsgarments.view_functions.customToast
+import com.example.vsgarments.view_functions.text_textField
 import com.example.vsgarments.wishlist.LikeViewModel
 import com.example.vsgarments.wishlist.WishlistItem
 import com.example.vsgarments.wishlist.WishlistViewModel
@@ -93,15 +123,34 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(appbackgroundcolor)
-    ) {
-        Column {
 
-            val context = LocalContext.current
-            val productViewModel: ProductViewModel = hiltViewModel()
-            val productState by productViewModel.productState.collectAsState()
+    ) {
+
+        val focusManager = LocalFocusManager.current
+        val focusRequester = FocusRequester()
+
+        var searchQuery by remember { mutableStateOf("") }
+        var bestDealsOnly by remember { mutableStateOf(false) }
+
+        val context = LocalContext.current
+        val productViewModel: ProductViewModel = hiltViewModel()
+        val productState by productViewModel.productState.collectAsState()
+        val filteredProducts by productViewModel.filteredProductState.collectAsState()
+
+
+
+        var isFilteringApplied by rememberSaveable { mutableStateOf(false) }
+
+        val keyboardController = LocalSoftwareKeyboardController.current
+
+        Column (
+            modifier = Modifier
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
+        ) {
 
             AppTopBar(navController = navController , context = context)
-
 
             when (productState) {
                 is Resource.Loading -> {
@@ -125,9 +174,14 @@ fun HomeScreen(
 
                 }
                 is Resource.Success -> {
-                    val products = (productState as Resource.Success<List<ProductItem>>).data
+//                    if(filteredProducts is Resource.Success && searchQuery.isNotEmpty()) isFilteringApplied = true
+                    val products = if (isFilteringApplied) {
+                        (filteredProducts as? Resource.Success<List<ProductItem>>)?.data ?: emptyList() // Use filtered data if available
+                    } else {
+                        (productState as? Resource.Success<List<ProductItem>>)?.data ?: emptyList()
+                    }
 
-                    if (!products.isNullOrEmpty()) {
+                    if (products.isNotEmpty()) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -157,7 +211,20 @@ fun HomeScreen(
                                     .background(appbackgroundcolor))
                             }
                         }
-                    } else {
+                    } else if (isFilteringApplied) {
+                        // Filtering was applied, but no results found
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No match found",
+                                color = Color.Gray,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }else {
                         Text(
                             text = "No products available",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -182,6 +249,101 @@ fun HomeScreen(
                 }
             }
         }
+        Box (
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+        ){
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp , vertical = 30.dp)
+                    .background(Color.White, shape = RoundedCornerShape(50.dp))
+//                    .border(1.dp, Color.Gray, shape = RoundedCornerShape(50.dp))
+                    .align(Alignment.BottomCenter),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Box (
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(topbardarkblue)
+                ){
+                    IconButton(
+                        onClick = {
+                            searchQuery.ifEmpty { null }?.let {
+                                productViewModel.searchProducts(
+                                    keyword = it
+                                )
+                            }
+                            isFilteringApplied = true
+                            keyboardController?.hide()
+                        } ,
+                    ) {
+                        Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
+                    }
+                }
+
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("Search products...") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            searchQuery.ifEmpty { null }?.let {
+                                productViewModel.searchProducts(
+                                    keyword = it
+                                )
+                            }
+                            isFilteringApplied = true
+                            keyboardController?.hide() // Hide keyboard when search is triggered
+                        }
+                    ),
+                    modifier = Modifier.weight(1f)
+                        .focusRequester(focusRequester)
+                        .clip(RoundedCornerShape(bottomEnd = 50.dp , topEnd = 50.dp)),
+                    singleLine = true,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        focusedLabelColor =  appbackgroundcolor,
+                        focusedTextColor = textcolorgrey,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedLabelColor = textcolorblue,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        unfocusedContainerColor = Color.White,
+                        unfocusedTextColor = textcolorgrey,
+                        disabledTextColor = textcolorgrey,
+                        disabledLabelColor = textcolorblue,
+                        disabledIndicatorColor = Color.Transparent,
+                        disabledContainerColor = Color.White ,
+                        cursorColor = textcolorblue,
+                    ),
+                )
+
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(
+                        onClick = {
+                            searchQuery = ""
+                            productViewModel.clearSearch() // Reset to normal products
+                            isFilteringApplied = false
+                            keyboardController?.hide()
+                        }
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = "Clear search", tint = Color.Gray)
+                    }
+                }
+
+
+            }
+        }
+
+
     }
 }
 

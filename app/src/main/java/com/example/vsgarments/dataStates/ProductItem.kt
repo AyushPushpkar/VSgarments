@@ -79,6 +79,13 @@ data class ProductItem(
         }
     }
 
+    val discountPercentage: Int
+        get() = if (ogprice > currprice && ogprice > 0) {
+            ((ogprice - currprice) * 100 / ogprice)
+        } else {
+            0
+        }
+
 }
 
 
