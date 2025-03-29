@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -84,10 +86,19 @@ fun text_textField(
     text : String,
     onTextChange: (String) -> Unit ,
     enabled : Boolean = true ,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester ,
+    placeholder: String = ""
 ){
 
     TextField(
+        placeholder = {
+            Text(
+                text = placeholder,
+                fontFamily = font_Family,
+                fontWeight = FontWeight.Normal,
+                color = textcolorblue
+            )
+        },
         enabled = enabled,
         textStyle = TextStyle(
             fontSize = 18.sp ,
