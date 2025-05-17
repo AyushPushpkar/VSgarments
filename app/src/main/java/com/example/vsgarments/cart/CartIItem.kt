@@ -5,7 +5,7 @@ import com.example.vsgarments.dataStates.ProductItem
 data class CartIItem(
     val productItem: ProductItem,
     val quantity : Int,
-    val selectedColor : Int? = null,
+    val selectedColor : String? = null,
     val selectedSize : String? = null
 ){
     constructor() : this(

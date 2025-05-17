@@ -1,6 +1,8 @@
 package com.example.vsgarments.view_functions
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,9 +19,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +54,7 @@ import com.example.vsgarments.authentication.RegisterViewModel
 import com.example.vsgarments.authentication.User
 import com.example.vsgarments.authentication.util.Resource
 import com.example.vsgarments.navigation.Screen
+import com.example.vsgarments.ui.theme.appbackgroundcolor
 import com.example.vsgarments.ui.theme.fontInter
 import com.example.vsgarments.ui.theme.textcolorgrey
 import com.example.vsgarments.ui.theme.tintGreen
@@ -73,6 +80,17 @@ fun AppTopBar(
 
     val registerViewModel : RegisterViewModel = hiltViewModel()
     val currentUserResource by registerViewModel.currentUser.collectAsState()
+
+    val savedImagePath by registerViewModel.savedImagePath.collectAsState()
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    // Update bitmap whenever image path changes
+    LaunchedEffect(savedImagePath) {
+        savedImagePath?.let { path ->
+            val bmp = BitmapFactory.decodeFile(path)
+            bitmap = bmp
+        }
+    }
 
     when (currentUserResource) {
         is Resource.Loading -> {
@@ -199,11 +217,21 @@ fun AppTopBar(
                                 shape = CircleShape
                             )
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.waddle_dees),
-                            contentDescription = "Your image description",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                        bitmap?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .clip(CircleShape)
+                                    .background(appbackgroundcolor),
+                                contentScale = ContentScale.Crop
+                            )
+                        } ?: Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Default Profile",
+                            modifier = Modifier
+                                .size(120.dp)
                         )
                     }
                 }

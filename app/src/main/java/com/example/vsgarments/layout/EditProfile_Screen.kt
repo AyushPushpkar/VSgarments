@@ -1,6 +1,13 @@
 package com.example.vsgarments.layout
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,11 +26,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -35,6 +46,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +59,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.vsgarments.R
 import com.example.vsgarments.authentication.RegisterViewModel
 import com.example.vsgarments.authentication.User
@@ -63,6 +78,10 @@ import com.example.vsgarments.view_functions.customToast
 import com.example.vsgarments.view_functions.number_textField
 import com.example.vsgarments.view_functions.text_textField
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun EditProfile_Screen(navController: NavController , modifier: Modifier){
@@ -86,8 +105,22 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
         var state by rememberSaveable { mutableStateOf("") }
         var city by rememberSaveable { mutableStateOf("") }
         var pincode by rememberSaveable { mutableStateOf("") }
+        var imageUri by remember { mutableStateOf<Uri?>(null) }
 
         val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val registerViewModel : RegisterViewModel = hiltViewModel()
+        val currentUserResource by registerViewModel.currentUser.collectAsState()
+
+        val savedImagePath by registerViewModel.savedImagePath.collectAsState()
+        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+        // Update bitmap whenever image path changes
+        LaunchedEffect(savedImagePath) {
+            savedImagePath?.let { path ->
+                val bmp = BitmapFactory.decodeFile(path)
+                bitmap = bmp
+            }
+        }
 
         LaunchedEffect(Unit) {
             userName = sharedPreferences.getString("username", "") ?: ""
@@ -97,12 +130,23 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
             state = sharedPreferences.getString("state", "") ?: ""
             city = sharedPreferences.getString("city", "") ?: ""
             pincode = sharedPreferences.getString("pincode", "") ?: ""
+
         }
 
-        val registerViewModel : RegisterViewModel = hiltViewModel()
-        val currentUserResource by registerViewModel.currentUser.collectAsState()
-
         var isEditing by rememberSaveable { mutableStateOf(false) }
+
+        val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                imageUri = it
+
+                currentUser?.uid?.let { uid ->
+                    // Save image locally using ViewModel
+                    registerViewModel.handleProfileImageSave(uid, it)
+                    customToast(context, "Profile image updated!" , cancelable = true)
+                } ?: customToast(context, "User ID not found" , cancelable = true)
+            } ?: customToast(context, "Image selection canceled" , cancelable = true)
+        }
+
 
         when (currentUserResource) {
             is Resource.Success -> {
@@ -224,12 +268,28 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                                 shape = RoundedCornerShape(58.dp)
                             )
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.waddle_dees),
-                            contentDescription = "Your image description",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+
+                        bitmap?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray)
+                                    .clickable { imagePickerLauncher.launch("image/*") } ,
+                                contentScale = ContentScale.Crop
+                            )
+                        } ?: Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Default Profile",
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clickable { imagePickerLauncher.launch("image/*") }
                         )
+
+
+
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth()
@@ -247,7 +307,10 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                                     color = topbardarkblue,
                                     shape = RoundedCornerShape(8.dp)
                                 )
-                                .padding(5.dp),
+                                .padding(5.dp)
+                                .clickable {
+                                    imagePickerLauncher.launch("image/*")
+                                },
                             contentAlignment = Alignment.Center
 
                         ) {
@@ -256,6 +319,7 @@ fun EditProfile_Screen(navController: NavController , modifier: Modifier){
                                 contentDescription = "edit pen"
                             )
                         }
+
                     }
                 }
                 Box(

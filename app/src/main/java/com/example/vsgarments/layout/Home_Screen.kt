@@ -32,6 +32,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -61,7 +63,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.Vertices
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -165,7 +166,7 @@ fun HomeScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                chunk.forEach {
+                                chunk.forEach { _ ->
                                     ShimmerLoadingEffect()
                                 }
                             }
@@ -252,96 +253,114 @@ fun HomeScreen(
         Box (
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(160.dp)
+                .padding(horizontal = 30.dp)
         ){
 
-            Row(
+            Card(
+                shape = RoundedCornerShape(50.dp),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 30.dp , vertical = 30.dp)
-                    .background(Color.White, shape = RoundedCornerShape(50.dp))
-//                    .border(1.dp, Color.Gray, shape = RoundedCornerShape(50.dp))
-                    .align(Alignment.BottomCenter),
-                verticalAlignment = Alignment.CenterVertically
+                    .align(Alignment.BottomCenter)
             ) {
-
-                Spacer(modifier = Modifier.width(5.dp))
-
-                Box (
+                Row(
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(topbardarkblue)
-                ){
-                    IconButton(
-                        onClick = {
-                            searchQuery.ifEmpty { null }?.let {
-                                productViewModel.searchProducts(
-                                    keyword = it
-                                )
-                            }
-                            isFilteringApplied = true
-                            keyboardController?.hide()
-                        } ,
+                        .fillMaxWidth()
+                        .background(Color.White, shape = RoundedCornerShape(50.dp)),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(topbardarkblue)
                     ) {
-                        Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
-                    }
-                }
+                        IconButton(
+                            onClick = {
+                                searchQuery.ifEmpty { null }?.let {
+                                    productViewModel.searchProducts(
+                                        keyword = it
+                                    )
+                                }
+                                if (searchQuery != "")isFilteringApplied = true
 
-                TextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("Search products...") },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            searchQuery.ifEmpty { null }?.let {
-                                productViewModel.searchProducts(
-                                    keyword = it
-                                )
+                                keyboardController?.hide()
+                            },
+                        ) {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = Color.White
+                            )
+                        }
+                    }
+
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search products...") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                searchQuery.ifEmpty { null }?.let {
+                                    productViewModel.searchProducts(
+                                        keyword = it
+                                    )
+                                }
+                                isFilteringApplied = true
+                                keyboardController?.hide() // Hide keyboard when search is triggered
                             }
-                            isFilteringApplied = true
-                            keyboardController?.hide() // Hide keyboard when search is triggered
-                        }
-                    ),
-                    modifier = Modifier.weight(1f)
-                        .focusRequester(focusRequester)
-                        .clip(RoundedCornerShape(bottomEnd = 50.dp , topEnd = 50.dp)),
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        focusedLabelColor =  appbackgroundcolor,
-                        focusedTextColor = textcolorgrey,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedLabelColor = textcolorblue,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        unfocusedContainerColor = Color.White,
-                        unfocusedTextColor = textcolorgrey,
-                        disabledTextColor = textcolorgrey,
-                        disabledLabelColor = textcolorblue,
-                        disabledIndicatorColor = Color.Transparent,
-                        disabledContainerColor = Color.White ,
-                        cursorColor = textcolorblue,
-                    ),
-                )
+                        ),
+                        modifier = Modifier.weight(1f)
+                            .focusRequester(focusRequester)
+                            .clip(RoundedCornerShape(bottomEnd = 50.dp, topEnd = 50.dp)),
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            focusedLabelColor = appbackgroundcolor,
+                            focusedTextColor = textcolorgrey,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedLabelColor = textcolorblue,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            unfocusedContainerColor = Color.White,
+                            unfocusedTextColor = textcolorgrey,
+                            disabledTextColor = textcolorgrey,
+                            disabledLabelColor = textcolorblue,
+                            disabledIndicatorColor = Color.Transparent,
+                            disabledContainerColor = Color.White,
+                            cursorColor = textcolorblue,
+                        ),
+                    )
 
-                if (searchQuery.isNotEmpty()) {
-                    IconButton(
-                        onClick = {
-                            searchQuery = ""
-                            productViewModel.clearSearch() // Reset to normal products
-                            isFilteringApplied = false
-                            keyboardController?.hide()
+                    if (searchQuery.isNotEmpty() || isFilteringApplied) {
+                        IconButton(
+                            onClick = {
+                                searchQuery = ""
+                                productViewModel.clearSearch() // Reset to normal products
+                                isFilteringApplied = false
+                                keyboardController?.hide()
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Clear search",
+                                tint = Color.Gray
+                            )
                         }
-                    ) {
-                        Icon(Icons.Default.Close, contentDescription = "Clear search", tint = Color.Gray)
                     }
+
+
                 }
-
-
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
+
 
 
     }

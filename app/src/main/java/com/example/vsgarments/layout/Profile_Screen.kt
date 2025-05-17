@@ -1,6 +1,8 @@
 package com.example.vsgarments.layout
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -28,15 +30,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +55,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -92,6 +98,17 @@ fun Profile_Screen(
     val registerViewModel: RegisterViewModel = hiltViewModel()
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     val savedUserName = sharedPreferences.getString("username", null)
+
+    val savedImagePath by registerViewModel.savedImagePath.collectAsState()
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    // Update bitmap whenever image path changes
+    LaunchedEffect(savedImagePath) {
+        savedImagePath?.let { path ->
+            val bmp = BitmapFactory.decodeFile(path)
+            bitmap = bmp
+        }
+    }
 
     if (savedUserName != null) {
         userName = savedUserName
@@ -188,11 +205,22 @@ fun Profile_Screen(
                             )
                             .background(Color.Transparent)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.waddle_dees),
-                            contentDescription = "Your image description",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+
+                        bitmap?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .clip(CircleShape)
+                                    .background(appbackgroundcolor),
+                                contentScale = ContentScale.Crop
+                            )
+                        } ?: Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Default Profile",
+                            modifier = Modifier
+                                .size(120.dp)
                         )
                     }
 
