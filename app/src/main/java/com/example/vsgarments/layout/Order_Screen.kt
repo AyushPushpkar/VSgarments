@@ -64,10 +64,10 @@ fun Order_Screen(
             .fillMaxSize()
             .background(appbackgroundcolor),
     ) {
+
         Column {
 
 
-            AppTopBar(navController = navController, context = LocalContext.current)
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,6 +88,10 @@ fun Order_Screen(
                                 .offset(x = 10.dp),
                             verticalArrangement = Arrangement.SpaceEvenly
                         ) {
+                            Spacer(modifier = Modifier
+                                .height(135.dp)
+                                .background(Color.White))
+
                             Text(
                                 text = "My Order",
                                 color = Color.Black,
@@ -112,142 +116,10 @@ fun Order_Screen(
                     }
                 }
 
-//             itemsIndexed(imageList.chunked(1)){_,single->
-//                 Row(modifier = Modifier
-//                     .padding(top = 20.dp)){
-//                    single.forEach{ imageitem->
-//                        Column(modifier = Modifier
-//                            .background(color = Color.White)
-//                            .fillMaxWidth()
-//                            .padding(vertical = 20.dp, horizontal = 20.dp)) {
-//                            Row {
-//                                Text(
-//                                    text = "Order Date :",
-//                                    color = splashdarkblue,
-//                                    fontWeight = FontWeight.SemiBold,
-//                                )
-//                                Text(
-//                                    text = "${imageitem.orderDate}",
-//                                    color = textcolorgrey
-//                                )
-//                            }
-//                            Divider(
-//                                thickness = 1.dp,
-//                                color = topbarlightblue,
-//                                modifier = Modifier.fillMaxWidth()
-//                                    .padding(vertical = 2.dp)
-//                            )
-//                            Spacer(modifier = Modifier
-//                                .height(2.dp)
-//                                .padding(bottom = 3.dp))
-//                            Row {
-//                                Text(
-//                                    text = "Order Id :",
-//                                    color = textcolorblue,
-//                                    fontWeight = FontWeight.SemiBold,
-//                                )
-//                                Text(
-//                                    text = imageitem.orderId,
-//                                    color = textcolorgrey
-//                                )
-//                            }
-//                            Divider(
-//                                thickness = 1.dp,
-//                                color = topbarlightblue,
-//                                modifier = Modifier.fillMaxWidth()
-//                                    .padding(vertical = 2.dp)
-//                            )
-//                            Spacer(modifier = Modifier
-//                                .height(2.dp)
-//                                .padding(bottom = 2.dp))
-//                            Row {
-//                                Text(
-//                                    text = "Supplier :",
-//                                    color = textcolorblue,
-//                                    fontWeight = FontWeight.SemiBold
-//                                )
-//                                Text(
-//                                    text = imageitem.supplier,
-//                                    color = textcolorgrey
-//                                )
-//                            }
-//                            Divider(
-//                                thickness = 1.dp,
-//                                color = topbarlightblue,
-//                                modifier = Modifier.fillMaxWidth()
-//                                    .padding(vertical = 2.dp)
-//                            )
-//                            Spacer(modifier = Modifier
-//                                .height(2.dp)
-//                                .padding(bottom = 2.dp))
-//
-//                            Row(modifier = Modifier
-//                                .padding(vertical = 10.dp)) {
-//                                Image(painter = painterResource(id = imageitem.imageresId),
-//                                    contentDescription = "",
-//                                    contentScale = ContentScale.Crop,
-//                                    modifier = Modifier
-//                                        .height(80.dp)
-//                                        .width(80.dp)
-//                                        .clip(shape = RoundedCornerShape(10)))
-//                                Column(modifier = Modifier
-//                                    .padding(start = 10.dp)) {
-//                                    Box(modifier = Modifier
-//                                        .clip(shape = CircleShape)
-//                                        .background(color = tintGreen)
-//                                        .padding(horizontal = 7.dp)){
-//                                        Text(
-//                                            text = imageitem.orderType,
-//                                            color = textcolorgrey,
-//                                            fontSize = 10.sp,
-//                                            fontWeight = FontWeight.SemiBold
-//                                        )
-//                                    }
-//                                    Column(modifier = Modifier,
-//                                        verticalArrangement = Arrangement.spacedBy(-(5).dp)) {
-//                                        Text(
-//                                            text = imageitem.CompanyName,
-//                                            color = Color.Black,
-//                                            fontWeight = FontWeight.SemiBold
-//                                        )
-//                                        Text(
-//                                            text = imageitem.name,
-//                                            color = textcolorgrey,
-//                                            fontSize = 12.sp,
-//                                        )
-//                                        Text(
-//                                            text = "${imageitem.ogprice}",
-//                                            color = textcolorgrey,
-//                                            fontSize = 14.sp,
-//                                        )
-//                                    }
-//                                }
-//
-//                            }
-//                            Divider(
-//                                thickness = 1.dp,
-//                                color = topbarlightblue,
-//                                modifier = Modifier.fillMaxWidth()
-//                            )
-//                            Spacer(modifier = Modifier
-//                                .height(5.dp))
-//                            Text(
-//                                text = "Feedback",
-//                                color = splashdarkblue,
-//                                fontSize = 16.sp,
-//                                fontWeight = FontWeight.SemiBold,
-//                                modifier = Modifier
-//                                    .clickable {  }
-//                            )
-//
-//                            Spacer(modifier = Modifier
-//                                .height(10.dp))
-//                        }
-//                    }
- //                }
- //            }
             }
         }
+
+        AppTopBar(navController = navController, context = LocalContext.current)
     }
 }
 
